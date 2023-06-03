@@ -13,6 +13,10 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
 }
 
+repositories {
+    mavenCentral()
+}
+
 publishing {
     publications {
         maven(MavenPublication) {
