@@ -1,0 +1,34 @@
+apply plugin: 'java-library'
+apply plugin: 'maven-publish'
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.auth0:java-jwt:4.4.0'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
+}
+
+repositories {
+    mavenCentral()
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.apple.itunes.storekit'
+            artifactId = 'app-store-server-library'
+            version = '0.1.0'
+
+            from components.java
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
