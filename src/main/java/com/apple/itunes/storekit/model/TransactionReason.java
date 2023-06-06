@@ -14,7 +14,7 @@ import java.io.IOException;
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/transactionreason">transactionReason</a>
  */
-@JsonAdapter(Type.Adapter.class)
+@JsonAdapter(TransactionReason.Adapter.class)
 public enum TransactionReason {
 
     PURCHASE("PURCHASE"),

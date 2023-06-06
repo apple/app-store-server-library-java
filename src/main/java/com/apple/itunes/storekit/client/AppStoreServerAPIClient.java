@@ -12,6 +12,8 @@ import com.apple.itunes.storekit.model.HistoryResponse;
 import com.apple.itunes.storekit.model.MassExtendRenewalDateRequest;
 import com.apple.itunes.storekit.model.MassExtendRenewalDateResponse;
 import com.apple.itunes.storekit.model.MassExtendRenewalDateStatusResponse;
+import com.apple.itunes.storekit.model.NotificationHistoryRequest;
+import com.apple.itunes.storekit.model.NotificationHistoryResponse;
 import com.apple.itunes.storekit.model.OrderLookupResponse;
 import com.apple.itunes.storekit.model.RefundHistoryResponse;
 import com.apple.itunes.storekit.model.SendTestNotificationResponse;
@@ -213,6 +215,24 @@ public class AppStoreServerAPIClient {
      */
     public CheckTestNotificationResponse getTestNotificationStatus(String testNotificationToken) throws APIException, IOException {
         return makeHttpCall("/inApps/v1/notifications/test/" + testNotificationToken, "GET", Map.of(), null, CheckTestNotificationResponse.class);
+    }
+
+    /**
+     * Get a list of notifications that the App Store server attempted to send to your server.
+     *
+     * @param paginationToken An optional token you use to get the next set of up to 20 notification history records. All responses that have more records available include a paginationToken. Omit this parameter the first time you call this endpoint.
+     * @param notificationHistoryRequest The request body that includes the start and end dates, and optional query constraints.
+     * @return A response that contains the App Store Server Notifications history for your app.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get_notification_history">Get Notification History</a>
+     */
+    public NotificationHistoryResponse getNotificationHistory(String paginationToken, NotificationHistoryRequest notificationHistoryRequest) throws APIException, IOException {
+        Map<String, List<String>> queryParameters = new HashMap<>();
+        if (paginationToken != null) {
+            queryParameters.put("paginationToken", List.of(paginationToken));
+        }
+        return makeHttpCall("/inApps/v1/notifications/history", "POST", queryParameters, notificationHistoryRequest, NotificationHistoryResponse.class);
     }
 
     /**
