@@ -1,4 +1,4 @@
-name: PR Builder
+name: Snapshot Builder
 on:
   push:
     branches: [ main ]
@@ -7,19 +7,15 @@ on:
       - "[0-9]+.[0-9]+.[0-9]+.[0-9]+"
 jobs:
   build:
-    name: JDK ${{ matrix.java }} ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        java: [ 11, 17, 20 ]
-        os: [ ubuntu-latest ]
+    name: JDK 17 Snapshot Builder
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-      - name: Set up JDK ${{ matrix.java }}
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: ${{ matrix.java }}
+          java-version: 17
           distribution: 'zulu'
           cache: 'gradle'
       - name: Print JDK Version
@@ -29,6 +25,10 @@ jobs:
       - name: Build
         env:
           JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8
+          ORG_GRADLE_PROJECT_mavenUsername: ${{ secrets.ORG_GRADLE_PROJECT_MAVENUSERNAME }}
+          ORG_GRADLE_PROJECT_mavenPassword: ${{ secrets.ORG_GRADLE_PROJECT_MAVENPASSWORD }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
         run:  >
           sudo -E env "PATH=$PATH" bash -c "ulimit -l 65536 && ulimit -a &&
           ./gradlew properties --no-daemon --console=plain -q | grep -E '^version: [\.0-9]+\-SNAPSHOT$' &&
