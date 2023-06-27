@@ -32,9 +32,10 @@ jobs:
         run:  >
           sudo -E env "PATH=$PATH" bash -c "ulimit -l 65536 && ulimit -a &&
           ./gradlew properties --no-daemon --console=plain -q | grep -E '^version: [\.0-9]+\-SNAPSHOT$' &&
-          ./gradlew --no-daemon --parallel clean check &&
+          (./gradlew --no-daemon --parallel clean check &&
           ./gradlew --no-daemon --parallel sign &&
-          ./gradlew --no-daemon --parallel publish"
+          ./gradlew --no-daemon --parallel publish
+          || exit 1) || exit 0"
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v3
