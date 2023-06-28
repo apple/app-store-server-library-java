@@ -47,6 +47,13 @@ publishing {
                         url = "https://github.com/apple/app-store-server-library-java/blob/main/LICENSE.txt"
                     }
                 }
+                developers {
+                    developer {
+                        id = 'app-store-server-library-project-authors'
+                        name = 'App Store Server Library project authors'
+                        email = 'app-store-server-library@group.apple.com'
+                    }
+                }
                 scm {
                     connection = 'scm:git:git://github.com:apple/app-store-server-library-java.git'
                     developerConnection = 'scm:git:ssh://github.com:apple/app-store-server-library-java.git'
