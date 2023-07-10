@@ -13,7 +13,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: 'zulu'
+          distribution: 'corretto'
           cache: 'gradle'
       - name: Print JDK Version
         run: java -version
