@@ -20,14 +20,8 @@ This software is currently in Beta testing. Therefore, it should only be used fo
 
 ### Gradle
 ```groovy
-implementation 'com.apple.itunes.storekit:app-store-server-library:0.1.0'
+implementation 'com.apple.itunes.storekit:app-store-server-library:0.1.1'
 
-repositories {
-    //...
-    maven {
-        url "https://ossartifacts.jfrog.io/artifactory/app-store-server-library/"
-    }
-}
 ```
 
 ### Maven
@@ -35,14 +29,8 @@ repositories {
 <dependency>
     <groupId>com.apple.itunes.storekit</groupId>
     <artifcatId>app-store-server-library</artifcatId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
 </dependency>
-<!-- ... -->
-<repository>
-    <id>app-store-server-library</id>
-    <name>app-store-server-library-releases</name>
-    <url>https://ossartifacts.jfrog.io/artifactory/app-store-server-library</url>
-</repository>
 ```
 
 ## Documentation

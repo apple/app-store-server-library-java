@@ -1,0 +1,6 @@
+# Changelog
+
+## Version 0.1.1
+
+- Move release to Maven Central
+- The additional repository is no longer needed in a Gradle/Maven config
