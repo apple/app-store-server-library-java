@@ -117,7 +117,7 @@ public class SignedDataVerifier {
         return appTransaction;
     }
 
-    private <T extends DecodedSignedData> T decodeSignedObject(String signedObject, Class<T> clazz) throws VerificationException {
+    protected <T extends DecodedSignedData> T decodeSignedObject(String signedObject, Class<T> clazz) throws VerificationException {
         try {
             DecodedJWT unverifiedJWT = JWT.decode(signedObject);
             String[] x5cChain = unverifiedJWT.getHeaderClaim("x5c").asArray(String.class);
