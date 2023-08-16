@@ -2,9 +2,12 @@ name: Javadoc Builder
 on:
   release:
     types: [published]
+permissions:
+  pages: write
+  id-token: write
 jobs:
   build:
-    name: JDK 17 Javadoc Builder
+    name: Javadoc Builder
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
