@@ -1,0 +1,27 @@
+name: Javadoc Builder
+on:
+  release:
+    types: [published]
+jobs:
+  build:
+    name: JDK 17 Javadoc Builder
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'zulu'
+          cache: 'gradle'
+      - name: Print JDK Version
+        run: java -version
+      - name: Make gradlew Executable
+        run: chmod +x gradlew
+      - name: Build javadocs
+        run: ./gradlew --no-daemon --parallel javadoc
+      - name: Upload javadocs
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: build/docs/javadoc

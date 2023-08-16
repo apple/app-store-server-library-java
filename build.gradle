@@ -23,6 +23,10 @@ java {
     withJavadocJar()
 }
 
+javadoc {
+    source = sourceSets.main.allJava
+}
+
 signing {
     def signingKey = findProperty("signingKey")
     def signingPassword = findProperty("signingPassword")
