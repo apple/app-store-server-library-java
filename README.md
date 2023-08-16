@@ -28,7 +28,7 @@ implementation 'com.apple.itunes.storekit:app-store-server-library:0.1.2'
 ```xml
 <dependency>
     <groupId>com.apple.itunes.storekit</groupId>
-    <artifcatId>app-store-server-library</artifcatId>
+    <artifactId>app-store-server-library</artifactId>
     <version>0.1.2</version>
 </dependency>
 ```

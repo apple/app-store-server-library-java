@@ -11,7 +11,7 @@ dependencies {
     implementation 'com.auth0:java-jwt:4.4.0'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
 }
 
 repositories {
