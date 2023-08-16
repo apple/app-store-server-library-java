@@ -35,7 +35,7 @@ implementation 'com.apple.itunes.storekit:app-store-server-library:0.1.2'
 
 ## Documentation
 
-[JavaDocs](TODO)
+[JavaDocs](https://apple.github.io/app-store-server-library-java/)
 
 [WWDC Video](https://developer.apple.com/videos/play/wwdc2023/10143/)
 ## Usage
