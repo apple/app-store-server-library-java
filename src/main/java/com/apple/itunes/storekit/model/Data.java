@@ -18,6 +18,7 @@ public class Data {
     private static final String SERIALIZED_NAME_BUNDLE_VERSION = "bundleVersion";
     private static final String SERIALIZED_NAME_SIGNED_TRANSACTION_INFO = "signedTransactionInfo";
     private static final String SERIALIZED_NAME_SIGNED_RENEWAL_INFO = "signedRenewalInfo";
+    private static final String SERIALIZED_NAME_STATUS = "status";
     @SerializedName(SERIALIZED_NAME_ENVIRONMENT)
     private Environment environment;
     @SerializedName(SERIALIZED_NAME_APP_APPLE_ID)
@@ -30,6 +31,8 @@ public class Data {
     private String signedTransactionInfo;
     @SerializedName(SERIALIZED_NAME_SIGNED_RENEWAL_INFO)
     private String signedRenewalInfo;
+    @SerializedName(SERIALIZED_NAME_STATUS)
+    private Status status;
 
 
     public Data() {
@@ -149,6 +152,25 @@ public class Data {
         this.signedRenewalInfo = signedRenewalInfo;
     }
 
+    public Data status(Status status) {
+        this.status = status;
+        return this;
+    }
+
+    /**
+     * The status of the auto-renewable subscription.
+     *
+     * @return status
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/status">status</a>
+     **/
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -163,12 +185,13 @@ public class Data {
                 Objects.equals(this.bundleId, data.bundleId) &&
                 Objects.equals(this.bundleVersion, data.bundleVersion) &&
                 Objects.equals(this.signedTransactionInfo, data.signedTransactionInfo) &&
-                Objects.equals(this.signedRenewalInfo, data.signedRenewalInfo);
+                Objects.equals(this.signedRenewalInfo, data.signedRenewalInfo) &&
+                Objects.equals(this.status, data.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(environment, appAppleId, bundleId, bundleVersion, signedTransactionInfo, signedRenewalInfo);
+        return Objects.hash(environment, appAppleId, bundleId, bundleVersion, signedTransactionInfo, signedRenewalInfo, status);
     }
 
     @Override
@@ -180,6 +203,7 @@ public class Data {
                 ", bundleVersion='" + bundleVersion + '\'' +
                 ", signedTransactionInfo='" + signedTransactionInfo + '\'' +
                 ", signedRenewalInfo='" + signedRenewalInfo + '\'' +
+                ", status='" + status + '\'' +
                 '}';
     }
 }
