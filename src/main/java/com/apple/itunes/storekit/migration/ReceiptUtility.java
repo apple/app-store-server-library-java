@@ -36,7 +36,7 @@ public class ReceiptUtility {
      * @throws IOException              If the receipt was malformed
      * @throws IllegalArgumentException If the receipt could not be parsed or did not match the expected format
      */
-    public String extractTransactionIdFromAppReceipt(String appReceipt) throws IOException {
+    public static String extractTransactionIdFromAppReceipt(String appReceipt) throws IOException {
         // PKCS#7
         try (ASN1InputStream in = new ASN1InputStream(Base64.getDecoder().decode(appReceipt))) {
             ASN1Primitive root = in.readObject();
@@ -106,7 +106,7 @@ public class ReceiptUtility {
      * @return A transaction id, or null if no transactionId is found in the receipt
      * @throws IllegalArgumentException If the receipt could not be parsed or did not match the expected format
      */
-    public String extractTransactionIdFromTransactionReceipt(String transactionReceipt) {
+    public static String extractTransactionIdFromTransactionReceipt(String transactionReceipt) {
         byte[] decodedTopLevelContainer = Base64.getDecoder().decode(transactionReceipt);
         String topLevel = new String(decodedTopLevelContainer, StandardCharsets.UTF_8);
         Matcher topLevelMatcher = Pattern.compile("\"purchase-info\"\\s+=\\s+\"([a-zA-Z0-9+/=]+)\";").matcher(topLevel);

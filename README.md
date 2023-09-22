@@ -136,8 +136,7 @@ public class ExampleMigration {
                 new AppStoreServerAPIClient(encodedKey, keyId, issuerId, bundleId, environment);
 
         String appReceipt = "MI...";
-        ReceiptUtility receiptUtil = new ReceiptUtility();
-        String transactionId = receiptUtil.extractTransactionIdFromAppReceipt(appReceipt);
+        String transactionId = ReceiptUtility.extractTransactionIdFromAppReceipt(appReceipt);
         if (transactionId != null) {
             TransactionHistoryRequest request = new TransactionHistoryRequest()
                     .sort(TransactionHistoryRequest.Order.ASCENDING)
