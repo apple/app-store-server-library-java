@@ -14,6 +14,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class BearerTokenAuthenticator {
     private static final String APP_STORE_CONNECT_AUDIENCE = "appstoreconnect-v1";
@@ -27,7 +28,7 @@ public class BearerTokenAuthenticator {
     public BearerTokenAuthenticator(String signingKey, String keyId, String issuerId, String bundleId) {
         try {
             signingKey = signingKey.replace("-----BEGIN PRIVATE KEY-----", "")
-                    .replaceAll(System.lineSeparator(), "")
+                    .replaceAll("\\R+", "")
                     .replace("-----END PRIVATE KEY-----", "");
 
             byte[] derEncodedSigningKey = Base64.getDecoder().decode(signingKey);

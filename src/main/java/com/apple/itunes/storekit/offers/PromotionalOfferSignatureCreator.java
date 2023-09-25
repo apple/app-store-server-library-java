@@ -23,7 +23,7 @@ public class PromotionalOfferSignatureCreator {
     public PromotionalOfferSignatureCreator(String signingKey, String keyId, String bundleId) {
         try {
             signingKey = signingKey.replace("-----BEGIN PRIVATE KEY-----", "")
-                    .replaceAll(System.lineSeparator(), "")
+                    .replaceAll("\\R+", "")
                     .replace("-----END PRIVATE KEY-----", "");
 
             byte[] derEncodedSigningKey = Base64.getDecoder().decode(signingKey);
