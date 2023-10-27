@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.client;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
@@ -9,10 +10,11 @@ import java.io.InputStream;
 class BearerTokenAuthenticatorTest {
 
     @Test
-    void testConstructor() throws Exception {
-        try (InputStream key = this.getClass().getClassLoader().getResourceAsStream("testSigningKey.p8")) {
-            new BearerTokenAuthenticator(new String(key.readAllBytes()), "keyId", "issuerId", "bundleId");
+    void testCreatingToken() throws Exception {
+        try (InputStream key = this.getClass().getClassLoader().getResourceAsStream("certs/testSigningKey.p8")) {
+            var tokenGenerator = new BearerTokenAuthenticator(new String(key.readAllBytes()), "keyId", "issuerId", "bundleId");
+            String token = tokenGenerator.generateToken();
+            Assertions.assertNotNull(token);
         }
     }
-
 }

@@ -286,7 +286,7 @@ public class AppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get_transaction_info">Get Transaction Info</a>
      */
     public TransactionInfoResponse getTransactionInfo(String transactionId) throws APIException, IOException {
-        return makeHttpCall("inApps/v1/transactions/" + transactionId, "GET", Map.of(), null, TransactionInfoResponse.class);
+        return makeHttpCall("/inApps/v1/transactions/" + transactionId, "GET", Map.of(), null, TransactionInfoResponse.class);
     }
 
     /**
