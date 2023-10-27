@@ -1,7 +1,9 @@
 package com.apple.itunes.storekit.model;
 
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -35,8 +37,10 @@ public class AppTransaction implements DecodedSignedData {
     @SerializedName(SERIALIZED_NAME_VERSION_EXTERNAL_IDENTIFIER)
     private Long versionExternalIdentifier;
     @SerializedName(SERIALIZED_NAME_RECEIPT_CREATION_DATE)
+    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
     private Long receiptCreationDate;
     @SerializedName(SERIALIZED_NAME_ORIGINAL_PURCHASE_DATE)
+    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
     private Long originalPurchaseDate;
     @SerializedName(SERIALIZED_NAME_ORIGINAL_APPLICATION_VERSION)
     private String originalApplicationVersion;
@@ -45,6 +49,7 @@ public class AppTransaction implements DecodedSignedData {
     @SerializedName(SERIALIZED_NAME_DEVICE_VERIFICATION_NONCE)
     private UUID deviceVerificationNonce;
     @SerializedName(SERIALIZED_NAME_PREORDER_DATE)
+    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
     private Long preorderDate;
 
     /**
@@ -249,6 +254,35 @@ public class AppTransaction implements DecodedSignedData {
 
     public Long getSignedDate() {
         return getReceiptCreationDate();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AppTransaction that = (AppTransaction) o;
+        return Objects.equals(receiptType, that.receiptType) && Objects.equals(appAppleId, that.appAppleId) && Objects.equals(bundleId, that.bundleId) && Objects.equals(applicationVersion, that.applicationVersion) && Objects.equals(versionExternalIdentifier, that.versionExternalIdentifier) && Objects.equals(originalPurchaseDate, that.originalPurchaseDate) && Objects.equals(originalApplicationVersion, that.originalApplicationVersion) && Objects.equals(deviceVerification, that.deviceVerification) && Objects.equals(deviceVerificationNonce, that.deviceVerificationNonce) && Objects.equals(preorderDate, that.preorderDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(receiptType, appAppleId, bundleId, applicationVersion, versionExternalIdentifier, originalPurchaseDate, originalApplicationVersion, deviceVerification, deviceVerificationNonce, preorderDate);
+    }
+
+    @Override
+    public String toString() {
+        return "AppTransaction{" +
+                "receiptType='" + receiptType + '\'' +
+                ", appAppleId=" + appAppleId +
+                ", bundleId='" + bundleId + '\'' +
+                ", applicationVersion='" + applicationVersion + '\'' +
+                ", versionExternalIdentifier=" + versionExternalIdentifier +
+                ", originalPurchaseDate=" + originalPurchaseDate +
+                ", originalApplicationVersion='" + originalApplicationVersion + '\'' +
+                ", deviceVerification='" + deviceVerification + '\'' +
+                ", deviceVerificationNonce=" + deviceVerificationNonce +
+                ", preorderDate=" + preorderDate +
+                '}';
     }
 }
 

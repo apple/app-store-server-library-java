@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Objects;
@@ -41,18 +42,22 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
     @SerializedName(SERIALIZED_NAME_PRICE_INCREASE_STATUS)
     private PriceIncreaseStatus priceIncreaseStatus;
     @SerializedName(SERIALIZED_NAME_GRACE_PERIOD_EXPIRES_DATE)
+    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
     private Long gracePeriodExpiresDate;
     @SerializedName(SERIALIZED_NAME_OFFER_TYPE)
     private OfferType offerType;
     @SerializedName(SERIALIZED_NAME_OFFER_IDENTIFIER)
     private String offerIdentifier;
     @SerializedName(SERIALIZED_NAME_SIGNED_DATE)
+    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
     private Long signedDate;
     @SerializedName(SERIALIZED_NAME_ENVIRONMENT)
     private Environment environment;
     @SerializedName(SERIALIZED_NAME_RECENT_SUBSCRIPTION_START_DATE)
+    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
     private Long recentSubscriptionStartDate;
     @SerializedName(SERIALIZED_NAME_RENEWAL_DATE)
+    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
     private Long renewalDate;
 
 
