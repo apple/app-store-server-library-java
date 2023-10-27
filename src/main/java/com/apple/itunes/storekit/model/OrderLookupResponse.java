@@ -17,7 +17,7 @@ public class OrderLookupResponse {
     private static final String SERIALIZED_NAME_STATUS = "status";
     private static final String SERIALIZED_NAME_SIGNED_TRANSACTIONS = "signedTransactions";
     @SerializedName(SERIALIZED_NAME_STATUS)
-    private OrderLookupStatus status;
+    private Integer status;
     @SerializedName(SERIALIZED_NAME_SIGNED_TRANSACTIONS)
     private List<String> signedTransactions = null;
 
@@ -26,7 +26,7 @@ public class OrderLookupResponse {
     }
 
     public OrderLookupResponse status(OrderLookupStatus status) {
-        this.status = status;
+        this.status = status != null ? status.getValue() : null;
         return this;
     }
 
@@ -37,11 +37,22 @@ public class OrderLookupResponse {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/orderlookupstatus">OrderLookupStatus</a>
      **/
     public OrderLookupStatus getStatus() {
+        return status != null ? OrderLookupStatus.fromValue(status) : null;
+    }
+
+    /**
+     * @see #getStatus()
+     */
+    public Integer getRawStatus() {
         return status;
     }
 
     public void setStatus(OrderLookupStatus status) {
-        this.status = status;
+        this.status = status != null ? status.getValue() : null;
+    }
+
+    public void setRawStatus(Integer rawStatus) {
+        this.status = rawStatus;
     }
 
     public OrderLookupResponse signedTransactions(List<String> signedTransactions) {

@@ -23,7 +23,7 @@ public class Summary {
     private static final String SERIALIZED_NAME_SUCCEEDED_COUNT = "succeededCount";
     private static final String SERIALIZED_NAME_FAILED_COUNT = "failedCount";
     @SerializedName(SERIALIZED_NAME_ENVIRONMENT)
-    private Environment environment;
+    private String environment;
     @SerializedName(SERIALIZED_NAME_APP_APPLE_ID)
     private Long appAppleId;
     @SerializedName(SERIALIZED_NAME_BUNDLE_ID)
@@ -33,7 +33,7 @@ public class Summary {
     @SerializedName(SERIALIZED_NAME_REQUEST_IDENTIFIER)
     private String requestIdentifier;
     @SerializedName(SERIALIZED_NAME_STOREFRONT_COUNTRY_CODES)
-    private List<String> storefrontCountryCodes = null;
+    private List<String> storefrontCountryCodes;
     @SerializedName(SERIALIZED_NAME_SUCCEEDED_COUNT)
     private Long succeededCount;
     @SerializedName(SERIALIZED_NAME_FAILED_COUNT)
@@ -44,7 +44,7 @@ public class Summary {
     }
 
     public Summary environment(Environment environment) {
-        this.environment = environment;
+        this.environment = environment != null ? environment.getValue() : null;
         return this;
     }
 
@@ -55,11 +55,22 @@ public class Summary {
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/environment">environment</a>
      **/
     public Environment getEnvironment() {
+        return environment != null ? Environment.fromValue(environment) : null;
+    }
+
+    /**
+     * @see #getEnvironment()
+     */
+    public String getRawEnvironment() {
         return environment;
     }
 
     public void setEnvironment(Environment environment) {
-        this.environment = environment;
+        this.environment = environment != null ? environment.getValue() : null;
+    }
+
+    public void setRawEnvironment(String rawEnvironment) {
+        this.environment = rawEnvironment;
     }
 
     public Summary appAppleId(Long appAppleId) {

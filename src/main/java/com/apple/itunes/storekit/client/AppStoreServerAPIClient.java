@@ -58,15 +58,14 @@ public class AppStoreServerAPIClient {
      * @param environment The environment to target
      */
     public AppStoreServerAPIClient(String signingKey, String keyId, String issuerId, String bundleId, Environment environment) {
-        BearerTokenAuthenticator bearerTokenAuthenticator = new BearerTokenAuthenticator(signingKey, keyId, issuerId, bundleId);
-        this.bearerTokenAuthenticator = bearerTokenAuthenticator;
+        this.bearerTokenAuthenticator = new BearerTokenAuthenticator(signingKey, keyId, issuerId, bundleId);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         this.httpClient = builder.build();
         this.urlBase = HttpUrl.parse(environment.equals(Environment.SANDBOX) ? SANDBOX_URL : PRODUCTION_URL);
         this.gson = new Gson();
     }
 
-    private Request buildRequest(String path, String method, Map<String, List<String>> queryParameters, Object body) {
+    private Response makeRequest(String path, String method, Map<String, List<String>> queryParameters, Object body) throws IOException {
         Request.Builder requestBuilder = new Request.Builder();
         requestBuilder.addHeader("User-Agent", USER_AGENT);
         requestBuilder.addHeader("Authorization", "Bearer " + bearerTokenAuthenticator.generateToken());
@@ -86,13 +85,16 @@ public class AppStoreServerAPIClient {
         } else {
             requestBuilder.method(method, null);
         }
-        return requestBuilder.build();
+        return getResponse(requestBuilder.build());
     }
 
-    private <T> T makeHttpCall(String path, String method, Map<String, List<String>> queryParameters, Object body, Class<T> clazz) throws IOException, APIException {
-        Request request = buildRequest(path, method, queryParameters, body);
+    protected Response getResponse(Request request) throws IOException {
         Call call = httpClient.newCall(request);
-        try (Response r = call.execute()) {
+        return call.execute();
+    }
+
+    protected <T> T makeHttpCall(String path, String method, Map<String, List<String>> queryParameters, Object body, Class<T> clazz) throws IOException, APIException {
+        try (Response r = makeRequest(path, method, queryParameters, body)) {
             if (r.code() >= 200 && r.code() < 300) {
                 if (clazz.equals(Void.class)) {
                     return null;
@@ -109,10 +111,7 @@ public class AppStoreServerAPIClient {
                     ResponseBody responseBody = r.body();
                     if (responseBody != null) {
                         ErrorPayload errorPayload = gson.fromJson(responseBody.charStream(), ErrorPayload.class);
-                        APIError apiError = APIError.fetchErrorResponseFromErrorCode(errorPayload.getErrorCode());
-                        if (apiError != null) {
-                            throw new APIException(r.code(), apiError);
-                        }
+                        throw new APIException(r.code(), errorPayload.getErrorCode());
                     }
                 } catch (APIException e) {
                     throw e;
@@ -137,7 +136,7 @@ public class AppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/extend_subscription_renewal_dates_for_all_active_subscribers">Extend Subscription Renewal Dates for All Active Subscribers</a>
      */
     public MassExtendRenewalDateResponse extendRenewalDateForAllActiveSubscribers(MassExtendRenewalDateRequest massExtendRenewalDateRequest) throws APIException, IOException {
-        return makeHttpCall("/inApps/v1/subscriptions/extend/mass/", "POST", Map.of(), massExtendRenewalDateRequest, MassExtendRenewalDateResponse.class);
+        return makeHttpCall("/inApps/v1/subscriptions/extend/mass", "POST", Map.of(), massExtendRenewalDateRequest, MassExtendRenewalDateResponse.class);
     }
 
     /**

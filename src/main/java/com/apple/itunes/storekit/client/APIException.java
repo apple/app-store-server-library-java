@@ -9,7 +9,7 @@ package com.apple.itunes.storekit.client;
  */
 public class APIException extends Exception {
     private final int httpStatusCode;
-    private final APIError apiError;
+    private final Long apiError;
 
     public APIException(int httpStatusCode) {
         this.httpStatusCode = httpStatusCode;
@@ -18,7 +18,12 @@ public class APIException extends Exception {
 
     public APIException(int httpStatusCode, APIError apiError) {
         this.httpStatusCode = httpStatusCode;
-        this.apiError = apiError;
+        this.apiError = apiError != null ? apiError.errorCode() : null;
+    }
+
+    public APIException(int httpStatusCode, Long rawApiError) {
+        this.httpStatusCode = httpStatusCode;
+        this.apiError = rawApiError;
     }
 
     public int getHttpStatusCode() {
@@ -26,6 +31,10 @@ public class APIException extends Exception {
     }
 
     public APIError getApiError() {
+        return apiError != null ? APIError.fetchErrorResponseFromErrorCode(apiError) : null;
+    }
+
+    public Long getRawApiError() {
         return apiError;
     }
 

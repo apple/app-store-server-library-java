@@ -17,7 +17,7 @@ public class LastTransactionsItem {
     private static final String SERIALIZED_NAME_SIGNED_TRANSACTION_INFO = "signedTransactionInfo";
     private static final String SERIALIZED_NAME_SIGNED_RENEWAL_INFO = "signedRenewalInfo";
     @SerializedName(SERIALIZED_NAME_STATUS)
-    private Status status;
+    private Integer status;
     @SerializedName(SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID)
     private String originalTransactionId;
     @SerializedName(SERIALIZED_NAME_SIGNED_TRANSACTION_INFO)
@@ -30,7 +30,7 @@ public class LastTransactionsItem {
     }
 
     public LastTransactionsItem status(Status status) {
-        this.status = status;
+        this.status = status != null ? status.getValue() : null;
         return this;
     }
 
@@ -41,11 +41,22 @@ public class LastTransactionsItem {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/status">status</a>
      **/
     public Status getStatus() {
+        return status != null ? Status.fromValue(status) : null;
+    }
+
+    /**
+     * @see #getStatus()
+     */
+    public Integer getRawStatus() {
         return status;
     }
 
     public void setStatus(Status status) {
-        this.status = status;
+        this.status = status != null ? status.getValue() : null;
+    }
+
+    public void setRawStatus(Integer rawStatus) {
+        this.status = rawStatus;
     }
 
     public LastTransactionsItem originalTransactionId(String originalTransactionId) {

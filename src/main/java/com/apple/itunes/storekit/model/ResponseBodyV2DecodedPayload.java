@@ -20,9 +20,9 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
     private static final String SERIALIZED_NAME_SIGNED_DATE = "signedDate";
     private static final String SERIALIZED_NAME_SUMMARY = "summary";
     @SerializedName(SERIALIZED_NAME_NOTIFICATION_TYPE)
-    private NotificationTypeV2 notificationType;
+    private String notificationType;
     @SerializedName(SERIALIZED_NAME_SUBTYPE)
-    private Subtype subtype;
+    private String subtype;
     @SerializedName(SERIALIZED_NAME_NOTIFICATION_U_U_I_D)
     private String notificationUUID;
     @SerializedName(SERIALIZED_NAME_DATA)
@@ -39,7 +39,7 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
     }
 
     public ResponseBodyV2DecodedPayload notificationType(NotificationTypeV2 notificationType) {
-        this.notificationType = notificationType;
+        this.notificationType = notificationType != null ? notificationType.getValue() : null;
         return this;
     }
 
@@ -50,15 +50,26 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/notificationtype">notificationType</a>
      **/
     public NotificationTypeV2 getNotificationType() {
+        return notificationType != null ? NotificationTypeV2.fromValue(notificationType) : null;
+    }
+
+    /**
+     * @see #getNotificationType()
+     */
+    public String getRawNotificationType() {
         return notificationType;
     }
 
     public void setNotificationType(NotificationTypeV2 notificationType) {
-        this.notificationType = notificationType;
+        this.notificationType = notificationType != null ? notificationType.getValue() : null;
+    }
+
+    public void setRawNotificationType(String rawNotificationType) {
+        this.notificationType = rawNotificationType;
     }
 
     public ResponseBodyV2DecodedPayload subtype(Subtype subtype) {
-        this.subtype = subtype;
+        this.subtype = subtype != null ? subtype.getValue() : null;
         return this;
     }
 
@@ -69,11 +80,22 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/subtype">subtype</a>
      **/
     public Subtype getSubtype() {
+        return subtype != null ? Subtype.fromValue(subtype) : null;
+    }
+
+    /**
+     * @see #getSubtype()
+     */
+    public String getRawSubtype() {
         return subtype;
     }
 
     public void setSubtype(Subtype subtype) {
-        this.subtype = subtype;
+        this.subtype = subtype != null ? subtype.getValue() : null;
+    }
+
+    public void setRawSubtype(String rawSubtype) {
+        this.subtype = rawSubtype;
     }
 
     public ResponseBodyV2DecodedPayload notificationUUID(String notificationUUID) {

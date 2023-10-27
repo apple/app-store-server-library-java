@@ -27,7 +27,7 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
     private static final String SERIALIZED_NAME_RECENT_SUBSCRIPTION_START_DATE = "recentSubscriptionStartDate";
     private static final String SERIALIZED_NAME_RENEWAL_DATE = "renewalDate";
     @SerializedName(SERIALIZED_NAME_EXPIRATION_INTENT)
-    private ExpirationIntent expirationIntent;
+    private Integer expirationIntent;
     @SerializedName(SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID)
     private String originalTransactionId;
     @SerializedName(SERIALIZED_NAME_AUTO_RENEW_PRODUCT_ID)
@@ -35,21 +35,21 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
     @SerializedName(SERIALIZED_NAME_PRODUCT_ID)
     private String productId;
     @SerializedName(SERIALIZED_NAME_AUTO_RENEW_STATUS)
-    private AutoRenewStatus autoRenewStatus;
+    private Integer autoRenewStatus;
     @SerializedName(SERIALIZED_NAME_IS_IN_BILLING_RETRY_PERIOD)
     private Boolean isInBillingRetryPeriod;
     @SerializedName(SERIALIZED_NAME_PRICE_INCREASE_STATUS)
-    private PriceIncreaseStatus priceIncreaseStatus;
+    private Integer priceIncreaseStatus;
     @SerializedName(SERIALIZED_NAME_GRACE_PERIOD_EXPIRES_DATE)
     private Long gracePeriodExpiresDate;
     @SerializedName(SERIALIZED_NAME_OFFER_TYPE)
-    private OfferType offerType;
+    private Integer offerType;
     @SerializedName(SERIALIZED_NAME_OFFER_IDENTIFIER)
     private String offerIdentifier;
     @SerializedName(SERIALIZED_NAME_SIGNED_DATE)
     private Long signedDate;
     @SerializedName(SERIALIZED_NAME_ENVIRONMENT)
-    private Environment environment;
+    private String environment;
     @SerializedName(SERIALIZED_NAME_RECENT_SUBSCRIPTION_START_DATE)
     private Long recentSubscriptionStartDate;
     @SerializedName(SERIALIZED_NAME_RENEWAL_DATE)
@@ -60,7 +60,7 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
     }
 
     public JWSRenewalInfoDecodedPayload expirationIntent(ExpirationIntent expirationIntent) {
-        this.expirationIntent = expirationIntent;
+        this.expirationIntent = expirationIntent != null ? expirationIntent.getValue() : null;
         return this;
     }
 
@@ -71,11 +71,22 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/expirationintent">expirationIntent</a>
      **/
     public ExpirationIntent getExpirationIntent() {
+        return expirationIntent != null ? ExpirationIntent.fromValue(expirationIntent) : null;
+    }
+
+    /**
+     * @see #getExpirationIntent()
+     */
+    public Integer getRawExpirationIntent() {
         return expirationIntent;
     }
 
     public void setExpirationIntent(ExpirationIntent expirationIntent) {
-        this.expirationIntent = expirationIntent;
+        this.expirationIntent = expirationIntent != null ? expirationIntent.getValue() : null;
+    }
+
+    public void setRawExpirationIntent(Integer rawExpirationIntent) {
+        this.expirationIntent = rawExpirationIntent;
     }
 
     public JWSRenewalInfoDecodedPayload originalTransactionId(String originalTransactionId) {
@@ -136,7 +147,7 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
     }
 
     public JWSRenewalInfoDecodedPayload autoRenewStatus(AutoRenewStatus autoRenewStatus) {
-        this.autoRenewStatus = autoRenewStatus;
+        this.autoRenewStatus = autoRenewStatus != null ? autoRenewStatus.getValue() : null;
         return this;
     }
 
@@ -147,11 +158,22 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/autorenewstatus">autoRenewStatus</a>
      **/
     public AutoRenewStatus getAutoRenewStatus() {
+        return autoRenewStatus != null ? AutoRenewStatus.fromValue(autoRenewStatus) : null;
+    }
+
+    /**
+     * @see #getAutoRenewStatus()
+     */
+    public Integer getRawAutoRenewStatus() {
         return autoRenewStatus;
     }
 
     public void setAutoRenewStatus(AutoRenewStatus autoRenewStatus) {
-        this.autoRenewStatus = autoRenewStatus;
+        this.autoRenewStatus = autoRenewStatus != null ? autoRenewStatus.getValue() : null;
+    }
+
+    public void setRawAutoRenewStatus(Integer rawAutoRenewStatus) {
+        this.autoRenewStatus = rawAutoRenewStatus;
     }
 
     public JWSRenewalInfoDecodedPayload isInBillingRetryPeriod(Boolean isInBillingRetryPeriod) {
@@ -174,7 +196,7 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
     }
 
     public JWSRenewalInfoDecodedPayload priceIncreaseStatus(PriceIncreaseStatus priceIncreaseStatus) {
-        this.priceIncreaseStatus = priceIncreaseStatus;
+        this.priceIncreaseStatus = priceIncreaseStatus != null ? priceIncreaseStatus.getValue() : null;
         return this;
     }
 
@@ -185,11 +207,22 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/priceincreasestatus">priceIncreaseStatus</a>
      **/
     public PriceIncreaseStatus getPriceIncreaseStatus() {
+        return priceIncreaseStatus != null ? PriceIncreaseStatus.fromValue(priceIncreaseStatus) : null;
+    }
+
+    /**
+     * @see #getPriceIncreaseStatus()
+     */
+    public Integer getRawPriceIncreaseStatus() {
         return priceIncreaseStatus;
     }
 
     public void setPriceIncreaseStatus(PriceIncreaseStatus priceIncreaseStatus) {
-        this.priceIncreaseStatus = priceIncreaseStatus;
+        this.priceIncreaseStatus = priceIncreaseStatus != null ? priceIncreaseStatus.getValue() : null;
+    }
+
+    public void setRawPriceIncreaseStatus(Integer rawPriceIncreaseStatus) {
+        this.priceIncreaseStatus = rawPriceIncreaseStatus;
     }
 
     public JWSRenewalInfoDecodedPayload gracePeriodExpiresDate(Long gracePeriodExpiresDate) {
@@ -212,7 +245,7 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
     }
 
     public JWSRenewalInfoDecodedPayload offerType(OfferType offerType) {
-        this.offerType = offerType;
+        this.offerType = offerType != null ? offerType.getValue() : null;
         return this;
     }
 
@@ -223,11 +256,22 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/offertype">offerType</a>
      **/
     public OfferType getOfferType() {
+        return offerType != null ? OfferType.fromValue(offerType) : null;
+    }
+
+    /**
+     * @see #getOfferType()
+     */
+    public Integer getRawOfferType() {
         return offerType;
     }
 
     public void setOfferType(OfferType offerType) {
-        this.offerType = offerType;
+        this.offerType = offerType != null ? offerType.getValue() : null;
+    }
+
+    public void setRawOfferType(Integer rawOfferType) {
+        this.offerType = rawOfferType;
     }
 
     public JWSRenewalInfoDecodedPayload offerIdentifier(String offerIdentifier) {
@@ -269,7 +313,7 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
     }
 
     public JWSRenewalInfoDecodedPayload environment(Environment environment) {
-        this.environment = environment;
+        this.environment = environment != null ? environment.getValue() : null;
         return this;
     }
 
@@ -280,11 +324,22 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/environment">environment</a>
      **/
     public Environment getEnvironment() {
+        return environment != null ? Environment.fromValue(environment) : null;
+    }
+
+    /**
+     * @see #getEnvironment()
+     */
+    public String getRawEnvironment() {
         return environment;
     }
 
     public void setEnvironment(Environment environment) {
-        this.environment = environment;
+        this.environment = environment != null ? environment.getValue() : null;
+    }
+
+    public void setRawEnvironment(String rawEnvironment) {
+        this.environment = rawEnvironment;
     }
 
     public JWSRenewalInfoDecodedPayload recentSubscriptionStartDate(Long recentSubscriptionStartDate) {

@@ -25,7 +25,7 @@ public class AppTransaction implements DecodedSignedData {
     private static final String SERIALIZED_NAME_PREORDER_DATE = "preorderDate";
 
     @SerializedName(SERIALIZED_NAME_RECEIPT_TYPE)
-    private Environment receiptType;
+    private String receiptType;
     @SerializedName(SERIALIZED_NAME_APP_APPLE_ID)
     private Long appAppleId;
     @SerializedName(SERIALIZED_NAME_BUNDLE_ID)
@@ -53,15 +53,26 @@ public class AppTransaction implements DecodedSignedData {
      @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/3963901-environment">environment</a>
      */
     public Environment getReceiptType() {
+        return this.receiptType != null ? Environment.fromValue(this.receiptType) : null;
+    }
+
+    /**
+     * @see #getReceiptType()
+     */
+    public String getRawReceiptType() {
         return this.receiptType;
     }
 
     public void setReceiptType(Environment receiptType) {
-        this.receiptType = receiptType;
+        this.receiptType = receiptType != null ? receiptType.getValue() : null;
+    }
+
+    public void setRawReceiptType(String rawReceiptType) {
+        this.receiptType = rawReceiptType;
     }
 
     public AppTransaction receiptType(Environment receiptType) {
-        this.receiptType = receiptType;
+        this.receiptType = receiptType != null ? receiptType.getValue() : null;
         return this;
     }
 

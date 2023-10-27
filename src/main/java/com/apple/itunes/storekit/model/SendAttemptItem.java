@@ -17,7 +17,7 @@ public class SendAttemptItem {
     @SerializedName(SERIALIZED_NAME_ATTEMPT_DATE)
     private Long attemptDate;
     @SerializedName(SERIALIZED_NAME_SEND_ATTEMPT_RESULT)
-    private SendAttemptResult sendAttemptResult;
+    private String sendAttemptResult;
 
     public SendAttemptItem() {
     }
@@ -42,7 +42,7 @@ public class SendAttemptItem {
     }
 
     public SendAttemptItem sendAttemptResult(SendAttemptResult sendAttemptResult) {
-        this.sendAttemptResult = sendAttemptResult;
+        this.sendAttemptResult = sendAttemptResult != null ? sendAttemptResult.getValue() : null;
         return this;
     }
 
@@ -53,11 +53,22 @@ public class SendAttemptItem {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/sendattemptresult">sendAttemptResult</a>
      **/
     public SendAttemptResult getSendAttemptResult() {
+        return sendAttemptResult != null ? SendAttemptResult.fromValue(sendAttemptResult) : null;
+    }
+
+    /**
+     * @see #getSendAttemptResult()
+     */
+    public String getRawSendAttemptResult() {
         return sendAttemptResult;
     }
 
     public void setSendAttemptResult(SendAttemptResult sendAttemptResult) {
-        this.sendAttemptResult = sendAttemptResult;
+        this.sendAttemptResult = sendAttemptResult != null ? sendAttemptResult.getValue() : null;
+    }
+
+    public void setRawSendAttemptResult(String rawSendAttemptResult) {
+        this.sendAttemptResult = rawSendAttemptResult;
     }
 
     @Override

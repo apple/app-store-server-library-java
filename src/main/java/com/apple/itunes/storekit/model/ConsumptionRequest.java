@@ -27,25 +27,25 @@ public class ConsumptionRequest {
     @SerializedName(SERIALIZED_NAME_CUSTOMER_CONSENTED)
     private Boolean customerConsented;
     @SerializedName(SERIALIZED_NAME_CONSUMPTION_STATUS)
-    private ConsumptionStatus consumptionStatus;
+    private Integer consumptionStatus;
     @SerializedName(SERIALIZED_NAME_PLATFORM)
-    private Platform platform;
+    private Integer platform;
     @SerializedName(SERIALIZED_NAME_SAMPLE_CONTENT_PROVIDED)
     private Boolean sampleContentProvided;
     @SerializedName(SERIALIZED_NAME_DELIVERY_STATUS)
-    private DeliveryStatus deliveryStatus;
+    private Integer deliveryStatus;
     @SerializedName(SERIALIZED_NAME_APP_ACCOUNT_TOKEN)
     private UUID appAccountToken;
     @SerializedName(SERIALIZED_NAME_ACCOUNT_TENURE)
-    private AccountTenure accountTenure;
+    private Integer accountTenure;
     @SerializedName(SERIALIZED_NAME_PLAY_TIME)
-    private PlayTime playTime;
+    private Integer playTime;
     @SerializedName(SERIALIZED_NAME_LIFETIME_DOLLARS_REFUNDED)
-    private LifetimeDollarsRefunded lifetimeDollarsRefunded;
+    private Integer lifetimeDollarsRefunded;
     @SerializedName(SERIALIZED_NAME_LIFETIME_DOLLARS_PURCHASED)
-    private LifetimeDollarsPurchased lifetimeDollarsPurchased;
+    private Integer lifetimeDollarsPurchased;
     @SerializedName(SERIALIZED_NAME_USER_STATUS)
-    private UserStatus userStatus;
+    private Integer userStatus;
 
 
     public ConsumptionRequest() {
@@ -71,7 +71,7 @@ public class ConsumptionRequest {
     }
 
     public ConsumptionRequest consumptionStatus(ConsumptionStatus consumptionStatus) {
-        this.consumptionStatus = consumptionStatus;
+        this.consumptionStatus = consumptionStatus != null ? consumptionStatus.getValue() : null;
         return this;
     }
 
@@ -82,15 +82,26 @@ public class ConsumptionRequest {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/consumptionstatus">consumptionStatus</a>
      **/
     public ConsumptionStatus getConsumptionStatus() {
+        return consumptionStatus != null ? ConsumptionStatus.fromValue(consumptionStatus) : null;
+    }
+
+    /**
+     * @see #getConsumptionStatus()
+     */
+    public Integer getRawConsumptionStatus() {
         return consumptionStatus;
     }
 
     public void setConsumptionStatus(ConsumptionStatus consumptionStatus) {
-        this.consumptionStatus = consumptionStatus;
+        this.consumptionStatus = consumptionStatus != null ? consumptionStatus.getValue() : null;
+    }
+
+    public void setRawConsumptionStatus(Integer rawConsumptionStatus) {
+        this.consumptionStatus = rawConsumptionStatus;
     }
 
     public ConsumptionRequest platform(Platform platform) {
-        this.platform = platform;
+        this.platform = platform != null ? platform.getValue() :  null;
         return this;
     }
 
@@ -101,11 +112,22 @@ public class ConsumptionRequest {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/platform">platform</a>
      **/
     public Platform getPlatform() {
+        return platform != null ? Platform.fromValue(platform) : null;
+    }
+
+    /**
+     * @see #getPlatform()
+     */
+    public Integer getRawPlatform() {
         return platform;
     }
 
     public void setPlatform(Platform platform) {
-        this.platform = platform;
+        this.platform = platform != null ? platform.getValue() : null;
+    }
+
+    public void setRawPlatform(Integer rawPlatform) {
+        this.platform = rawPlatform;
     }
 
     public ConsumptionRequest sampleContentProvided(Boolean sampleContentProvided) {
@@ -128,7 +150,7 @@ public class ConsumptionRequest {
     }
 
     public ConsumptionRequest deliveryStatus(DeliveryStatus deliveryStatus) {
-        this.deliveryStatus = deliveryStatus;
+        this.deliveryStatus = deliveryStatus != null ? deliveryStatus.getValue() : null;
         return this;
     }
 
@@ -139,11 +161,22 @@ public class ConsumptionRequest {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/deliverystatus">deliveryStatus</a>
      **/
     public DeliveryStatus getDeliveryStatus() {
+        return deliveryStatus != null ? DeliveryStatus.fromValue(deliveryStatus) : null;
+    }
+
+    /**
+     * @see #getDeliveryStatus()
+     */
+    public Integer getRawDeliveryStatus() {
         return deliveryStatus;
     }
 
     public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
-        this.deliveryStatus = deliveryStatus;
+        this.deliveryStatus = deliveryStatus != null ? deliveryStatus.getValue() : null;
+    }
+
+    public void setRawDeliveryStatus(Integer rawDeliveryStatus) {
+        this.deliveryStatus = rawDeliveryStatus;
     }
 
     public ConsumptionRequest appAccountToken(UUID appAccountToken) {
@@ -166,7 +199,7 @@ public class ConsumptionRequest {
     }
 
     public ConsumptionRequest accountTenure(AccountTenure accountTenure) {
-        this.accountTenure = accountTenure;
+        this.accountTenure = accountTenure != null ? accountTenure.getValue() : null;
         return this;
     }
 
@@ -177,15 +210,26 @@ public class ConsumptionRequest {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/accounttenure">accountTenure</a>
      **/
     public AccountTenure getAccountTenure() {
+        return accountTenure != null ? AccountTenure.fromValue(accountTenure) : null;
+    }
+
+    /**
+     * @see #getAccountTenure()
+     */
+    public Integer getRawAccountTenure() {
         return accountTenure;
     }
 
     public void setAccountTenure(AccountTenure accountTenure) {
-        this.accountTenure = accountTenure;
+        this.accountTenure = accountTenure != null ? accountTenure.getValue() : null;
+    }
+
+    public void setRawAccountTenure(Integer rawAccountTenure) {
+        this.accountTenure = rawAccountTenure;
     }
 
     public ConsumptionRequest playTime(PlayTime playTime) {
-        this.playTime = playTime;
+        this.playTime = playTime != null ? playTime.getValue() : null;
         return this;
     }
 
@@ -193,18 +237,29 @@ public class ConsumptionRequest {
      * A value that indicates the amount of time that the customer used the app.
      *
      * @return playTime
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/consumptionrequest">ConsumptionRequest</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/playtime">playTime</a>
      **/
     public PlayTime getPlayTime() {
+        return playTime != null ? PlayTime.fromValue(playTime) : null;
+    }
+
+    /**
+     * @see #getPlayTime()
+     */
+    public Integer getRawPlayTime() {
         return playTime;
     }
 
     public void setPlayTime(PlayTime playTime) {
-        this.playTime = playTime;
+        this.playTime = playTime != null ? playTime.getValue() : null;
+    }
+
+    public void setRawPlayTime(Integer rawPlayTime) {
+        this.playTime = rawPlayTime;
     }
 
     public ConsumptionRequest lifetimeDollarsRefunded(LifetimeDollarsRefunded lifetimeDollarsRefunded) {
-        this.lifetimeDollarsRefunded = lifetimeDollarsRefunded;
+        this.lifetimeDollarsRefunded = lifetimeDollarsRefunded != null ? lifetimeDollarsRefunded.getValue() : null;
         return this;
     }
 
@@ -215,15 +270,26 @@ public class ConsumptionRequest {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/lifetimedollarsrefunded">lifetimeDollarsRefunded</a>
      **/
     public LifetimeDollarsRefunded getLifetimeDollarsRefunded() {
+        return lifetimeDollarsRefunded != null ? LifetimeDollarsRefunded.fromValue(lifetimeDollarsRefunded) : null;
+    }
+
+    /**
+     * @see #getLifetimeDollarsRefunded()
+     */
+    public Integer getRawLifetimeDollarsRefunded() {
         return lifetimeDollarsRefunded;
     }
 
     public void setLifetimeDollarsRefunded(LifetimeDollarsRefunded lifetimeDollarsRefunded) {
-        this.lifetimeDollarsRefunded = lifetimeDollarsRefunded;
+        this.lifetimeDollarsRefunded = lifetimeDollarsRefunded != null ? lifetimeDollarsRefunded.getValue() : null;
+    }
+
+    public void setRawLifetimeDollarsRefunded(Integer rawLifetimeDollarsRefunded) {
+        this.lifetimeDollarsRefunded = rawLifetimeDollarsRefunded;
     }
 
     public ConsumptionRequest lifetimeDollarsPurchased(LifetimeDollarsPurchased lifetimeDollarsPurchased) {
-        this.lifetimeDollarsPurchased = lifetimeDollarsPurchased;
+        this.lifetimeDollarsPurchased = lifetimeDollarsPurchased != null ? lifetimeDollarsPurchased.getValue() : null;
         return this;
     }
 
@@ -234,15 +300,26 @@ public class ConsumptionRequest {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/lifetimedollarspurchased">lifetimeDollarsPurchased</a>
      **/
     public LifetimeDollarsPurchased getLifetimeDollarsPurchased() {
+        return lifetimeDollarsPurchased != null ? LifetimeDollarsPurchased.fromValue(lifetimeDollarsPurchased) : null;
+    }
+
+    /**
+     * @see #getLifetimeDollarsPurchased()
+     */
+    public Integer getRawLifetimeDollarsPurchased() {
         return lifetimeDollarsPurchased;
     }
 
     public void setLifetimeDollarsPurchased(LifetimeDollarsPurchased lifetimeDollarsPurchased) {
-        this.lifetimeDollarsPurchased = lifetimeDollarsPurchased;
+        this.lifetimeDollarsPurchased = lifetimeDollarsPurchased != null ? lifetimeDollarsPurchased.getValue() : null;
+    }
+
+    public void setRawLifetimeDollarsPurchased(Integer rawLifetimeDollarsPurchased) {
+        this.lifetimeDollarsPurchased = rawLifetimeDollarsPurchased;
     }
 
     public ConsumptionRequest userStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
+        this.userStatus = userStatus != null ? userStatus.getValue() : null;
         return this;
     }
 
@@ -253,11 +330,22 @@ public class ConsumptionRequest {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/userstatus">userStatus</a>
      **/
     public UserStatus getUserStatus() {
+        return userStatus != null ? UserStatus.fromValue(userStatus) : null;
+    }
+
+    /**
+     * @see #getUserStatus()
+     */
+    public Integer getRawUserStatus() {
         return userStatus;
     }
 
     public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
+        this.userStatus = userStatus != null ? userStatus.getValue() : null;
+    }
+
+    public void setRawUserStatus(Integer rawUserStatus) {
+        this.userStatus = rawUserStatus;
     }
 
     @Override
