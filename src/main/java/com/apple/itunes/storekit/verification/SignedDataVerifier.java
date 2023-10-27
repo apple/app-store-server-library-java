@@ -75,7 +75,11 @@ public class SignedDataVerifier {
      * @throws VerificationException Thrown if the data could not be verified
      */
     public JWSRenewalInfoDecodedPayload verifyAndDecodeRenewalInfo(String signedRenewalInfo) throws VerificationException {
-        return decodeSignedObject(signedRenewalInfo, JWSRenewalInfoDecodedPayload.class);
+        JWSRenewalInfoDecodedPayload renewalInfo = decodeSignedObject(signedRenewalInfo, JWSRenewalInfoDecodedPayload.class);
+        if (!this.environment.equals(renewalInfo.getEnvironment())) {
+            throw new VerificationException(Status.INVALID_ENVIRONMENT);
+        }
+        return renewalInfo;
     }
 
     /**
@@ -120,12 +124,16 @@ public class SignedDataVerifier {
     protected <T extends DecodedSignedData> T decodeSignedObject(String signedObject, Class<T> clazz) throws VerificationException {
         try {
             DecodedJWT unverifiedJWT = JWT.decode(signedObject);
+            if (Environment.XCODE.equals(this.environment) || Environment.LOCAL_TESTING.equals(this.environment)) {
+                // Data is not signed by the App Store, and verification should be skipped
+                // The environment MUST be checked in the public method calling this
+                return parseJWTPayload(clazz, unverifiedJWT);
+            }
             String[] x5cChain = unverifiedJWT.getHeaderClaim("x5c").asArray(String.class);
             if (x5cChain == null) {
                 throw new VerificationException(Status.VERIFICATION_FAILURE, "x5c claim was null");
             }
-            String payload = new String(Base64.getUrlDecoder().decode(unverifiedJWT.getPayload()));
-            T decodedData = gson.fromJson(payload, clazz);
+            T decodedData = parseJWTPayload(clazz, unverifiedJWT);
             Date effectiveDate = this.enableOnlineChecks || decodedData.getSignedDate() == null ? new Date() : new Date(decodedData.getSignedDate());
             PublicKey signingKey = chainVerifier.verifyChain(x5cChain, enableOnlineChecks, effectiveDate);
             if ("ES256".equals(unverifiedJWT.getAlgorithm())) {
@@ -139,5 +147,10 @@ public class SignedDataVerifier {
         } catch (Exception e) {
             throw new VerificationException(Status.VERIFICATION_FAILURE, e);
         }
+    }
+
+    protected <T extends DecodedSignedData> T parseJWTPayload(Class<T> clazz, DecodedJWT jwt) {
+        String payload = new String(Base64.getUrlDecoder().decode(jwt.getPayload()));
+        return gson.fromJson(payload, clazz);
     }
 }

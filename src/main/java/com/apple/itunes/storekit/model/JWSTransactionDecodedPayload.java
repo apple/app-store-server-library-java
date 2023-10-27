@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Objects;
@@ -49,10 +50,13 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
     @SerializedName(SERIALIZED_NAME_SUBSCRIPTION_GROUP_IDENTIFIER)
     private String subscriptionGroupIdentifier;
     @SerializedName(SERIALIZED_NAME_PURCHASE_DATE)
+    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
     private Long purchaseDate;
     @SerializedName(SERIALIZED_NAME_ORIGINAL_PURCHASE_DATE)
+    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
     private Long originalPurchaseDate;
     @SerializedName(SERIALIZED_NAME_EXPIRES_DATE)
+    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
     private Long expiresDate;
     @SerializedName(SERIALIZED_NAME_QUANTITY)
     private Integer quantity;
@@ -63,10 +67,12 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
     @SerializedName(SERIALIZED_NAME_IN_APP_OWNERSHIP_TYPE)
     private InAppOwnershipType inAppOwnershipType;
     @SerializedName(SERIALIZED_NAME_SIGNED_DATE)
+    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
     private Long signedDate;
     @SerializedName(SERIALIZED_NAME_REVOCATION_REASON)
     private RevocationReason revocationReason;
     @SerializedName(SERIALIZED_NAME_REVOCATION_DATE)
+    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
     private Long revocationDate;
     @SerializedName(SERIALIZED_NAME_IS_UPGRADED)
     private Boolean isUpgraded;

@@ -18,7 +18,9 @@ import java.io.IOException;
 public enum Environment {
 
     SANDBOX("Sandbox"),
-    PRODUCTION("Production");
+    PRODUCTION("Production"),
+    XCODE("Xcode"),
+    LOCAL_TESTING("LocalTesting");
 
     private final String value;
 
