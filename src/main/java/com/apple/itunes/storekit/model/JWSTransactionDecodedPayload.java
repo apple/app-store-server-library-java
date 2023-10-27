@@ -61,33 +61,33 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
     @SerializedName(SERIALIZED_NAME_QUANTITY)
     private Integer quantity;
     @SerializedName(SERIALIZED_NAME_TYPE)
-    private Type type;
+    private String type;
     @SerializedName(SERIALIZED_NAME_APP_ACCOUNT_TOKEN)
     private UUID appAccountToken;
     @SerializedName(SERIALIZED_NAME_IN_APP_OWNERSHIP_TYPE)
-    private InAppOwnershipType inAppOwnershipType;
+    private String inAppOwnershipType;
     @SerializedName(SERIALIZED_NAME_SIGNED_DATE)
     @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
     private Long signedDate;
     @SerializedName(SERIALIZED_NAME_REVOCATION_REASON)
-    private RevocationReason revocationReason;
+    private Integer revocationReason;
     @SerializedName(SERIALIZED_NAME_REVOCATION_DATE)
     @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
     private Long revocationDate;
     @SerializedName(SERIALIZED_NAME_IS_UPGRADED)
     private Boolean isUpgraded;
     @SerializedName(SERIALIZED_NAME_OFFER_TYPE)
-    private OfferType offerType;
+    private Integer offerType;
     @SerializedName(SERIALIZED_NAME_OFFER_IDENTIFIER)
     private String offerIdentifier;
     @SerializedName(SERIALIZED_NAME_ENVIRONMENT)
-    private Environment environment;
+    private String environment;
     @SerializedName(SERIALIZED_NAME_STOREFRONT)
     private String storefront;
     @SerializedName(SERIALIZED_NAME_STOREFRONT_ID)
     private String storefrontId;
     @SerializedName(SERIALIZED_NAME_TRANSACTION_REASON)
-    private TransactionReason transactionReason;
+    private String transactionReason;
 
 
     public JWSTransactionDecodedPayload() {
@@ -284,7 +284,7 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
     }
 
     public JWSTransactionDecodedPayload type(Type type) {
-        this.type = type;
+        this.type = type != null ? type.getValue() : null;
         return this;
     }
 
@@ -295,11 +295,22 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/type">type</a>
      **/
     public Type getType() {
+        return type != null ? Type.fromValue(type) : null;
+    }
+
+    /**
+     * @see #getType()
+     */
+    public String getRawType() {
         return type;
     }
 
     public void setType(Type type) {
-        this.type = type;
+        this.type = type != null ? type.getValue() : null;
+    }
+
+    public void setRawType(String rawType) {
+        this.type = rawType;
     }
 
     public JWSTransactionDecodedPayload appAccountToken(UUID appAccountToken) {
@@ -322,7 +333,7 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
     }
 
     public JWSTransactionDecodedPayload inAppOwnershipType(InAppOwnershipType inAppOwnershipType) {
-        this.inAppOwnershipType = inAppOwnershipType;
+        this.inAppOwnershipType = inAppOwnershipType != null ? inAppOwnershipType.getValue() : null;
         return this;
     }
 
@@ -333,11 +344,22 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/inappownershiptype">inAppOwnershipType</a>
      **/
     public InAppOwnershipType getInAppOwnershipType() {
+        return inAppOwnershipType != null ? InAppOwnershipType.fromValue(inAppOwnershipType) : null;
+    }
+
+    /**
+     * @see #getRawInAppOwnershipType()
+     */
+    public String getRawInAppOwnershipType() {
         return inAppOwnershipType;
     }
 
     public void setInAppOwnershipType(InAppOwnershipType inAppOwnershipType) {
-        this.inAppOwnershipType = inAppOwnershipType;
+        this.inAppOwnershipType = inAppOwnershipType != null ? inAppOwnershipType.getValue() : null;
+    }
+
+    public void setRawInAppOwnershipType(String rawInAppOwnershipType) {
+        this.inAppOwnershipType = rawInAppOwnershipType;
     }
 
     public JWSTransactionDecodedPayload signedDate(Long signedDate) {
@@ -360,7 +382,7 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
     }
 
     public JWSTransactionDecodedPayload revocationReason(RevocationReason revocationReason) {
-        this.revocationReason = revocationReason;
+        this.revocationReason = revocationReason != null ? revocationReason.getValue() : null;
         return this;
     }
 
@@ -371,11 +393,22 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/revocationreason">revocationReason</a>
      **/
     public RevocationReason getRevocationReason() {
+        return revocationReason != null ? RevocationReason.fromValue(revocationReason) : null;
+    }
+
+    /**
+     * @see #getRevocationReason()
+     */
+    public Integer getRawRevocationReason() {
         return revocationReason;
     }
 
     public void setRevocationReason(RevocationReason revocationReason) {
-        this.revocationReason = revocationReason;
+        this.revocationReason = revocationReason != null ? revocationReason.getValue(): null;
+    }
+
+    public void setRawRevocationReason(Integer rawRevocationReason) {
+        this.revocationReason = rawRevocationReason;
     }
 
     public JWSTransactionDecodedPayload revocationDate(Long revocationDate) {
@@ -417,7 +450,7 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
     }
 
     public JWSTransactionDecodedPayload offerType(OfferType offerType) {
-        this.offerType = offerType;
+        this.offerType = offerType != null ? offerType.getValue() : null;
         return this;
     }
 
@@ -428,11 +461,22 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/offertype">offerType</a>
      **/
     public OfferType getOfferType() {
+        return offerType != null ? OfferType.fromValue(offerType) : null;
+    }
+
+    /**
+     * @see #getOfferType()
+     */
+    public Integer getRawOfferType() {
         return offerType;
     }
 
     public void setOfferType(OfferType offerType) {
-        this.offerType = offerType;
+        this.offerType = offerType != null ? offerType.getValue() : null;
+    }
+
+    public void setRawOfferType(Integer rawOfferType) {
+        this.offerType = rawOfferType;
     }
 
     public JWSTransactionDecodedPayload offerIdentifier(String offerIdentifier) {
@@ -455,7 +499,7 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
     }
 
     public JWSTransactionDecodedPayload environment(Environment environment) {
-        this.environment = environment;
+        this.environment = environment != null ? environment.getValue() : null;
         return this;
     }
 
@@ -466,11 +510,22 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/environment">environment</a>
      **/
     public Environment getEnvironment() {
+        return environment != null ? Environment.fromValue(environment) : null;
+    }
+
+    /**
+     * @see #getRawEnvironment()
+     */
+    public String getRawEnvironment() {
         return environment;
     }
 
     public void setEnvironment(Environment environment) {
-        this.environment = environment;
+        this.environment = environment != null ? environment.getValue() : null;
+    }
+
+    public void setRawEnvironment(String rawEnvironment) {
+        this.environment = rawEnvironment;
     }
 
     public JWSTransactionDecodedPayload storefront(String storefront) {
@@ -512,7 +567,7 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
     }
 
     public JWSTransactionDecodedPayload transactionReason(TransactionReason transactionReason) {
-        this.transactionReason = transactionReason;
+        this.transactionReason = transactionReason != null ? transactionReason.getValue() : null;
         return this;
     }
 
@@ -523,11 +578,22 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/transactionreason">transactionReason</a>
      **/
     public TransactionReason getTransactionReason() {
+        return transactionReason != null ? TransactionReason.fromValue(transactionReason) : null;
+    }
+
+    /**
+     * @see #getTransactionReason()
+     */
+    public String getRawTransactionReason() {
         return transactionReason;
     }
 
     public void setTransactionReason(TransactionReason transactionReason) {
-        this.transactionReason = transactionReason;
+        this.transactionReason = transactionReason != null ? transactionReason.getValue() : null;
+    }
+
+    public void setRawTransactionReason(String rawTransactionReason) {
+        this.transactionReason = rawTransactionReason;
     }
 
     @Override

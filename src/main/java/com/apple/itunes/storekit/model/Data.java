@@ -20,7 +20,7 @@ public class Data {
     private static final String SERIALIZED_NAME_SIGNED_RENEWAL_INFO = "signedRenewalInfo";
     private static final String SERIALIZED_NAME_STATUS = "status";
     @SerializedName(SERIALIZED_NAME_ENVIRONMENT)
-    private Environment environment;
+    private String environment;
     @SerializedName(SERIALIZED_NAME_APP_APPLE_ID)
     private Long appAppleId;
     @SerializedName(SERIALIZED_NAME_BUNDLE_ID)
@@ -32,14 +32,14 @@ public class Data {
     @SerializedName(SERIALIZED_NAME_SIGNED_RENEWAL_INFO)
     private String signedRenewalInfo;
     @SerializedName(SERIALIZED_NAME_STATUS)
-    private Status status;
+    private Integer status;
 
 
     public Data() {
     }
 
     public Data environment(Environment environment) {
-        this.environment = environment;
+        this.environment = environment != null ? environment.getValue() : null;
         return this;
     }
 
@@ -50,11 +50,22 @@ public class Data {
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/environment">environment</a>
      **/
     public Environment getEnvironment() {
+        return environment != null ? Environment.fromValue(environment) : null;
+    }
+
+    /**
+     * @see #getEnvironment()
+     */
+    public String getRawEnvironment() {
         return environment;
     }
 
     public void setEnvironment(Environment environment) {
-        this.environment = environment;
+        this.environment = environment != null ? environment.getValue() : null;
+    }
+
+    public void setRawEnvironment(String rawEnvironment) {
+        this.environment = rawEnvironment;
     }
 
     public Data appAppleId(Long appAppleId) {
@@ -153,7 +164,7 @@ public class Data {
     }
 
     public Data status(Status status) {
-        this.status = status;
+        this.status = status != null ? status.getValue() : null;
         return this;
     }
 
@@ -164,11 +175,22 @@ public class Data {
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/status">status</a>
      **/
     public Status getStatus() {
+        return status != null ? Status.fromValue(status) : null;
+    }
+
+    /**
+     * @see #getStatus()
+     */
+    public Integer getRawStatus() {
         return status;
     }
 
     public void setStatus(Status status) {
-        this.status = status;
+        this.status = status != null ? status.getValue() : null;
+    }
+
+    public void setRawStatus(Integer rawStatus) {
+        this.status = rawStatus;
     }
 
     @Override
