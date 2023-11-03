@@ -87,7 +87,6 @@ public class XcodeSignedDataVerifierTest {
 
         JWSRenewalInfoDecodedPayload renewalInfo = verifier.verifyAndDecodeRenewalInfo(encodedRenewalInfo);
 
-        System.out.println(renewalInfo);
         Assertions.assertNull(renewalInfo.getExpirationIntent());
         Assertions.assertEquals("0", renewalInfo.getOriginalTransactionId());
         Assertions.assertEquals("pass.premium", renewalInfo.getAutoRenewProductId());
