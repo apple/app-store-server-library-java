@@ -474,6 +474,21 @@ public class AppStoreServerAPIClientTest {
         Assertions.fail();
     }
 
+    @Test
+    public void testAPIUnknownError() throws IOException {
+        String body = TestingUtility.readFile("models/apiUnknownError.json");
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 400);
+        try {
+            client.getTransactionInfo("1234");
+        } catch (APIException e) {
+            Assertions.assertEquals(400 , e.getHttpStatusCode());
+            Assertions.assertNull(e.getApiError());
+            Assertions.assertEquals(9990000L, e.getRawApiError());
+            return;
+        }
+        Assertions.fail();
+    }
+
     public AppStoreServerAPIClient getClientWithBody(String path, Consumer<Request> requestVerifier) throws IOException {
         String body = TestingUtility.readFile(path);
         return getAppStoreServerAPIClient(body, requestVerifier);

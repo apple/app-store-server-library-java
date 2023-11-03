@@ -23,8 +23,12 @@ public class TestingUtility {
         }
     }
 
+    public static SignedDataVerifier getSignedPayloadVerifier(Environment environment, String bundleId, Long appAppleId) throws IOException {
+        return new SignedDataVerifier(Set.of(new ByteArrayInputStream(readBytes("certs/testCA.der"))), bundleId, appAppleId, environment, false);
+    }
+
     public static SignedDataVerifier getSignedPayloadVerifier(Environment environment, String bundleId) throws IOException {
-        return new SignedDataVerifier(Set.of(new ByteArrayInputStream(readBytes("certs/testCA.der"))), bundleId, 1234L, environment, false);
+        return getSignedPayloadVerifier(environment, bundleId, 1234L);
     }
 
     public static SignedDataVerifier getSignedPayloadVerifier() throws IOException {

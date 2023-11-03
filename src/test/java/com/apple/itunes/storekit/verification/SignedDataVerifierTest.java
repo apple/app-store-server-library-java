@@ -37,6 +37,13 @@ public class SignedDataVerifierTest {
     }
 
     @Test
+    public void testWrongAppAppleIdForNotification() throws IOException {
+        SignedDataVerifier verifier = TestingUtility.getSignedPayloadVerifier(Environment.PRODUCTION, "com.example", 1235L);
+        VerificationException exception = Assertions.assertThrows(VerificationException.class, () -> verifier.verifyAndDecodeNotification(TestingUtility.readFile("mock_signed_data/testNotification")));
+        Assertions.assertEquals(Status.INVALID_APP_IDENTIFIER, exception.getStatus());
+    }
+
+    @Test
     public void testWrongBundleIdForTransaction() throws IOException {
         SignedDataVerifier verifier = TestingUtility.getSignedPayloadVerifier(Environment.SANDBOX, "com.example.x");
         VerificationException exception = Assertions.assertThrows(VerificationException.class, () -> verifier.verifyAndDecodeTransaction(TestingUtility.readFile("mock_signed_data/transactionInfo")));
