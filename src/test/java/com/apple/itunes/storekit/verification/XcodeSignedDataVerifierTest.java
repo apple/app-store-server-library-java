@@ -39,14 +39,16 @@ public class XcodeSignedDataVerifierTest {
         Assertions.assertEquals("cYUsXc53EbYc0pOeXG5d6/31LGHeVGf84sqSN0OrJi5u/j2H89WWKgS8N0hMsMlf", appTransaction.getDeviceVerification());
         Assertions.assertEquals(UUID.fromString("48c8b92d-ce0d-4229-bedf-e61b4f9cfc92"), appTransaction.getDeviceVerificationNonce());
         Assertions.assertNull(appTransaction.getPreorderDate());
+        Assertions.assertEquals(Environment.XCODE, appTransaction.getReceiptType());
+        Assertions.assertEquals("Xcode", appTransaction.getRawReceiptType());
     }
 
     @Test
     public void testXcodeSignedTransaction() throws IOException, VerificationException {
         SignedDataVerifier verifier = TestingUtility.getSignedPayloadVerifier(Environment.XCODE, XCODE_BUNDLE_ID);
-        String encodedTransactino = TestingUtility.readFile("xcode/xcode-signed-transaction");
+        String encodedTransaction = TestingUtility.readFile("xcode/xcode-signed-transaction");
 
-        JWSTransactionDecodedPayload transaction = verifier.verifyAndDecodeTransaction(encodedTransactino);
+        JWSTransactionDecodedPayload transaction = verifier.verifyAndDecodeTransaction(encodedTransaction);
 
         Assertions.assertEquals("0", transaction.getOriginalTransactionId());
         Assertions.assertEquals("0", transaction.getTransactionId());
@@ -59,18 +61,23 @@ public class XcodeSignedDataVerifierTest {
         Assertions.assertEquals(1700358336049L, transaction.getExpiresDate());
         Assertions.assertEquals(1, transaction.getQuantity());
         Assertions.assertEquals(Type.AUTO_RENEWABLE_SUBSCRIPTION, transaction.getType());
+        Assertions.assertEquals("Auto-Renewable Subscription", transaction.getRawType());
         Assertions.assertNull(transaction.getAppAccountToken());
         Assertions.assertEquals(InAppOwnershipType.PURCHASED, transaction.getInAppOwnershipType());
+        Assertions.assertEquals("PURCHASED", transaction.getRawInAppOwnershipType());
         Assertions.assertEquals(1697679936056L, transaction.getSignedDate());
         Assertions.assertNull(transaction.getRevocationReason());
         Assertions.assertNull(transaction.getRevocationDate());
         Assertions.assertFalse(transaction.getIsUpgraded());
         Assertions.assertEquals(OfferType.INTRODUCTORY_OFFER, transaction.getOfferType());
+        Assertions.assertEquals(1, transaction.getRawOfferType());
         Assertions.assertNull(transaction.getOfferIdentifier());
         Assertions.assertEquals(Environment.XCODE, transaction.getEnvironment());
+        Assertions.assertEquals("Xcode", transaction.getRawEnvironment());
         Assertions.assertEquals("USA", transaction.getStorefront());
         Assertions.assertEquals("143441", transaction.getStorefrontId());
         Assertions.assertEquals(TransactionReason.PURCHASE, transaction.getTransactionReason());
+        Assertions.assertEquals("PURCHASE", transaction.getRawTransactionReason());
     }
 
     @Test
@@ -86,6 +93,7 @@ public class XcodeSignedDataVerifierTest {
         Assertions.assertEquals("pass.premium", renewalInfo.getAutoRenewProductId());
         Assertions.assertEquals("pass.premium", renewalInfo.getProductId());
         Assertions.assertEquals(AutoRenewStatus.ON, renewalInfo.getAutoRenewStatus());
+        Assertions.assertEquals(1, renewalInfo.getRawAutoRenewStatus());
         Assertions.assertNull(renewalInfo.getIsInBillingRetryPeriod());
         Assertions.assertNull(renewalInfo.getPriceIncreaseStatus());
         Assertions.assertNull(renewalInfo.getGracePeriodExpiresDate());
@@ -93,6 +101,7 @@ public class XcodeSignedDataVerifierTest {
         Assertions.assertNull(renewalInfo.getOfferIdentifier());
         Assertions.assertEquals(1697679936711L, renewalInfo.getSignedDate());
         Assertions.assertEquals(Environment.XCODE, renewalInfo.getEnvironment());
+        Assertions.assertEquals("Xcode", renewalInfo.getRawEnvironment());
         Assertions.assertEquals(1697679936049L, renewalInfo.getRecentSubscriptionStartDate());
         Assertions.assertEquals(1700358336049L, renewalInfo.getRenewalDate());
     }

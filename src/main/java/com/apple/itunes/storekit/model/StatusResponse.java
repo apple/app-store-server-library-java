@@ -19,7 +19,7 @@ public class StatusResponse {
     private static final String SERIALIZED_NAME_APP_APPLE_ID = "appAppleId";
     private static final String SERIALIZED_NAME_DATA = "data";
     @SerializedName(SERIALIZED_NAME_ENVIRONMENT)
-    private Environment environment;
+    private String environment;
     @SerializedName(SERIALIZED_NAME_BUNDLE_ID)
     private String bundleId;
     @SerializedName(SERIALIZED_NAME_APP_APPLE_ID)
@@ -32,7 +32,7 @@ public class StatusResponse {
     }
 
     public StatusResponse environment(Environment environment) {
-        this.environment = environment;
+        this.environment = environment != null ? environment.getValue() : null;
         return this;
     }
 
@@ -43,11 +43,22 @@ public class StatusResponse {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/environment">environment</a>
      **/
     public Environment getEnvironment() {
+        return environment != null ? Environment.fromValue(environment) : null;
+    }
+
+    /**
+     * @see #getEnvironment()
+     */
+    public String getRawEnvironment() {
         return environment;
     }
 
     public void setEnvironment(Environment environment) {
-        this.environment = environment;
+        this.environment = environment != null ? environment.getValue() : null;
+    }
+
+    public void setRawEnvironment(String rawEnvironment) {
+        this.environment = rawEnvironment;
     }
 
     public StatusResponse bundleId(String bundleId) {
