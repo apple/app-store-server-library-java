@@ -37,6 +37,9 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
     private static final String SERIALIZED_NAME_STOREFRONT = "storefront";
     private static final String SERIALIZED_NAME_STOREFRONT_ID = "storefrontId";
     private static final String SERIALIZED_NAME_TRANSACTION_REASON = "transactionReason";
+    private static final String SERIALIZED_NAME_PRICE = "price";
+    private static final String SERIALIZED_NAME_CURRENCY = "currency";
+    private static final String SERIALIZED_NAME_OFFER_DISCOUNT_TYPE = "offerDiscountType";
     @SerializedName(SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID)
     private String originalTransactionId;
     @SerializedName(SERIALIZED_NAME_TRANSACTION_ID)
@@ -88,6 +91,12 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
     private String storefrontId;
     @SerializedName(SERIALIZED_NAME_TRANSACTION_REASON)
     private String transactionReason;
+    @SerializedName(SERIALIZED_NAME_PRICE)
+    private Integer price;
+    @SerializedName(SERIALIZED_NAME_CURRENCY)
+    private String currency;
+    @SerializedName(SERIALIZED_NAME_OFFER_DISCOUNT_TYPE)
+    private String offerDiscountType;
 
 
     public JWSTransactionDecodedPayload() {
@@ -596,6 +605,75 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
         this.transactionReason = rawTransactionReason;
     }
 
+    public JWSTransactionDecodedPayload price(Integer price) {
+        this.price = price;
+        return this;
+    }
+
+    /**
+     * The price of the in-app purchase or subscription offer that you configured in App Store Connect, as an integer.
+     *
+     * @return price
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/price">price</a>
+     **/
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
+
+    public JWSTransactionDecodedPayload currency(String currency) {
+        this.currency = currency;
+        return this;
+    }
+
+    /**
+     * The three-letter ISO 4217 currency code for the price of the product.
+     *
+     * @return currency
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/currency">currency</a>
+     **/
+    public String getCurrency() {
+        return this.currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public JWSTransactionDecodedPayload offerDiscountType(OfferDiscountType offerDiscountType) {
+        this.offerDiscountType = offerDiscountType != null ? offerDiscountType.getValue() : null;
+        return this;
+    }
+
+    /**
+     * The payment mode you configure for an introductory offer, promotional offer, or offer code on an auto-renewable subscription.
+     *
+     * @return offerDiscountType
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/offerdiscounttype">offerDiscountType</a>
+     **/
+    public OfferDiscountType getOfferDiscountType() {
+        return offerDiscountType != null ? OfferDiscountType.fromValue(offerDiscountType) : null;
+    }
+
+    /**
+     * @see #getOfferDiscountType()
+     */
+    public String getRawOfferDiscountType() {
+        return offerDiscountType;
+    }
+
+    public void setOfferDiscountType(OfferDiscountType offerDiscountType) {
+        this.offerDiscountType = offerDiscountType != null ? offerDiscountType.getValue() : null;
+    }
+
+    public void setRawOfferDiscountType(String rawOfferDiscountType) {
+        this.offerDiscountType = rawOfferDiscountType;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -627,12 +705,15 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
                 Objects.equals(this.environment, jwSTransactionDecodedPayload.environment) &&
                 Objects.equals(this.storefront, jwSTransactionDecodedPayload.storefront) &&
                 Objects.equals(this.storefrontId, jwSTransactionDecodedPayload.storefrontId) &&
-                Objects.equals(this.transactionReason, jwSTransactionDecodedPayload.transactionReason);
+                Objects.equals(this.transactionReason, jwSTransactionDecodedPayload.transactionReason) &&
+                Objects.equals(this.price, jwSTransactionDecodedPayload.price) &&
+                Objects.equals(this.currency, jwSTransactionDecodedPayload.currency) &&
+                Objects.equals(this.offerDiscountType, jwSTransactionDecodedPayload.offerDiscountType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(originalTransactionId, transactionId, webOrderLineItemId, bundleId, productId, subscriptionGroupIdentifier, purchaseDate, originalPurchaseDate, expiresDate, quantity, type, appAccountToken, inAppOwnershipType, signedDate, revocationReason, revocationDate, isUpgraded, offerType, offerIdentifier, environment, storefront, storefrontId, transactionReason);
+        return Objects.hash(originalTransactionId, transactionId, webOrderLineItemId, bundleId, productId, subscriptionGroupIdentifier, purchaseDate, originalPurchaseDate, expiresDate, quantity, type, appAccountToken, inAppOwnershipType, signedDate, revocationReason, revocationDate, isUpgraded, offerType, offerIdentifier, environment, storefront, storefrontId, transactionReason, price, currency, offerDiscountType);
     }
 
     @Override
@@ -661,6 +742,9 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
                 ", storefront='" + storefront + '\'' +
                 ", storefrontId='" + storefrontId + '\'' +
                 ", transactionReason=" + transactionReason +
+                ", price=" + price +
+                ", currency'=" + currency + '\'' +
+                ", offerDiscountType=" + offerDiscountType +
                 '}';
     }
 }

@@ -50,5 +50,9 @@ public class JWSTransactionDecodedPayloadTest {
         Assertions.assertEquals("PURCHASE", transaction.getRawTransactionReason());
         Assertions.assertEquals(Environment.LOCAL_TESTING, transaction.getEnvironment());
         Assertions.assertEquals("LocalTesting", transaction.getRawEnvironment());
+        Assertions.assertEquals(10990, transaction.getPrice());
+        Assertions.assertEquals("USD", transaction.getCurrency());
+        Assertions.assertEquals(OfferDiscountType.PAY_AS_YOU_GO, transaction.getOfferDiscountType());
+        Assertions.assertEquals("PAY_AS_YOU_GO", transaction.getRawOfferDiscountType());
     }
 }
