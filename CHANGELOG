@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 0.2.0
+- Significantly increase unit test coverage [#51]
+- Add support for Xcode and LocalTesting environments [#49]
+- Allow parsing unknown Enum values [#50]
+- Add support for testing in Java 21 [#48]
+- Add error codes from App Store Server API v1.9 [#43]
+- Add new fields from App Store Server API v1.10 [#53]
+- Fix private key parsing on Windows from @vpavic [#41]
+
 ## Version 0.1.3
 
 - Add status field to Data [#35](https://github.com/apple/app-store-server-library-java/issues/35)

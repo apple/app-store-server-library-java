@@ -20,7 +20,7 @@ This software is currently in Beta testing. Therefore, it should only be used fo
 
 ### Gradle
 ```groovy
-implementation 'com.apple.itunes.storekit:app-store-server-library:0.1.3'
+implementation 'com.apple.itunes.storekit:app-store-server-library:0.2.0'
 
 ```
 
@@ -29,7 +29,7 @@ implementation 'com.apple.itunes.storekit:app-store-server-library:0.1.3'
 <dependency>
     <groupId>com.apple.itunes.storekit</groupId>
     <artifactId>app-store-server-library</artifactId>
-    <version>0.1.3</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
