@@ -2,8 +2,10 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -17,16 +19,18 @@ public class MassExtendRenewalDateStatusResponse {
     private static final String SERIALIZED_NAME_COMPLETE_DATE = "completeDate";
     private static final String SERIALIZED_NAME_SUCCEEDED_COUNT = "succeededCount";
     private static final String SERIALIZED_NAME_FAILED_COUNT = "failedCount";
-    @SerializedName(SERIALIZED_NAME_REQUEST_IDENTIFIER)
+    @JsonProperty(SERIALIZED_NAME_REQUEST_IDENTIFIER)
     private String requestIdentifier;
-    @SerializedName(SERIALIZED_NAME_COMPLETE)
+    @JsonProperty(SERIALIZED_NAME_COMPLETE)
     private Boolean complete;
-    @SerializedName(SERIALIZED_NAME_COMPLETE_DATE)
+    @JsonProperty(SERIALIZED_NAME_COMPLETE_DATE)
     private Long completeDate;
-    @SerializedName(SERIALIZED_NAME_SUCCEEDED_COUNT)
+    @JsonProperty(SERIALIZED_NAME_SUCCEEDED_COUNT)
     private Long succeededCount;
-    @SerializedName(SERIALIZED_NAME_FAILED_COUNT)
+    @JsonProperty(SERIALIZED_NAME_FAILED_COUNT)
     private Long failedCount;
+    @JsonAnySetter
+    private Map<String, Object> unknownFields;
 
 
     public MassExtendRenewalDateStatusResponse() {
@@ -127,6 +131,25 @@ public class MassExtendRenewalDateStatusResponse {
         this.failedCount = failedCount;
     }
 
+
+    public MassExtendRenewalDateStatusResponse unknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+        return this;
+    }
+
+    /**
+     Fields that are not recognized for this object
+
+     @return A map of JSON keys to objects
+     */
+    public Map<String, Object> getUnknownFields() {
+        return unknownFields;
+    }
+
+    public void setUnknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -140,12 +163,13 @@ public class MassExtendRenewalDateStatusResponse {
                 Objects.equals(this.complete, massExtendRenewalDateStatusResponse.complete) &&
                 Objects.equals(this.completeDate, massExtendRenewalDateStatusResponse.completeDate) &&
                 Objects.equals(this.succeededCount, massExtendRenewalDateStatusResponse.succeededCount) &&
-                Objects.equals(this.failedCount, massExtendRenewalDateStatusResponse.failedCount);
+                Objects.equals(this.failedCount, massExtendRenewalDateStatusResponse.failedCount) &&
+                Objects.equals(this.unknownFields, massExtendRenewalDateStatusResponse.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(requestIdentifier, complete, completeDate, succeededCount, failedCount);
+        return Objects.hash(requestIdentifier, complete, completeDate, succeededCount, failedCount, unknownFields);
     }
 
     @Override
@@ -156,6 +180,7 @@ public class MassExtendRenewalDateStatusResponse {
                 ", completeDate=" + completeDate +
                 ", succeededCount=" + succeededCount +
                 ", failedCount=" + failedCount +
+                ", unknownFields=" + unknownFields +
                 '}';
     }
 }

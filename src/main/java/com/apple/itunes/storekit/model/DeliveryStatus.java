@@ -2,19 +2,13 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-
-import java.io.IOException;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * A value that indicates whether the app successfully delivered an in-app purchase that works properly.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/deliverystatus">deliveryStatus</a>
  */
-@JsonAdapter(DeliveryStatus.Adapter.class)
 public enum DeliveryStatus {
 
     DELIVERED_AND_WORKING_PROPERLY(0),
@@ -36,9 +30,10 @@ public enum DeliveryStatus {
                 return b;
             }
         }
-        throw new IllegalArgumentException("Unexpected value '" + value + "'");
+        return null;
     }
 
+    @JsonValue
     public Integer getValue() {
         return value;
     }
@@ -46,19 +41,6 @@ public enum DeliveryStatus {
     @Override
     public String toString() {
         return String.valueOf(value);
-    }
-
-    public static class Adapter extends TypeAdapter<DeliveryStatus> {
-        @Override
-        public void write(final JsonWriter jsonWriter, final DeliveryStatus enumeration) throws IOException {
-            jsonWriter.value(enumeration.getValue());
-        }
-
-        @Override
-        public DeliveryStatus read(final JsonReader jsonReader) throws IOException {
-            Integer value = jsonReader.nextInt();
-            return DeliveryStatus.fromValue(value);
-        }
     }
 }
 

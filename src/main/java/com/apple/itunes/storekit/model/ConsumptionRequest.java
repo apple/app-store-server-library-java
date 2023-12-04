@@ -2,7 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -24,27 +24,27 @@ public class ConsumptionRequest {
     private static final String SERIALIZED_NAME_LIFETIME_DOLLARS_REFUNDED = "lifetimeDollarsRefunded";
     private static final String SERIALIZED_NAME_LIFETIME_DOLLARS_PURCHASED = "lifetimeDollarsPurchased";
     private static final String SERIALIZED_NAME_USER_STATUS = "userStatus";
-    @SerializedName(SERIALIZED_NAME_CUSTOMER_CONSENTED)
+    @JsonProperty(SERIALIZED_NAME_CUSTOMER_CONSENTED)
     private Boolean customerConsented;
-    @SerializedName(SERIALIZED_NAME_CONSUMPTION_STATUS)
+    @JsonProperty(SERIALIZED_NAME_CONSUMPTION_STATUS)
     private Integer consumptionStatus;
-    @SerializedName(SERIALIZED_NAME_PLATFORM)
+    @JsonProperty(SERIALIZED_NAME_PLATFORM)
     private Integer platform;
-    @SerializedName(SERIALIZED_NAME_SAMPLE_CONTENT_PROVIDED)
+    @JsonProperty(SERIALIZED_NAME_SAMPLE_CONTENT_PROVIDED)
     private Boolean sampleContentProvided;
-    @SerializedName(SERIALIZED_NAME_DELIVERY_STATUS)
+    @JsonProperty(SERIALIZED_NAME_DELIVERY_STATUS)
     private Integer deliveryStatus;
-    @SerializedName(SERIALIZED_NAME_APP_ACCOUNT_TOKEN)
+    @JsonProperty(SERIALIZED_NAME_APP_ACCOUNT_TOKEN)
     private UUID appAccountToken;
-    @SerializedName(SERIALIZED_NAME_ACCOUNT_TENURE)
+    @JsonProperty(SERIALIZED_NAME_ACCOUNT_TENURE)
     private Integer accountTenure;
-    @SerializedName(SERIALIZED_NAME_PLAY_TIME)
+    @JsonProperty(SERIALIZED_NAME_PLAY_TIME)
     private Integer playTime;
-    @SerializedName(SERIALIZED_NAME_LIFETIME_DOLLARS_REFUNDED)
+    @JsonProperty(SERIALIZED_NAME_LIFETIME_DOLLARS_REFUNDED)
     private Integer lifetimeDollarsRefunded;
-    @SerializedName(SERIALIZED_NAME_LIFETIME_DOLLARS_PURCHASED)
+    @JsonProperty(SERIALIZED_NAME_LIFETIME_DOLLARS_PURCHASED)
     private Integer lifetimeDollarsPurchased;
-    @SerializedName(SERIALIZED_NAME_USER_STATUS)
+    @JsonProperty(SERIALIZED_NAME_USER_STATUS)
     private Integer userStatus;
 
 

@@ -2,8 +2,10 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -16,14 +18,16 @@ public class ExtendRenewalDateResponse {
     private static final String SERIALIZED_NAME_WEB_ORDER_LINE_ITEM_ID = "webOrderLineItemId";
     private static final String SERIALIZED_NAME_SUCCESS = "success";
     private static final String SERIALIZED_NAME_EFFECTIVE_DATE = "effectiveDate";
-    @SerializedName(SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID)
+    @JsonProperty(SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID)
     private String originalTransactionId;
-    @SerializedName(SERIALIZED_NAME_WEB_ORDER_LINE_ITEM_ID)
+    @JsonProperty(SERIALIZED_NAME_WEB_ORDER_LINE_ITEM_ID)
     private String webOrderLineItemId;
-    @SerializedName(SERIALIZED_NAME_SUCCESS)
+    @JsonProperty(SERIALIZED_NAME_SUCCESS)
     private Boolean success;
-    @SerializedName(SERIALIZED_NAME_EFFECTIVE_DATE)
+    @JsonProperty(SERIALIZED_NAME_EFFECTIVE_DATE)
     private Long effectiveDate;
+    @JsonAnySetter
+    private Map<String, Object> unknownFields;
 
 
     public ExtendRenewalDateResponse() {
@@ -105,6 +109,24 @@ public class ExtendRenewalDateResponse {
         this.effectiveDate = effectiveDate;
     }
 
+    public ExtendRenewalDateResponse unknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+        return this;
+    }
+
+    /**
+     Fields that are not recognized for this object
+
+     @return A map of JSON keys to objects
+     */
+    public Map<String, Object> getUnknownFields() {
+        return unknownFields;
+    }
+
+    public void setUnknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -117,12 +139,13 @@ public class ExtendRenewalDateResponse {
         return Objects.equals(this.originalTransactionId, extendRenewalDateResponse.originalTransactionId) &&
                 Objects.equals(this.webOrderLineItemId, extendRenewalDateResponse.webOrderLineItemId) &&
                 Objects.equals(this.success, extendRenewalDateResponse.success) &&
-                Objects.equals(this.effectiveDate, extendRenewalDateResponse.effectiveDate);
+                Objects.equals(this.effectiveDate, extendRenewalDateResponse.effectiveDate) &&
+                Objects.equals(this.unknownFields, extendRenewalDateResponse.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(originalTransactionId, webOrderLineItemId, success, effectiveDate);
+        return Objects.hash(originalTransactionId, webOrderLineItemId, success, effectiveDate, unknownFields);
     }
 
     @Override
@@ -132,6 +155,7 @@ public class ExtendRenewalDateResponse {
                 ", webOrderLineItemId='" + webOrderLineItemId + '\'' +
                 ", success=" + success +
                 ", effectiveDate=" + effectiveDate +
+                ", unknownFields=" + unknownFields +
                 '}';
     }
 }

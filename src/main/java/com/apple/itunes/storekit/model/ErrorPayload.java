@@ -2,9 +2,16 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ErrorPayload {
+    @JsonProperty
     private long errorCode;
+    @JsonProperty
     private String errorMessage;
+
+    public ErrorPayload() {
+    }
 
     public ErrorPayload(long errorCode, String errorMessage) {
         this.errorCode = errorCode;

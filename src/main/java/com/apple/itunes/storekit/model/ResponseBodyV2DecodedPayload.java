@@ -2,8 +2,10 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -19,20 +21,22 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
     private static final String SERIALIZED_NAME_VERSION = "version";
     private static final String SERIALIZED_NAME_SIGNED_DATE = "signedDate";
     private static final String SERIALIZED_NAME_SUMMARY = "summary";
-    @SerializedName(SERIALIZED_NAME_NOTIFICATION_TYPE)
+    @JsonProperty(SERIALIZED_NAME_NOTIFICATION_TYPE)
     private String notificationType;
-    @SerializedName(SERIALIZED_NAME_SUBTYPE)
+    @JsonProperty(SERIALIZED_NAME_SUBTYPE)
     private String subtype;
-    @SerializedName(SERIALIZED_NAME_NOTIFICATION_U_U_I_D)
+    @JsonProperty(SERIALIZED_NAME_NOTIFICATION_U_U_I_D)
     private String notificationUUID;
-    @SerializedName(SERIALIZED_NAME_DATA)
+    @JsonProperty(SERIALIZED_NAME_DATA)
     private Data data;
-    @SerializedName(SERIALIZED_NAME_VERSION)
+    @JsonProperty(SERIALIZED_NAME_VERSION)
     private String version;
-    @SerializedName(SERIALIZED_NAME_SIGNED_DATE)
+    @JsonProperty(SERIALIZED_NAME_SIGNED_DATE)
     private Long signedDate;
-    @SerializedName(SERIALIZED_NAME_SUMMARY)
+    @JsonProperty(SERIALIZED_NAME_SUMMARY)
     private Summary summary;
+    @JsonAnySetter
+    private Map<String, Object> unknownFields;
 
 
     public ResponseBodyV2DecodedPayload() {
@@ -195,6 +199,25 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
         this.summary = summary;
     }
 
+
+    public ResponseBodyV2DecodedPayload unknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+        return this;
+    }
+
+    /**
+     Fields that are not recognized for this object
+
+     @return A map of JSON keys to objects
+     */
+    public Map<String, Object> getUnknownFields() {
+        return unknownFields;
+    }
+
+    public void setUnknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -210,24 +233,26 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
                 Objects.equals(this.data, responseBodyV2DecodedPayload.data) &&
                 Objects.equals(this.version, responseBodyV2DecodedPayload.version) &&
                 Objects.equals(this.signedDate, responseBodyV2DecodedPayload.signedDate) &&
-                Objects.equals(this.summary, responseBodyV2DecodedPayload.summary);
+                Objects.equals(this.summary, responseBodyV2DecodedPayload.summary) &&
+                Objects.equals(this.unknownFields, responseBodyV2DecodedPayload.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(notificationType, subtype, notificationUUID, data, version, signedDate, summary);
+        return Objects.hash(notificationType, subtype, notificationUUID, data, version, signedDate, summary, unknownFields);
     }
 
     @Override
     public String toString() {
         return "ResponseBodyV2DecodedPayload{" +
-                "notificationType=" + notificationType +
-                ", subtype=" + subtype +
+                "notificationType='" + notificationType + '\'' +
+                ", subtype='" + subtype + '\'' +
                 ", notificationUUID='" + notificationUUID + '\'' +
                 ", data=" + data +
                 ", version='" + version + '\'' +
                 ", signedDate=" + signedDate +
                 ", summary=" + summary +
+                ", unknownFields=" + unknownFields +
                 '}';
     }
 }

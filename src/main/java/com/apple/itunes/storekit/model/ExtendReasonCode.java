@@ -2,19 +2,13 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-
-import java.io.IOException;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * The code that represents the reason for the subscription-renewal-date extension.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/extendreasoncode">extendReasonCode</a>
  */
-@JsonAdapter(ExtendReasonCode.Adapter.class)
 public enum ExtendReasonCode {
 
     UNDECLARED(0),
@@ -34,9 +28,10 @@ public enum ExtendReasonCode {
                 return b;
             }
         }
-        throw new IllegalArgumentException("Unexpected value '" + value + "'");
+        return null;
     }
 
+    @JsonValue
     public Integer getValue() {
         return value;
     }
@@ -44,19 +39,6 @@ public enum ExtendReasonCode {
     @Override
     public String toString() {
         return String.valueOf(value);
-    }
-
-    public static class Adapter extends TypeAdapter<ExtendReasonCode> {
-        @Override
-        public void write(final JsonWriter jsonWriter, final ExtendReasonCode enumeration) throws IOException {
-            jsonWriter.value(enumeration.getValue());
-        }
-
-        @Override
-        public ExtendReasonCode read(final JsonReader jsonReader) throws IOException {
-            Integer value = jsonReader.nextInt();
-            return ExtendReasonCode.fromValue(value);
-        }
     }
 }
 

@@ -2,19 +2,13 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-
-import java.io.IOException;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * The cause of a purchase transaction, which indicates whether it’s a customer’s purchase or a renewal for an auto-renewable subscription that the system initiates.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/transactionreason">transactionReason</a>
  */
-@JsonAdapter(TransactionReason.Adapter.class)
 public enum TransactionReason {
 
     PURCHASE("PURCHASE"),
@@ -32,9 +26,10 @@ public enum TransactionReason {
                 return b;
             }
         }
-        throw new IllegalArgumentException("Unexpected value '" + value + "'");
+        return null;
     }
 
+    @JsonValue
     public String getValue() {
         return value;
     }
@@ -42,19 +37,6 @@ public enum TransactionReason {
     @Override
     public String toString() {
         return String.valueOf(value);
-    }
-
-    public static class Adapter extends TypeAdapter<TransactionReason> {
-        @Override
-        public void write(final JsonWriter jsonWriter, final TransactionReason enumeration) throws IOException {
-            jsonWriter.value(enumeration.getValue());
-        }
-
-        @Override
-        public TransactionReason read(final JsonReader jsonReader) throws IOException {
-            String value = jsonReader.nextString();
-            return TransactionReason.fromValue(value);
-        }
     }
 }
 

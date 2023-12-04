@@ -2,19 +2,13 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-
-import java.io.IOException;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * A value that indicates the dollar amount of refunds the customer has received in your app, since purchasing the app, across all platforms.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/lifetimedollarsrefunded">lifetimeDollarsRefunded</a>
  */
-@JsonAdapter(LifetimeDollarsRefunded.Adapter.class)
 public enum LifetimeDollarsRefunded {
 
     UNDECLARED(0),
@@ -38,9 +32,10 @@ public enum LifetimeDollarsRefunded {
                 return b;
             }
         }
-        throw new IllegalArgumentException("Unexpected value '" + value + "'");
+        return null;
     }
 
+    @JsonValue
     public Integer getValue() {
         return value;
     }
@@ -48,19 +43,6 @@ public enum LifetimeDollarsRefunded {
     @Override
     public String toString() {
         return String.valueOf(value);
-    }
-
-    public static class Adapter extends TypeAdapter<LifetimeDollarsRefunded> {
-        @Override
-        public void write(final JsonWriter jsonWriter, final LifetimeDollarsRefunded enumeration) throws IOException {
-            jsonWriter.value(enumeration.getValue());
-        }
-
-        @Override
-        public LifetimeDollarsRefunded read(final JsonReader jsonReader) throws IOException {
-            Integer value = jsonReader.nextInt();
-            return LifetimeDollarsRefunded.fromValue(value);
-        }
     }
 }
 

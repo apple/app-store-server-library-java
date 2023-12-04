@@ -21,7 +21,10 @@ import com.apple.itunes.storekit.model.Status;
 import com.apple.itunes.storekit.model.StatusResponse;
 import com.apple.itunes.storekit.model.TransactionHistoryRequest;
 import com.apple.itunes.storekit.model.TransactionInfoResponse;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
@@ -47,7 +50,7 @@ public class AppStoreServerAPIClient {
     private final OkHttpClient httpClient;
     private final BearerTokenAuthenticator bearerTokenAuthenticator;
     private final HttpUrl urlBase;
-    private final Gson gson;
+    private final ObjectMapper objectMapper;
 
     /**
      * Create an App Store Server API client
@@ -62,7 +65,13 @@ public class AppStoreServerAPIClient {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         this.httpClient = builder.build();
         this.urlBase = HttpUrl.parse(environment.equals(Environment.SANDBOX) ? SANDBOX_URL : PRODUCTION_URL);
-        this.gson = new Gson();
+        this.objectMapper = new ObjectMapper();
+        objectMapper.setVisibility(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
+                .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+                .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
     }
 
     private Response makeRequest(String path, String method, Map<String, List<String>> queryParameters, Object body) throws IOException {
@@ -78,7 +87,7 @@ public class AppStoreServerAPIClient {
         }
         requestBuilder.url(urlBuilder.build());
         if (body != null) {
-            RequestBody requestBody = RequestBody.create(gson.toJson(body), JSON);
+            RequestBody requestBody = RequestBody.create(objectMapper.writeValueAsString(body), JSON);
             requestBuilder.method(method, requestBody);
         } else if (method.equals("POST")){
             requestBuilder.method(method, RequestBody.create("", null));
@@ -104,13 +113,19 @@ public class AppStoreServerAPIClient {
                 if (responseBody == null) {
                     throw new RuntimeException("Response code was 2xx but no body returned");
                 }
-                return gson.fromJson(responseBody.charStream(), clazz);
+                try {
+                    return objectMapper.readValue(responseBody.charStream(), clazz);
+                } catch (JsonProcessingException suppressed) {
+                    APIException e = new APIException(r.code());
+                    e.addSuppressed(suppressed);
+                    throw e;
+                }
             } else {
                 // Best effort to decode the body
                 try {
                     ResponseBody responseBody = r.body();
                     if (responseBody != null) {
-                        ErrorPayload errorPayload = gson.fromJson(responseBody.charStream(), ErrorPayload.class);
+                        ErrorPayload errorPayload = objectMapper.readValue(responseBody.charStream(), ErrorPayload.class);
                         throw new APIException(r.code(), errorPayload.getErrorCode());
                     }
                 } catch (APIException e) {

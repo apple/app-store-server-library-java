@@ -2,19 +2,13 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-
-import java.io.IOException;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * The server environment, either sandbox or production.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/environment">environment</a>
  */
-@JsonAdapter(Environment.Adapter.class)
 public enum Environment {
 
     SANDBOX("Sandbox"),
@@ -34,9 +28,10 @@ public enum Environment {
                 return b;
             }
         }
-        throw new IllegalArgumentException("Unexpected value '" + value + "'");
+        return null;
     }
 
+    @JsonValue
     public String getValue() {
         return value;
     }
@@ -44,19 +39,6 @@ public enum Environment {
     @Override
     public String toString() {
         return String.valueOf(value);
-    }
-
-    public static class Adapter extends TypeAdapter<Environment> {
-        @Override
-        public void write(final JsonWriter jsonWriter, final Environment enumeration) throws IOException {
-            jsonWriter.value(enumeration.getValue());
-        }
-
-        @Override
-        public Environment read(final JsonReader jsonReader) throws IOException {
-            String value = jsonReader.nextString();
-            return Environment.fromValue(value);
-        }
     }
 }
 

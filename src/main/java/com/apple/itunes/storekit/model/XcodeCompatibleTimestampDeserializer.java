@@ -2,19 +2,20 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
+import com.fasterxml.jackson.core.JacksonException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 
-import java.lang.reflect.Type;
+import java.io.IOException;
 
 /**
  * Xcode may sometimes return timestamps as floating point numbers not integers. This class allows parsing those receipts
  */
-class XcodeCompatibleTimestampDeserializer implements JsonDeserializer<Long> {
+class XcodeCompatibleTimestampDeserializer extends JsonDeserializer<Long> {
+
     @Override
-    public Long deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        return json.getAsJsonPrimitive().getAsNumber().longValue();
+    public Long deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+        return p.getLongValue();
     }
 }

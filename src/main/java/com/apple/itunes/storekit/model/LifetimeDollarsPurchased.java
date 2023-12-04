@@ -2,19 +2,13 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-
-import java.io.IOException;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * A value that indicates the total amount, in USD, of in-app purchases the customer has made in your app, across all platforms.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/lifetimedollarspurchased">lifetimeDollarsPurchased</a>
  */
-@JsonAdapter(LifetimeDollarsPurchased.Adapter.class)
 public enum LifetimeDollarsPurchased {
 
     UNDECLARED(0),
@@ -38,9 +32,10 @@ public enum LifetimeDollarsPurchased {
                 return b;
             }
         }
-        throw new IllegalArgumentException("Unexpected value '" + value + "'");
+        return null;
     }
 
+    @JsonValue
     public Integer getValue() {
         return value;
     }
@@ -48,19 +43,6 @@ public enum LifetimeDollarsPurchased {
     @Override
     public String toString() {
         return String.valueOf(value);
-    }
-
-    public static class Adapter extends TypeAdapter<LifetimeDollarsPurchased> {
-        @Override
-        public void write(final JsonWriter jsonWriter, final LifetimeDollarsPurchased enumeration) throws IOException {
-            jsonWriter.value(enumeration.getValue());
-        }
-
-        @Override
-        public LifetimeDollarsPurchased read(final JsonReader jsonReader) throws IOException {
-            Integer value = jsonReader.nextInt();
-            return LifetimeDollarsPurchased.fromValue(value);
-        }
     }
 }
 

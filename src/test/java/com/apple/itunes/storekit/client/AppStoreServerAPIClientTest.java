@@ -41,7 +41,8 @@ import com.apple.itunes.storekit.model.UserStatus;
 import com.apple.itunes.storekit.util.TestingUtility;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.MediaType;
 import okhttp3.Protocol;
 import okhttp3.Request;
@@ -77,7 +78,12 @@ public class AppStoreServerAPIClientTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            Map<String, Object> root = new Gson().fromJson(buffer.readUtf8(), Map.class);
+            Map<String, Object> root = null;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
             Assertions.assertEquals(45, ((Number) root.get("extendByDays")).intValue());
             Assertions.assertEquals(1, ((Number) root.get("extendReasonCode")).intValue());
             Assertions.assertEquals("fdf964a4-233b-486c-aac1-97d8d52688ac", root.get("requestIdentifier"));
@@ -112,7 +118,12 @@ public class AppStoreServerAPIClientTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            Map<String, Object> root = new Gson().fromJson(buffer.readUtf8(), Map.class);
+            Map<String, Object> root = null;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
             Assertions.assertEquals(45, ((Number) root.get("extendByDays")).intValue());
             Assertions.assertEquals(1, ((Number) root.get("extendReasonCode")).intValue());
             Assertions.assertEquals("fdf964a4-233b-486c-aac1-97d8d52688ac", root.get("requestIdentifier"));
@@ -248,7 +259,12 @@ public class AppStoreServerAPIClientTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            Map<String, Object> root = new Gson().fromJson(buffer.readUtf8(), Map.class);
+            Map<String, Object> root = null;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
             Assertions.assertEquals(1698148900000L, ((Number) root.get("startDate")).longValue());
             Assertions.assertEquals(1698148950000L, ((Number) root.get("endDate")).longValue());
             Assertions.assertEquals("SUBSCRIBED", root.get("notificationType"));
@@ -396,7 +412,12 @@ public class AppStoreServerAPIClientTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            Map<String, Object> root = new Gson().fromJson(buffer.readUtf8(), Map.class);
+            Map<String, Object> root = null;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
             Assertions.assertTrue((Boolean) root.get("customerConsented"));
             Assertions.assertEquals(1, ((Number) root.get("consumptionStatus")).intValue());
             Assertions.assertEquals(2, ((Number) root.get("platform")).intValue());
@@ -451,7 +472,7 @@ public class AppStoreServerAPIClientTest {
         try {
             client.getTransactionInfo("1234");
         } catch (APIException e) {
-            Assertions.assertEquals(500 , e.getHttpStatusCode());
+            Assertions.assertEquals(500, e.getHttpStatusCode());
             Assertions.assertEquals(APIError.GENERAL_INTERNAL, e.getApiError());
             Assertions.assertEquals(5000000L, e.getRawApiError());
             return;
@@ -466,7 +487,7 @@ public class AppStoreServerAPIClientTest {
         try {
             client.getTransactionInfo("1234");
         } catch (APIException e) {
-            Assertions.assertEquals(429 , e.getHttpStatusCode());
+            Assertions.assertEquals(429, e.getHttpStatusCode());
             Assertions.assertEquals(APIError.RATE_LIMIT_EXCEEDED, e.getApiError());
             Assertions.assertEquals(4290000L, e.getRawApiError());
             return;
@@ -481,9 +502,53 @@ public class AppStoreServerAPIClientTest {
         try {
             client.getTransactionInfo("1234");
         } catch (APIException e) {
-            Assertions.assertEquals(400 , e.getHttpStatusCode());
+            Assertions.assertEquals(400, e.getHttpStatusCode());
             Assertions.assertNull(e.getApiError());
             Assertions.assertEquals(9990000L, e.getRawApiError());
+            return;
+        }
+        Assertions.fail();
+    }
+
+    @Test
+    public void testDecodingWithUnknownEnumValue() throws IOException, APIException {
+        String body = TestingUtility.readFile("models/transactionHistoryResponseWithMalformedEnvironment.json");
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 200);
+
+        TransactionHistoryRequest request = new TransactionHistoryRequest()
+                .sort(TransactionHistoryRequest.Order.ASCENDING)
+                .productTypes(List.of(TransactionHistoryRequest.ProductType.CONSUMABLE, TransactionHistoryRequest.ProductType.AUTO_RENEWABLE))
+                .endDate(123456L)
+                .startDate(123455L)
+                .revoked(false)
+                .inAppOwnershipType(InAppOwnershipType.FAMILY_SHARED)
+                .productIds(List.of("com.example.1", "com.example.2"))
+                .subscriptionGroupIdentifiers(List.of("sub_group_id", "sub_group_id_2"));
+
+        HistoryResponse historyResponse = client.getTransactionHistory("1234", "revision_input", request);
+
+        Assertions.assertNull(historyResponse.getEnvironment());
+        Assertions.assertEquals("LocalTestingxxx", historyResponse.getRawEnvironment());
+    }
+
+    @Test
+    public void testDecodingWithMalformedJson() throws IOException {
+        String body = TestingUtility.readFile("models/transactionHistoryResponseWithMalformedAppAppleId.json");
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 200);
+
+        TransactionHistoryRequest request = new TransactionHistoryRequest()
+                .sort(TransactionHistoryRequest.Order.ASCENDING)
+                .productTypes(List.of(TransactionHistoryRequest.ProductType.CONSUMABLE, TransactionHistoryRequest.ProductType.AUTO_RENEWABLE))
+                .endDate(123456L)
+                .startDate(123455L)
+                .revoked(false)
+                .inAppOwnershipType(InAppOwnershipType.FAMILY_SHARED)
+                .productIds(List.of("com.example.1", "com.example.2"))
+                .subscriptionGroupIdentifiers(List.of("sub_group_id", "sub_group_id_2"));
+
+        try {
+            client.getTransactionHistory("1234", "revision_input", request);
+        } catch (APIException e) {
             return;
         }
         Assertions.fail();

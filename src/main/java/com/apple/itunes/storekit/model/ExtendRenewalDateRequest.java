@@ -2,7 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
@@ -15,11 +15,11 @@ public class ExtendRenewalDateRequest {
     private static final String SERIALIZED_NAME_EXTEND_BY_DAYS = "extendByDays";
     private static final String SERIALIZED_NAME_EXTEND_REASON_CODE = "extendReasonCode";
     private static final String SERIALIZED_NAME_REQUEST_IDENTIFIER = "requestIdentifier";
-    @SerializedName(SERIALIZED_NAME_EXTEND_BY_DAYS)
+    @JsonProperty(SERIALIZED_NAME_EXTEND_BY_DAYS)
     private Integer extendByDays;
-    @SerializedName(SERIALIZED_NAME_EXTEND_REASON_CODE)
+    @JsonProperty(SERIALIZED_NAME_EXTEND_REASON_CODE)
     private ExtendReasonCode extendReasonCode;
-    @SerializedName(SERIALIZED_NAME_REQUEST_IDENTIFIER)
+    @JsonProperty(SERIALIZED_NAME_REQUEST_IDENTIFIER)
     private String requestIdentifier;
 
 

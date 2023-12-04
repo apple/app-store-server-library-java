@@ -2,19 +2,13 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-
-import java.io.IOException;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * A value that indicates whether the order ID in the request is valid for your app.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/orderlookupstatus">OrderLookupStatus</a>
  */
-@JsonAdapter(OrderLookupStatus.Adapter.class)
 public enum OrderLookupStatus {
 
     VALID(0),
@@ -32,9 +26,10 @@ public enum OrderLookupStatus {
                 return b;
             }
         }
-        throw new IllegalArgumentException("Unexpected value '" + value + "'");
+        return null;
     }
 
+    @JsonValue
     public Integer getValue() {
         return value;
     }
@@ -42,19 +37,6 @@ public enum OrderLookupStatus {
     @Override
     public String toString() {
         return String.valueOf(value);
-    }
-
-    public static class Adapter extends TypeAdapter<OrderLookupStatus> {
-        @Override
-        public void write(final JsonWriter jsonWriter, final OrderLookupStatus enumeration) throws IOException {
-            jsonWriter.value(enumeration.getValue());
-        }
-
-        @Override
-        public OrderLookupStatus read(final JsonReader jsonReader) throws IOException {
-            Integer value = jsonReader.nextInt();
-            return OrderLookupStatus.fromValue(value);
-        }
     }
 }
 

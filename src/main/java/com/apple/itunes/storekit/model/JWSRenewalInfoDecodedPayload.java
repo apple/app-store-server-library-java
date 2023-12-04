@@ -2,9 +2,11 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -27,38 +29,40 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
     private static final String SERIALIZED_NAME_ENVIRONMENT = "environment";
     private static final String SERIALIZED_NAME_RECENT_SUBSCRIPTION_START_DATE = "recentSubscriptionStartDate";
     private static final String SERIALIZED_NAME_RENEWAL_DATE = "renewalDate";
-    @SerializedName(SERIALIZED_NAME_EXPIRATION_INTENT)
+    @JsonProperty(SERIALIZED_NAME_EXPIRATION_INTENT)
     private Integer expirationIntent;
-    @SerializedName(SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID)
+    @JsonProperty(SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID)
     private String originalTransactionId;
-    @SerializedName(SERIALIZED_NAME_AUTO_RENEW_PRODUCT_ID)
+    @JsonProperty(SERIALIZED_NAME_AUTO_RENEW_PRODUCT_ID)
     private String autoRenewProductId;
-    @SerializedName(SERIALIZED_NAME_PRODUCT_ID)
+    @JsonProperty(SERIALIZED_NAME_PRODUCT_ID)
     private String productId;
-    @SerializedName(SERIALIZED_NAME_AUTO_RENEW_STATUS)
+    @JsonProperty(SERIALIZED_NAME_AUTO_RENEW_STATUS)
     private Integer autoRenewStatus;
-    @SerializedName(SERIALIZED_NAME_IS_IN_BILLING_RETRY_PERIOD)
+    @JsonProperty(SERIALIZED_NAME_IS_IN_BILLING_RETRY_PERIOD)
     private Boolean isInBillingRetryPeriod;
-    @SerializedName(SERIALIZED_NAME_PRICE_INCREASE_STATUS)
+    @JsonProperty(SERIALIZED_NAME_PRICE_INCREASE_STATUS)
     private Integer priceIncreaseStatus;
-    @SerializedName(SERIALIZED_NAME_GRACE_PERIOD_EXPIRES_DATE)
-    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
+    @JsonProperty(SERIALIZED_NAME_GRACE_PERIOD_EXPIRES_DATE)
+    @JsonDeserialize(using=XcodeCompatibleTimestampDeserializer.class)
     private Long gracePeriodExpiresDate;
-    @SerializedName(SERIALIZED_NAME_OFFER_TYPE)
+    @JsonProperty(SERIALIZED_NAME_OFFER_TYPE)
     private Integer offerType;
-    @SerializedName(SERIALIZED_NAME_OFFER_IDENTIFIER)
+    @JsonProperty(SERIALIZED_NAME_OFFER_IDENTIFIER)
     private String offerIdentifier;
-    @SerializedName(SERIALIZED_NAME_SIGNED_DATE)
-    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
+    @JsonProperty(SERIALIZED_NAME_SIGNED_DATE)
+    @JsonDeserialize(using=XcodeCompatibleTimestampDeserializer.class)
     private Long signedDate;
-    @SerializedName(SERIALIZED_NAME_ENVIRONMENT)
+    @JsonProperty(SERIALIZED_NAME_ENVIRONMENT)
     private String environment;
-    @SerializedName(SERIALIZED_NAME_RECENT_SUBSCRIPTION_START_DATE)
-    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
+    @JsonProperty(SERIALIZED_NAME_RECENT_SUBSCRIPTION_START_DATE)
+    @JsonDeserialize(using=XcodeCompatibleTimestampDeserializer.class)
     private Long recentSubscriptionStartDate;
-    @SerializedName(SERIALIZED_NAME_RENEWAL_DATE)
-    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
+    @JsonProperty(SERIALIZED_NAME_RENEWAL_DATE)
+    @JsonDeserialize(using=XcodeCompatibleTimestampDeserializer.class)
     private Long renewalDate;
+    @JsonAnySetter
+    private Map<String, Object> unknownFields;
 
 
     public JWSRenewalInfoDecodedPayload() {
@@ -385,6 +389,25 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
         this.renewalDate = renewalDate;
     }
 
+
+    public JWSRenewalInfoDecodedPayload unknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+        return this;
+    }
+
+    /**
+     Fields that are not recognized for this object
+
+     @return A map of JSON keys to objects
+     */
+    public Map<String, Object> getUnknownFields() {
+        return unknownFields;
+    }
+
+    public void setUnknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -407,12 +430,13 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
                 Objects.equals(this.signedDate, jwSRenewalInfoDecodedPayload.signedDate) &&
                 Objects.equals(this.environment, jwSRenewalInfoDecodedPayload.environment) &&
                 Objects.equals(this.recentSubscriptionStartDate, jwSRenewalInfoDecodedPayload.recentSubscriptionStartDate) &&
-                Objects.equals(this.renewalDate, jwSRenewalInfoDecodedPayload.renewalDate);
+                Objects.equals(this.renewalDate, jwSRenewalInfoDecodedPayload.renewalDate) &&
+                Objects.equals(this.unknownFields, jwSRenewalInfoDecodedPayload.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(expirationIntent, originalTransactionId, autoRenewProductId, productId, autoRenewStatus, isInBillingRetryPeriod, priceIncreaseStatus, gracePeriodExpiresDate, offerType, offerIdentifier, signedDate, environment, recentSubscriptionStartDate, renewalDate);
+        return Objects.hash(expirationIntent, originalTransactionId, autoRenewProductId, productId, autoRenewStatus, isInBillingRetryPeriod, priceIncreaseStatus, gracePeriodExpiresDate, offerType, offerIdentifier, signedDate, environment, recentSubscriptionStartDate, renewalDate, unknownFields);
     }
 
     @Override
@@ -429,9 +453,10 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
                 ", offerType=" + offerType +
                 ", offerIdentifier='" + offerIdentifier + '\'' +
                 ", signedDate=" + signedDate +
-                ", environment=" + environment +
+                ", environment='" + environment + '\'' +
                 ", recentSubscriptionStartDate=" + recentSubscriptionStartDate +
                 ", renewalDate=" + renewalDate +
+                ", unknownFields=" + unknownFields +
                 '}';
     }
 }

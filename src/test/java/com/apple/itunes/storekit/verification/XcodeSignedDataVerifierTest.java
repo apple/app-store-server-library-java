@@ -33,8 +33,8 @@ public class XcodeSignedDataVerifierTest {
         Assertions.assertNull(appTransaction.getAppAppleId());
         Assertions.assertEquals(XCODE_BUNDLE_ID, appTransaction.getBundleId());
         Assertions.assertEquals("1", appTransaction.getApplicationVersion());
-        Assertions.assertNull(appTransaction.versionExternalIdentifier());
-        Assertions.assertEquals(-62135769600000L, appTransaction.originalPurchaseDate());
+        Assertions.assertNull(appTransaction.getVersionExternalIdentifier());
+        Assertions.assertEquals(-62135769600000L, appTransaction.getOriginalPurchaseDate());
         Assertions.assertEquals("1", appTransaction.getOriginalApplicationVersion());
         Assertions.assertEquals("cYUsXc53EbYc0pOeXG5d6/31LGHeVGf84sqSN0OrJi5u/j2H89WWKgS8N0hMsMlf", appTransaction.getDeviceVerification());
         Assertions.assertEquals(UUID.fromString("48c8b92d-ce0d-4229-bedf-e61b4f9cfc92"), appTransaction.getDeviceVerificationNonce());
@@ -78,6 +78,7 @@ public class XcodeSignedDataVerifierTest {
         Assertions.assertEquals("143441", transaction.getStorefrontId());
         Assertions.assertEquals(TransactionReason.PURCHASE, transaction.getTransactionReason());
         Assertions.assertEquals("PURCHASE", transaction.getRawTransactionReason());
+        Assertions.assertTrue(transaction.getUnknownFields().containsKey("deviceVerificationNonce"));
     }
 
     @Test
