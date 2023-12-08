@@ -2,19 +2,13 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-
-import java.io.IOException;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * The status of a customer’s account within your app.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/userstatus">userStatus</a>
  */
-@JsonAdapter(UserStatus.Adapter.class)
 public enum UserStatus {
 
     UNDECLARED(0),
@@ -35,9 +29,10 @@ public enum UserStatus {
                 return b;
             }
         }
-        throw new IllegalArgumentException("Unexpected value '" + value + "'");
+        return null;
     }
 
+    @JsonValue
     public Integer getValue() {
         return value;
     }
@@ -45,19 +40,6 @@ public enum UserStatus {
     @Override
     public String toString() {
         return String.valueOf(value);
-    }
-
-    public static class Adapter extends TypeAdapter<UserStatus> {
-        @Override
-        public void write(final JsonWriter jsonWriter, final UserStatus enumeration) throws IOException {
-            jsonWriter.value(enumeration.getValue());
-        }
-
-        @Override
-        public UserStatus read(final JsonReader jsonReader) throws IOException {
-            Integer value = jsonReader.nextInt();
-            return UserStatus.fromValue(value);
-        }
     }
 }
 

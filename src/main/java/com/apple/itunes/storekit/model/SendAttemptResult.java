@@ -2,19 +2,13 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-
-import java.io.IOException;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * The success or error information the App Store server records when it attempts to send an App Store server notification to your server.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/sendattemptresult">sendAttemptResult</a>
  */
-@JsonAdapter(SendAttemptResult.Adapter.class)
 public enum SendAttemptResult {
 
     SUCCESS("SUCCESS"),
@@ -41,9 +35,10 @@ public enum SendAttemptResult {
                 return b;
             }
         }
-        throw new IllegalArgumentException("Unexpected value '" + value + "'");
+        return null;
     }
 
+    @JsonValue
     public String getValue() {
         return value;
     }
@@ -51,19 +46,6 @@ public enum SendAttemptResult {
     @Override
     public String toString() {
         return value;
-    }
-
-    public static class Adapter extends TypeAdapter<SendAttemptResult> {
-        @Override
-        public void write(final JsonWriter jsonWriter, final SendAttemptResult enumeration) throws IOException {
-            jsonWriter.value(enumeration.getValue());
-        }
-
-        @Override
-        public SendAttemptResult read(final JsonReader jsonReader) throws IOException {
-            String value = jsonReader.nextString();
-            return SendAttemptResult.fromValue(value);
-        }
     }
 }
 

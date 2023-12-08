@@ -2,10 +2,12 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -20,18 +22,20 @@ public class HistoryResponse {
     private static final String SERIALIZED_NAME_APP_APPLE_ID = "appAppleId";
     private static final String SERIALIZED_NAME_ENVIRONMENT = "environment";
     private static final String SERIALIZED_NAME_SIGNED_TRANSACTIONS = "signedTransactions";
-    @SerializedName(SERIALIZED_NAME_REVISION)
+    @JsonProperty(SERIALIZED_NAME_REVISION)
     private String revision;
-    @SerializedName(SERIALIZED_NAME_HAS_MORE)
+    @JsonProperty(SERIALIZED_NAME_HAS_MORE)
     private Boolean hasMore;
-    @SerializedName(SERIALIZED_NAME_BUNDLE_ID)
+    @JsonProperty(SERIALIZED_NAME_BUNDLE_ID)
     private String bundleId;
-    @SerializedName(SERIALIZED_NAME_APP_APPLE_ID)
+    @JsonProperty(SERIALIZED_NAME_APP_APPLE_ID)
     private Long appAppleId;
-    @SerializedName(SERIALIZED_NAME_ENVIRONMENT)
+    @JsonProperty(SERIALIZED_NAME_ENVIRONMENT)
     private String environment;
-    @SerializedName(SERIALIZED_NAME_SIGNED_TRANSACTIONS)
+    @JsonProperty(SERIALIZED_NAME_SIGNED_TRANSACTIONS)
     private List<String> signedTransactions = null;
+    @JsonAnySetter
+    private Map<String, Object> unknownFields;
 
 
     public HistoryResponse() {
@@ -170,6 +174,24 @@ public class HistoryResponse {
         this.signedTransactions = signedTransactions;
     }
 
+    public HistoryResponse unknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+        return this;
+    }
+
+    /**
+     Fields that are not recognized for this object
+
+     @return A map of JSON keys to objects
+     */
+    public Map<String, Object> getUnknownFields() {
+        return unknownFields;
+    }
+
+    public void setUnknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -184,12 +206,13 @@ public class HistoryResponse {
                 Objects.equals(this.bundleId, historyResponse.bundleId) &&
                 Objects.equals(this.appAppleId, historyResponse.appAppleId) &&
                 Objects.equals(this.environment, historyResponse.environment) &&
-                Objects.equals(this.signedTransactions, historyResponse.signedTransactions);
+                Objects.equals(this.signedTransactions, historyResponse.signedTransactions) &&
+                Objects.equals(this.unknownFields, historyResponse.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(revision, hasMore, bundleId, appAppleId, environment, signedTransactions);
+        return Objects.hash(revision, hasMore, bundleId, appAppleId, environment, signedTransactions, unknownFields);
     }
 
     @Override
@@ -199,8 +222,9 @@ public class HistoryResponse {
                 ", hasMore=" + hasMore +
                 ", bundleId='" + bundleId + '\'' +
                 ", appAppleId=" + appAppleId +
-                ", environment=" + environment +
+                ", environment='" + environment + '\'' +
                 ", signedTransactions=" + signedTransactions +
+                ", unknownFields=" + unknownFields +
                 '}';
     }
 }

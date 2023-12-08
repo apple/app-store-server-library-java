@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.UUID;
 
 public class AppTransactionTest {
@@ -27,9 +26,9 @@ public class AppTransactionTest {
         Assertions.assertEquals(531412, appTransaction.getAppAppleId());
         Assertions.assertEquals("com.example", appTransaction.getBundleId());
         Assertions.assertEquals("1.2.3", appTransaction.getApplicationVersion());
-        Assertions.assertEquals(512, appTransaction.versionExternalIdentifier());
+        Assertions.assertEquals(512, appTransaction.getVersionExternalIdentifier());
         Assertions.assertEquals(1698148900000L, appTransaction.getReceiptCreationDate());
-        Assertions.assertEquals(1698148800000L, appTransaction.originalPurchaseDate());
+        Assertions.assertEquals(1698148800000L, appTransaction.getOriginalPurchaseDate());
         Assertions.assertEquals("1.1.2", appTransaction.getOriginalApplicationVersion());
         Assertions.assertEquals("device_verification_value", appTransaction.getDeviceVerification());
         Assertions.assertEquals(UUID.fromString("48ccfa42-7431-4f22-9908-7e88983e105a"), appTransaction.getDeviceVerificationNonce());

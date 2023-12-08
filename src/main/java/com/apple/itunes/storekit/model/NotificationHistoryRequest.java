@@ -2,7 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
@@ -18,17 +18,17 @@ public class NotificationHistoryRequest {
     private static final String SERIALIZED_NAME_NOTIFICATION_SUBTYPE = "notificationSubtype";
     private static final String SERIALIZED_NAME_TRANSACTION_ID = "transactionId";
     private static final String SERIALIZED_NAME_ONLY_FAILURES = "onlyFailures";
-    @SerializedName(SERIALIZED_NAME_START_DATE)
+    @JsonProperty(SERIALIZED_NAME_START_DATE)
     private Long startDate;
-    @SerializedName(SERIALIZED_NAME_END_DATE)
+    @JsonProperty(SERIALIZED_NAME_END_DATE)
     private Long endDate;
-    @SerializedName(SERIALIZED_NAME_NOTIFICATION_TYPE)
+    @JsonProperty(SERIALIZED_NAME_NOTIFICATION_TYPE)
     private NotificationTypeV2 notificationType;
-    @SerializedName(SERIALIZED_NAME_NOTIFICATION_SUBTYPE)
+    @JsonProperty(SERIALIZED_NAME_NOTIFICATION_SUBTYPE)
     private Subtype notificationSubtype;
-    @SerializedName(SERIALIZED_NAME_TRANSACTION_ID)
+    @JsonProperty(SERIALIZED_NAME_TRANSACTION_ID)
     private String transactionId;
-    @SerializedName(SERIALIZED_NAME_ONLY_FAILURES)
+    @JsonProperty(SERIALIZED_NAME_ONLY_FAILURES)
     private Boolean onlyFailures;
 
 

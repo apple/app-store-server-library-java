@@ -2,9 +2,11 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -40,63 +42,65 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
     private static final String SERIALIZED_NAME_PRICE = "price";
     private static final String SERIALIZED_NAME_CURRENCY = "currency";
     private static final String SERIALIZED_NAME_OFFER_DISCOUNT_TYPE = "offerDiscountType";
-    @SerializedName(SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID)
+    @JsonProperty(SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID)
     private String originalTransactionId;
-    @SerializedName(SERIALIZED_NAME_TRANSACTION_ID)
+    @JsonProperty(SERIALIZED_NAME_TRANSACTION_ID)
     private String transactionId;
-    @SerializedName(SERIALIZED_NAME_WEB_ORDER_LINE_ITEM_ID)
+    @JsonProperty(SERIALIZED_NAME_WEB_ORDER_LINE_ITEM_ID)
     private String webOrderLineItemId;
-    @SerializedName(SERIALIZED_NAME_BUNDLE_ID)
+    @JsonProperty(SERIALIZED_NAME_BUNDLE_ID)
     private String bundleId;
-    @SerializedName(SERIALIZED_NAME_PRODUCT_ID)
+    @JsonProperty(SERIALIZED_NAME_PRODUCT_ID)
     private String productId;
-    @SerializedName(SERIALIZED_NAME_SUBSCRIPTION_GROUP_IDENTIFIER)
+    @JsonProperty(SERIALIZED_NAME_SUBSCRIPTION_GROUP_IDENTIFIER)
     private String subscriptionGroupIdentifier;
-    @SerializedName(SERIALIZED_NAME_PURCHASE_DATE)
-    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
+    @JsonProperty(SERIALIZED_NAME_PURCHASE_DATE)
+    @JsonDeserialize(using=XcodeCompatibleTimestampDeserializer.class)
     private Long purchaseDate;
-    @SerializedName(SERIALIZED_NAME_ORIGINAL_PURCHASE_DATE)
-    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
+    @JsonProperty(SERIALIZED_NAME_ORIGINAL_PURCHASE_DATE)
+    @JsonDeserialize(using=XcodeCompatibleTimestampDeserializer.class)
     private Long originalPurchaseDate;
-    @SerializedName(SERIALIZED_NAME_EXPIRES_DATE)
-    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
+    @JsonProperty(SERIALIZED_NAME_EXPIRES_DATE)
+    @JsonDeserialize(using=XcodeCompatibleTimestampDeserializer.class)
     private Long expiresDate;
-    @SerializedName(SERIALIZED_NAME_QUANTITY)
+    @JsonProperty(SERIALIZED_NAME_QUANTITY)
     private Integer quantity;
-    @SerializedName(SERIALIZED_NAME_TYPE)
+    @JsonProperty(SERIALIZED_NAME_TYPE)
     private String type;
-    @SerializedName(SERIALIZED_NAME_APP_ACCOUNT_TOKEN)
+    @JsonProperty(SERIALIZED_NAME_APP_ACCOUNT_TOKEN)
     private UUID appAccountToken;
-    @SerializedName(SERIALIZED_NAME_IN_APP_OWNERSHIP_TYPE)
+    @JsonProperty(SERIALIZED_NAME_IN_APP_OWNERSHIP_TYPE)
     private String inAppOwnershipType;
-    @SerializedName(SERIALIZED_NAME_SIGNED_DATE)
-    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
+    @JsonProperty(SERIALIZED_NAME_SIGNED_DATE)
+    @JsonDeserialize(using=XcodeCompatibleTimestampDeserializer.class)
     private Long signedDate;
-    @SerializedName(SERIALIZED_NAME_REVOCATION_REASON)
+    @JsonProperty(SERIALIZED_NAME_REVOCATION_REASON)
     private Integer revocationReason;
-    @SerializedName(SERIALIZED_NAME_REVOCATION_DATE)
-    @JsonAdapter(XcodeCompatibleTimestampDeserializer.class)
+    @JsonProperty(SERIALIZED_NAME_REVOCATION_DATE)
+    @JsonDeserialize(using=XcodeCompatibleTimestampDeserializer.class)
     private Long revocationDate;
-    @SerializedName(SERIALIZED_NAME_IS_UPGRADED)
+    @JsonProperty(SERIALIZED_NAME_IS_UPGRADED)
     private Boolean isUpgraded;
-    @SerializedName(SERIALIZED_NAME_OFFER_TYPE)
+    @JsonProperty(SERIALIZED_NAME_OFFER_TYPE)
     private Integer offerType;
-    @SerializedName(SERIALIZED_NAME_OFFER_IDENTIFIER)
+    @JsonProperty(SERIALIZED_NAME_OFFER_IDENTIFIER)
     private String offerIdentifier;
-    @SerializedName(SERIALIZED_NAME_ENVIRONMENT)
+    @JsonProperty(SERIALIZED_NAME_ENVIRONMENT)
     private String environment;
-    @SerializedName(SERIALIZED_NAME_STOREFRONT)
+    @JsonProperty(SERIALIZED_NAME_STOREFRONT)
     private String storefront;
-    @SerializedName(SERIALIZED_NAME_STOREFRONT_ID)
+    @JsonProperty(SERIALIZED_NAME_STOREFRONT_ID)
     private String storefrontId;
-    @SerializedName(SERIALIZED_NAME_TRANSACTION_REASON)
+    @JsonProperty(SERIALIZED_NAME_TRANSACTION_REASON)
     private String transactionReason;
-    @SerializedName(SERIALIZED_NAME_PRICE)
+    @JsonProperty(SERIALIZED_NAME_PRICE)
     private Integer price;
-    @SerializedName(SERIALIZED_NAME_CURRENCY)
+    @JsonProperty(SERIALIZED_NAME_CURRENCY)
     private String currency;
-    @SerializedName(SERIALIZED_NAME_OFFER_DISCOUNT_TYPE)
+    @JsonProperty(SERIALIZED_NAME_OFFER_DISCOUNT_TYPE)
     private String offerDiscountType;
+    @JsonAnySetter
+    private Map<String, Object> unknownFields;
 
 
     public JWSTransactionDecodedPayload() {
@@ -673,6 +677,23 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
         this.offerDiscountType = rawOfferDiscountType;
     }
 
+    public JWSTransactionDecodedPayload unknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+        return this;
+    }
+
+    /**
+     Fields that are not recognized for this object
+
+     @return A map of JSON keys to objects
+     */
+    public Map<String, Object> getUnknownFields() {
+        return unknownFields;
+    }
+
+    public void setUnknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -708,12 +729,13 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
                 Objects.equals(this.transactionReason, jwSTransactionDecodedPayload.transactionReason) &&
                 Objects.equals(this.price, jwSTransactionDecodedPayload.price) &&
                 Objects.equals(this.currency, jwSTransactionDecodedPayload.currency) &&
-                Objects.equals(this.offerDiscountType, jwSTransactionDecodedPayload.offerDiscountType);
+                Objects.equals(this.offerDiscountType, jwSTransactionDecodedPayload.offerDiscountType) &&
+                Objects.equals(this.unknownFields, jwSTransactionDecodedPayload.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(originalTransactionId, transactionId, webOrderLineItemId, bundleId, productId, subscriptionGroupIdentifier, purchaseDate, originalPurchaseDate, expiresDate, quantity, type, appAccountToken, inAppOwnershipType, signedDate, revocationReason, revocationDate, isUpgraded, offerType, offerIdentifier, environment, storefront, storefrontId, transactionReason, price, currency, offerDiscountType);
+        return Objects.hash(originalTransactionId, transactionId, webOrderLineItemId, bundleId, productId, subscriptionGroupIdentifier, purchaseDate, originalPurchaseDate, expiresDate, quantity, type, appAccountToken, inAppOwnershipType, signedDate, revocationReason, revocationDate, isUpgraded, offerType, offerIdentifier, environment, storefront, storefrontId, transactionReason, price, currency, offerDiscountType, unknownFields);
     }
 
     @Override
@@ -729,22 +751,23 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
                 ", originalPurchaseDate=" + originalPurchaseDate +
                 ", expiresDate=" + expiresDate +
                 ", quantity=" + quantity +
-                ", type=" + type +
+                ", type='" + type + '\'' +
                 ", appAccountToken=" + appAccountToken +
-                ", inAppOwnershipType=" + inAppOwnershipType +
+                ", inAppOwnershipType='" + inAppOwnershipType + '\'' +
                 ", signedDate=" + signedDate +
                 ", revocationReason=" + revocationReason +
                 ", revocationDate=" + revocationDate +
                 ", isUpgraded=" + isUpgraded +
                 ", offerType=" + offerType +
                 ", offerIdentifier='" + offerIdentifier + '\'' +
-                ", environment=" + environment +
+                ", environment='" + environment + '\'' +
                 ", storefront='" + storefront + '\'' +
                 ", storefrontId='" + storefrontId + '\'' +
-                ", transactionReason=" + transactionReason +
+                ", transactionReason='" + transactionReason + '\'' +
                 ", price=" + price +
-                ", currency'=" + currency + '\'' +
-                ", offerDiscountType=" + offerDiscountType +
+                ", currency='" + currency + '\'' +
+                ", offerDiscountType='" + offerDiscountType + '\'' +
+                ", unknownFields=" + unknownFields +
                 '}';
     }
 }

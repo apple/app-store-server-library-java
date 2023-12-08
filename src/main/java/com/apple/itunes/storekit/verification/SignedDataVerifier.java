@@ -11,7 +11,9 @@ import com.apple.itunes.storekit.model.ResponseBodyV2DecodedPayload;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.InputStream;
 import java.security.PublicKey;
@@ -30,7 +32,7 @@ public class SignedDataVerifier {
     private final Environment environment;
     private final ChainVerifier chainVerifier;
     private final boolean enableOnlineChecks;
-    private final Gson gson;
+    private final ObjectMapper objectMapper;
 
     /**
      *
@@ -46,7 +48,13 @@ public class SignedDataVerifier {
         this.environment = environment;
         this.chainVerifier = new ChainVerifier(rootCertificates);
         this.enableOnlineChecks = enableOnlineChecks;
-        this.gson = new Gson();
+        this.objectMapper = new ObjectMapper();
+        objectMapper.setVisibility(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
+                .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+                .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
     }
 
     /**
@@ -149,8 +157,12 @@ public class SignedDataVerifier {
         }
     }
 
-    protected <T extends DecodedSignedData> T parseJWTPayload(Class<T> clazz, DecodedJWT jwt) {
+    protected <T extends DecodedSignedData> T parseJWTPayload(Class<T> clazz, DecodedJWT jwt) throws VerificationException {
         String payload = new String(Base64.getUrlDecoder().decode(jwt.getPayload()));
-        return gson.fromJson(payload, clazz);
+        try {
+            return objectMapper.readValue(payload, clazz);
+        } catch (JsonProcessingException e) {
+            throw new VerificationException(Status.VERIFICATION_FAILURE, e);
+        }
     }
 }

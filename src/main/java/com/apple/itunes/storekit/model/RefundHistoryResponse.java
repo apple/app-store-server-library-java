@@ -2,10 +2,12 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -17,12 +19,14 @@ public class RefundHistoryResponse {
     private static final String SERIALIZED_NAME_SIGNED_TRANSACTIONS = "signedTransactions";
     private static final String SERIALIZED_NAME_REVISION = "revision";
     private static final String SERIALIZED_NAME_HAS_MORE = "hasMore";
-    @SerializedName(SERIALIZED_NAME_SIGNED_TRANSACTIONS)
+    @JsonProperty(SERIALIZED_NAME_SIGNED_TRANSACTIONS)
     private List<String> signedTransactions = null;
-    @SerializedName(SERIALIZED_NAME_REVISION)
+    @JsonProperty(SERIALIZED_NAME_REVISION)
     private String revision;
-    @SerializedName(SERIALIZED_NAME_HAS_MORE)
+    @JsonProperty(SERIALIZED_NAME_HAS_MORE)
     private Boolean hasMore;
+    @JsonAnySetter
+    private Map<String, Object> unknownFields;
 
     public RefundHistoryResponse() {
     }
@@ -91,6 +95,25 @@ public class RefundHistoryResponse {
         this.hasMore = hasMore;
     }
 
+
+    public RefundHistoryResponse unknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+        return this;
+    }
+
+    /**
+     Fields that are not recognized for this object
+
+     @return A map of JSON keys to objects
+     */
+    public Map<String, Object> getUnknownFields() {
+        return unknownFields;
+    }
+
+    public void setUnknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -102,12 +125,13 @@ public class RefundHistoryResponse {
         RefundHistoryResponse refundHistoryResponse = (RefundHistoryResponse) o;
         return Objects.equals(this.signedTransactions, refundHistoryResponse.signedTransactions) &&
                 Objects.equals(this.revision, refundHistoryResponse.revision) &&
-                Objects.equals(this.hasMore, refundHistoryResponse.hasMore);
+                Objects.equals(this.hasMore, refundHistoryResponse.hasMore) &&
+                Objects.equals(this.unknownFields, refundHistoryResponse.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(signedTransactions, revision, hasMore);
+        return Objects.hash(signedTransactions, revision, hasMore, unknownFields);
     }
 
     @Override
@@ -116,6 +140,7 @@ public class RefundHistoryResponse {
                 "signedTransactions=" + signedTransactions +
                 ", revision='" + revision + '\'' +
                 ", hasMore=" + hasMore +
+                ", unknownFields=" + unknownFields +
                 '}';
     }
 }

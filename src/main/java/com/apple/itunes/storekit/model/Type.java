@@ -2,19 +2,13 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-
-import java.io.IOException;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * The type of in-app purchase products you can offer in your app.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/type">type</a>
  */
-@JsonAdapter(Type.Adapter.class)
 public enum Type {
 
     AUTO_RENEWABLE_SUBSCRIPTION("Auto-Renewable Subscription"),
@@ -34,9 +28,10 @@ public enum Type {
                 return b;
             }
         }
-        throw new IllegalArgumentException("Unexpected value '" + value + "'");
+        return null;
     }
 
+    @JsonValue
     public String getValue() {
         return value;
     }
@@ -44,19 +39,6 @@ public enum Type {
     @Override
     public String toString() {
         return String.valueOf(value);
-    }
-
-    public static class Adapter extends TypeAdapter<Type> {
-        @Override
-        public void write(final JsonWriter jsonWriter, final Type enumeration) throws IOException {
-            jsonWriter.value(enumeration.getValue());
-        }
-
-        @Override
-        public Type read(final JsonReader jsonReader) throws IOException {
-            String value = jsonReader.nextString();
-            return Type.fromValue(value);
-        }
     }
 }
 

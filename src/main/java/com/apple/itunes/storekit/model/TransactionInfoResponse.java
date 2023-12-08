@@ -2,8 +2,10 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -13,8 +15,10 @@ import java.util.Objects;
  */
 public class TransactionInfoResponse {
     private static final String SERIALIZED_NAME_SIGNED_TRANSACTION_INFO = "signedTransactionInfo";
-    @SerializedName(SERIALIZED_NAME_SIGNED_TRANSACTION_INFO)
+    @JsonProperty(SERIALIZED_NAME_SIGNED_TRANSACTION_INFO)
     private String signedTransactionInfo;
+    @JsonAnySetter
+    private Map<String, Object> unknownFields;
 
 
     public TransactionInfoResponse() {
@@ -39,6 +43,25 @@ public class TransactionInfoResponse {
         this.signedTransactionInfo = signedTransactionInfo;
     }
 
+
+    public TransactionInfoResponse unknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+        return this;
+    }
+
+    /**
+     Fields that are not recognized for this object
+
+     @return A map of JSON keys to objects
+     */
+    public Map<String, Object> getUnknownFields() {
+        return unknownFields;
+    }
+
+    public void setUnknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -48,18 +71,20 @@ public class TransactionInfoResponse {
             return false;
         }
         TransactionInfoResponse transactionInfoResponse = (TransactionInfoResponse) o;
-        return Objects.equals(this.signedTransactionInfo, transactionInfoResponse.signedTransactionInfo);
+        return Objects.equals(this.signedTransactionInfo, transactionInfoResponse.signedTransactionInfo) &&
+                Objects.equals(this.unknownFields, transactionInfoResponse.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(signedTransactionInfo);
+        return Objects.hash(signedTransactionInfo, unknownFields);
     }
 
     @Override
     public String toString() {
         return "TransactionInfoResponse{" +
                 "signedTransactionInfo='" + signedTransactionInfo + '\'' +
+                ", unknownFields=" + unknownFields +
                 '}';
     }
 }

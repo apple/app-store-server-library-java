@@ -2,7 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +19,15 @@ public class MassExtendRenewalDateRequest {
     private static final String SERIALIZED_NAME_REQUEST_IDENTIFIER = "requestIdentifier";
     private static final String SERIALIZED_NAME_STOREFRONT_COUNTRY_CODES = "storefrontCountryCodes";
     private static final String SERIALIZED_NAME_PRODUCT_ID = "productId";
-    @SerializedName(SERIALIZED_NAME_EXTEND_BY_DAYS)
+    @JsonProperty(SERIALIZED_NAME_EXTEND_BY_DAYS)
     private Integer extendByDays;
-    @SerializedName(SERIALIZED_NAME_EXTEND_REASON_CODE)
+    @JsonProperty(SERIALIZED_NAME_EXTEND_REASON_CODE)
     private ExtendReasonCode extendReasonCode;
-    @SerializedName(SERIALIZED_NAME_REQUEST_IDENTIFIER)
+    @JsonProperty(SERIALIZED_NAME_REQUEST_IDENTIFIER)
     private String requestIdentifier;
-    @SerializedName(SERIALIZED_NAME_STOREFRONT_COUNTRY_CODES)
+    @JsonProperty(SERIALIZED_NAME_STOREFRONT_COUNTRY_CODES)
     private List<String> storefrontCountryCodes = null;
-    @SerializedName(SERIALIZED_NAME_PRODUCT_ID)
+    @JsonProperty(SERIALIZED_NAME_PRODUCT_ID)
     private String productId;
 
 

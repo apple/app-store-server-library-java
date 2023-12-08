@@ -2,9 +2,11 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -15,10 +17,12 @@ import java.util.Objects;
 public class NotificationHistoryResponseItem {
     private static final String SERIALIZED_NAME_SIGNED_PAYLOAD = "signedPayload";
     private static final String SERIALIZED_NAME_SEND_ATTEMPTS = "sendAttempts";
-    @SerializedName(SERIALIZED_NAME_SIGNED_PAYLOAD)
+    @JsonProperty(SERIALIZED_NAME_SIGNED_PAYLOAD)
     private String signedPayload;
-    @SerializedName(SERIALIZED_NAME_SEND_ATTEMPTS)
+    @JsonProperty(SERIALIZED_NAME_SEND_ATTEMPTS)
     private List<SendAttemptItem> sendAttempts;
+    @JsonAnySetter
+    private Map<String, Object> unknownFields;
 
 
     public NotificationHistoryResponseItem() {
@@ -62,6 +66,25 @@ public class NotificationHistoryResponseItem {
         this.sendAttempts = sendAttempts;
     }
 
+
+    public NotificationHistoryResponseItem unknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+        return this;
+    }
+
+    /**
+     Fields that are not recognized for this object
+
+     @return A map of JSON keys to objects
+     */
+    public Map<String, Object> getUnknownFields() {
+        return unknownFields;
+    }
+
+    public void setUnknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -72,12 +95,13 @@ public class NotificationHistoryResponseItem {
         }
         NotificationHistoryResponseItem notificationHistoryResponseItem = (NotificationHistoryResponseItem) o;
         return Objects.equals(this.signedPayload, notificationHistoryResponseItem.signedPayload) &&
-                Objects.equals(this.sendAttempts, notificationHistoryResponseItem.sendAttempts);
+                Objects.equals(this.sendAttempts, notificationHistoryResponseItem.sendAttempts) &&
+                Objects.equals(this.unknownFields, notificationHistoryResponseItem.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(signedPayload, sendAttempts);
+        return Objects.hash(signedPayload, sendAttempts, unknownFields);
     }
 
     @Override
@@ -85,6 +109,7 @@ public class NotificationHistoryResponseItem {
         return "NotificationHistoryResponseItem{" +
                 "signedPayload='" + signedPayload + '\'' +
                 ", sendAttempts=" + sendAttempts +
+                ", unknownFields=" + unknownFields +
                 '}';
     }
 }

@@ -2,19 +2,13 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-
-import java.io.IOException;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * The relationship of the user with the family-shared purchase to which they have access.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/inappownershiptype">inAppOwnershipType</a>
  */
-@JsonAdapter(InAppOwnershipType.Adapter.class)
 public enum InAppOwnershipType {
 
     FAMILY_SHARED("FAMILY_SHARED"),
@@ -32,9 +26,10 @@ public enum InAppOwnershipType {
                 return b;
             }
         }
-        throw new IllegalArgumentException("Unexpected value '" + value + "'");
+        return null;
     }
 
+    @JsonValue
     public String getValue() {
         return value;
     }
@@ -42,19 +37,6 @@ public enum InAppOwnershipType {
     @Override
     public String toString() {
         return String.valueOf(value);
-    }
-
-    public static class Adapter extends TypeAdapter<InAppOwnershipType> {
-        @Override
-        public void write(final JsonWriter jsonWriter, final InAppOwnershipType enumeration) throws IOException {
-            jsonWriter.value(enumeration.getValue());
-        }
-
-        @Override
-        public InAppOwnershipType read(final JsonReader jsonReader) throws IOException {
-            String value = jsonReader.nextString();
-            return InAppOwnershipType.fromValue(value);
-        }
     }
 }
 

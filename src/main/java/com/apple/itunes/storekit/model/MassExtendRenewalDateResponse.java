@@ -2,8 +2,10 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -13,8 +15,10 @@ import java.util.Objects;
  */
 public class MassExtendRenewalDateResponse {
     private static final String SERIALIZED_NAME_REQUEST_IDENTIFIER = "requestIdentifier";
-    @SerializedName(SERIALIZED_NAME_REQUEST_IDENTIFIER)
+    @JsonProperty(SERIALIZED_NAME_REQUEST_IDENTIFIER)
     private String requestIdentifier;
+    @JsonAnySetter
+    private Map<String, Object> unknownFields;
 
 
     public MassExtendRenewalDateResponse() {
@@ -39,6 +43,25 @@ public class MassExtendRenewalDateResponse {
         this.requestIdentifier = requestIdentifier;
     }
 
+
+    public MassExtendRenewalDateResponse unknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+        return this;
+    }
+
+    /**
+     Fields that are not recognized for this object
+
+     @return A map of JSON keys to objects
+     */
+    public Map<String, Object> getUnknownFields() {
+        return unknownFields;
+    }
+
+    public void setUnknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -48,18 +71,20 @@ public class MassExtendRenewalDateResponse {
             return false;
         }
         MassExtendRenewalDateResponse massExtendRenewalDateResponse = (MassExtendRenewalDateResponse) o;
-        return Objects.equals(this.requestIdentifier, massExtendRenewalDateResponse.requestIdentifier);
+        return Objects.equals(this.requestIdentifier, massExtendRenewalDateResponse.requestIdentifier) &&
+                Objects.equals(this.unknownFields, massExtendRenewalDateResponse.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(requestIdentifier);
+        return Objects.hash(requestIdentifier, unknownFields);
     }
 
     @Override
     public String toString() {
         return "MassExtendRenewalDateResponse{" +
                 "requestIdentifier='" + requestIdentifier + '\'' +
+                ", unknownFields=" + unknownFields +
                 '}';
     }
 }

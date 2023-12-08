@@ -2,10 +2,12 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -22,22 +24,24 @@ public class Summary {
     private static final String SERIALIZED_NAME_STOREFRONT_COUNTRY_CODES = "storefrontCountryCodes";
     private static final String SERIALIZED_NAME_SUCCEEDED_COUNT = "succeededCount";
     private static final String SERIALIZED_NAME_FAILED_COUNT = "failedCount";
-    @SerializedName(SERIALIZED_NAME_ENVIRONMENT)
+    @JsonProperty(SERIALIZED_NAME_ENVIRONMENT)
     private String environment;
-    @SerializedName(SERIALIZED_NAME_APP_APPLE_ID)
+    @JsonProperty(SERIALIZED_NAME_APP_APPLE_ID)
     private Long appAppleId;
-    @SerializedName(SERIALIZED_NAME_BUNDLE_ID)
+    @JsonProperty(SERIALIZED_NAME_BUNDLE_ID)
     private String bundleId;
-    @SerializedName(SERIALIZED_NAME_PRODUCT_ID)
+    @JsonProperty(SERIALIZED_NAME_PRODUCT_ID)
     private String productId;
-    @SerializedName(SERIALIZED_NAME_REQUEST_IDENTIFIER)
+    @JsonProperty(SERIALIZED_NAME_REQUEST_IDENTIFIER)
     private String requestIdentifier;
-    @SerializedName(SERIALIZED_NAME_STOREFRONT_COUNTRY_CODES)
+    @JsonProperty(SERIALIZED_NAME_STOREFRONT_COUNTRY_CODES)
     private List<String> storefrontCountryCodes;
-    @SerializedName(SERIALIZED_NAME_SUCCEEDED_COUNT)
+    @JsonProperty(SERIALIZED_NAME_SUCCEEDED_COUNT)
     private Long succeededCount;
-    @SerializedName(SERIALIZED_NAME_FAILED_COUNT)
+    @JsonProperty(SERIALIZED_NAME_FAILED_COUNT)
     private Long failedCount;
+    @JsonAnySetter
+    private Map<String, Object> unknownFields;
 
 
     public Summary() {
@@ -214,6 +218,25 @@ public class Summary {
         this.failedCount = failedCount;
     }
 
+
+    public Summary unknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+        return this;
+    }
+
+    /**
+     Fields that are not recognized for this object
+
+     @return A map of JSON keys to objects
+     */
+    public Map<String, Object> getUnknownFields() {
+        return unknownFields;
+    }
+
+    public void setUnknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -230,18 +253,19 @@ public class Summary {
                 Objects.equals(this.requestIdentifier, summary.requestIdentifier) &&
                 Objects.equals(this.storefrontCountryCodes, summary.storefrontCountryCodes) &&
                 Objects.equals(this.succeededCount, summary.succeededCount) &&
-                Objects.equals(this.failedCount, summary.failedCount);
+                Objects.equals(this.failedCount, summary.failedCount) &&
+                Objects.equals(this.unknownFields, summary.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(environment, appAppleId, bundleId, productId, requestIdentifier, storefrontCountryCodes, succeededCount, failedCount);
+        return Objects.hash(environment, appAppleId, bundleId, productId, requestIdentifier, storefrontCountryCodes, succeededCount, failedCount, unknownFields);
     }
 
     @Override
     public String toString() {
         return "Summary{" +
-                "environment=" + environment +
+                "environment='" + environment + '\'' +
                 ", appAppleId=" + appAppleId +
                 ", bundleId='" + bundleId + '\'' +
                 ", productId='" + productId + '\'' +
@@ -249,6 +273,7 @@ public class Summary {
                 ", storefrontCountryCodes=" + storefrontCountryCodes +
                 ", succeededCount=" + succeededCount +
                 ", failedCount=" + failedCount +
+                ", unknownFields=" + unknownFields +
                 '}';
     }
 }

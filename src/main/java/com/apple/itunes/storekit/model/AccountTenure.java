@@ -2,19 +2,13 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-
-import java.io.IOException;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * The age of the customer’s account.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/accounttenure">accountTenure</a>
  */
-@JsonAdapter(AccountTenure.Adapter.class)
 public enum AccountTenure {
 
     UNDECLARED(0),
@@ -38,24 +32,12 @@ public enum AccountTenure {
                 return b;
             }
         }
-        throw new IllegalArgumentException("Unexpected value '" + value + "'");
+        return null;
     }
 
+    @JsonValue
     public Integer getValue() {
         return value;
-    }
-
-    public static class Adapter extends TypeAdapter<AccountTenure> {
-        @Override
-        public void write(final JsonWriter jsonWriter, final AccountTenure enumeration) throws IOException {
-            jsonWriter.value(enumeration.getValue());
-        }
-
-        @Override
-        public AccountTenure read(final JsonReader jsonReader) throws IOException {
-            Integer value = jsonReader.nextInt();
-            return AccountTenure.fromValue(value);
-        }
     }
 }
 

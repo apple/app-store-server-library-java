@@ -2,8 +2,10 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -16,14 +18,16 @@ public class LastTransactionsItem {
     private static final String SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID = "originalTransactionId";
     private static final String SERIALIZED_NAME_SIGNED_TRANSACTION_INFO = "signedTransactionInfo";
     private static final String SERIALIZED_NAME_SIGNED_RENEWAL_INFO = "signedRenewalInfo";
-    @SerializedName(SERIALIZED_NAME_STATUS)
+    @JsonProperty(SERIALIZED_NAME_STATUS)
     private Integer status;
-    @SerializedName(SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID)
+    @JsonProperty(SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID)
     private String originalTransactionId;
-    @SerializedName(SERIALIZED_NAME_SIGNED_TRANSACTION_INFO)
+    @JsonProperty(SERIALIZED_NAME_SIGNED_TRANSACTION_INFO)
     private String signedTransactionInfo;
-    @SerializedName(SERIALIZED_NAME_SIGNED_RENEWAL_INFO)
+    @JsonProperty(SERIALIZED_NAME_SIGNED_RENEWAL_INFO)
     private String signedRenewalInfo;
+    @JsonAnySetter
+    private Map<String, Object> unknownFields;
 
 
     public LastTransactionsItem() {
@@ -116,6 +120,24 @@ public class LastTransactionsItem {
         this.signedRenewalInfo = signedRenewalInfo;
     }
 
+    public LastTransactionsItem unknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+        return this;
+    }
+
+    /**
+     Fields that are not recognized for this object
+
+     @return A map of JSON keys to objects
+     */
+    public Map<String, Object> getUnknownFields() {
+        return unknownFields;
+    }
+
+    public void setUnknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -128,12 +150,13 @@ public class LastTransactionsItem {
         return Objects.equals(this.status, lastTransactionsItem.status) &&
                 Objects.equals(this.originalTransactionId, lastTransactionsItem.originalTransactionId) &&
                 Objects.equals(this.signedTransactionInfo, lastTransactionsItem.signedTransactionInfo) &&
-                Objects.equals(this.signedRenewalInfo, lastTransactionsItem.signedRenewalInfo);
+                Objects.equals(this.signedRenewalInfo, lastTransactionsItem.signedRenewalInfo) &&
+                Objects.equals(this.unknownFields, lastTransactionsItem.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(status, originalTransactionId, signedTransactionInfo, signedRenewalInfo);
+        return Objects.hash(status, originalTransactionId, signedTransactionInfo, signedRenewalInfo, unknownFields);
     }
 
     @Override
@@ -143,6 +166,7 @@ public class LastTransactionsItem {
                 ", originalTransactionId='" + originalTransactionId + '\'' +
                 ", signedTransactionInfo='" + signedTransactionInfo + '\'' +
                 ", signedRenewalInfo='" + signedRenewalInfo + '\'' +
+                ", unknownFields=" + unknownFields +
                 '}';
     }
 }

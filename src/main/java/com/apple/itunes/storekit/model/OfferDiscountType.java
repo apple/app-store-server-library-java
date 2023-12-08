@@ -2,19 +2,13 @@
 
 package com.apple.itunes.storekit.model;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-
-import java.io.IOException;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * The payment mode you configure for an introductory offer, promotional offer, or offer code on an auto-renewable subscription.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/offerdiscounttype">offerDiscountType</a>
  */
-@JsonAdapter(OfferDiscountType.Adapter.class)
 public enum OfferDiscountType {
 
     FREE_TRIAL("FREE_TRIAL"),
@@ -33,9 +27,10 @@ public enum OfferDiscountType {
                 return b;
             }
         }
-        throw new IllegalArgumentException("Unexpected value '" + value + "'");
+        return null;
     }
 
+    @JsonValue
     public String getValue() {
         return value;
     }
@@ -43,18 +38,5 @@ public enum OfferDiscountType {
     @Override
     public String toString() {
         return String.valueOf(value);
-    }
-
-    public static class Adapter extends TypeAdapter<OfferDiscountType> {
-        @Override
-        public void write(final JsonWriter jsonWriter, final OfferDiscountType enumeration) throws IOException {
-            jsonWriter.value(enumeration.getValue());
-        }
-
-        @Override
-        public OfferDiscountType read(final JsonReader jsonReader) throws IOException {
-            String value = jsonReader.nextString();
-            return OfferDiscountType.fromValue(value);
-        }
     }
 }
