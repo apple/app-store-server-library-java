@@ -2,7 +2,7 @@
 
 package com.apple.itunes.storekit.verification;
 
-public enum Status {
+public enum VerificationStatus {
     OK,
     VERIFICATION_FAILURE,
     INVALID_APP_IDENTIFIER,

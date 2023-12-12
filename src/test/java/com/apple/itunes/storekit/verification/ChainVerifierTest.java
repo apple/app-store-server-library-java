@@ -50,7 +50,7 @@ public class ChainVerifierTest {
                 INTERMEDIATE_CA_INVALID_OID_BASE64_ENCODED,
                 LEAF_CERT_FOR_INTERMEDIATE_CA_INVALID_OID_BASE64_ENCODED
         }, false, EFFECTIVE_DATE));
-        Assertions.assertEquals(Status.INVALID_CHAIN,exception.getStatus());
+        Assertions.assertEquals(VerificationStatus.INVALID_CHAIN,exception.getStatus());
         Throwable cause = exception.getCause();
         Assertions.assertInstanceOf(CertPathValidatorException.class, cause);
         Assertions.assertTrue(cause.toString().contains("OID: 1.2.840.113635.100.6.2.1 was not found on the intermediate WWDR certificate"));
@@ -64,7 +64,7 @@ public class ChainVerifierTest {
                 INTERMEDIATE_CA_BASE64_ENCODED,
                 ROOT_CA_BASE64_ENCODED
         }, false, EFFECTIVE_DATE));
-        Assertions.assertEquals(Status.INVALID_CHAIN, exception.getStatus());
+        Assertions.assertEquals(VerificationStatus.INVALID_CHAIN, exception.getStatus());
         Throwable cause = exception.getCause();
         Assertions.assertInstanceOf(CertPathValidatorException.class, cause);
         Assertions.assertTrue(cause.toString().contains("OID: 1.2.840.113635.100.6.11.1 was not found on the signing certificate"));
@@ -77,7 +77,7 @@ public class ChainVerifierTest {
                 INTERMEDIATE_CA_BASE64_ENCODED,
                 ROOT_CA_BASE64_ENCODED
         }, false, EFFECTIVE_DATE));
-        Assertions.assertEquals(Status.INVALID_CHAIN_LENGTH, exception.getStatus());
+        Assertions.assertEquals(VerificationStatus.INVALID_CHAIN_LENGTH, exception.getStatus());
     }
 
     @Test
@@ -88,7 +88,7 @@ public class ChainVerifierTest {
                 INTERMEDIATE_CA_BASE64_ENCODED,
                 ROOT_CA_BASE64_ENCODED
         }, false, EFFECTIVE_DATE));
-        Assertions.assertEquals(Status.INVALID_CERTIFICATE, exception.getStatus());
+        Assertions.assertEquals(VerificationStatus.INVALID_CERTIFICATE, exception.getStatus());
     }
 
     @Test
@@ -99,7 +99,7 @@ public class ChainVerifierTest {
                 INTERMEDIATE_CA_BASE64_ENCODED,
                 ROOT_CA_BASE64_ENCODED
         }, false, EFFECTIVE_DATE));
-        Assertions.assertEquals(Status.INVALID_CERTIFICATE, exception.getStatus());
+        Assertions.assertEquals(VerificationStatus.INVALID_CERTIFICATE, exception.getStatus());
     }
 
     @Test
@@ -110,7 +110,7 @@ public class ChainVerifierTest {
                 INTERMEDIATE_CA_BASE64_ENCODED,
                 ROOT_CA_BASE64_ENCODED
         }, false, new Date(2280946846000L)));
-        Assertions.assertEquals(Status.INVALID_CHAIN, exception.getStatus());
+        Assertions.assertEquals(VerificationStatus.INVALID_CHAIN, exception.getStatus());
     }
 
     @Test
@@ -132,7 +132,7 @@ public class ChainVerifierTest {
                 INTERMEDIATE_CA_BASE64_ENCODED,
                 ROOT_CA_BASE64_ENCODED
         }, false, EFFECTIVE_DATE));
-        Assertions.assertEquals(Status.INVALID_CHAIN, exception.getStatus());
+        Assertions.assertEquals(VerificationStatus.INVALID_CHAIN, exception.getStatus());
         Throwable cause = exception.getCause();
         Assertions.assertInstanceOf(CertPathValidatorException.class, cause);
     }
