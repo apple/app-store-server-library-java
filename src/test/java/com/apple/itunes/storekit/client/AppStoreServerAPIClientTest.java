@@ -475,6 +475,7 @@ public class AppStoreServerAPIClientTest {
             Assertions.assertEquals(500, e.getHttpStatusCode());
             Assertions.assertEquals(APIError.GENERAL_INTERNAL, e.getApiError());
             Assertions.assertEquals(5000000L, e.getRawApiError());
+            Assertions.assertEquals("An unknown error occurred.", e.getApiErrorMessage());
             return;
         }
         Assertions.fail();
@@ -490,6 +491,7 @@ public class AppStoreServerAPIClientTest {
             Assertions.assertEquals(429, e.getHttpStatusCode());
             Assertions.assertEquals(APIError.RATE_LIMIT_EXCEEDED, e.getApiError());
             Assertions.assertEquals(4290000L, e.getRawApiError());
+            Assertions.assertEquals("Rate limit exceeded.", e.getApiErrorMessage());
             return;
         }
         Assertions.fail();
@@ -505,6 +507,7 @@ public class AppStoreServerAPIClientTest {
             Assertions.assertEquals(400, e.getHttpStatusCode());
             Assertions.assertNull(e.getApiError());
             Assertions.assertEquals(9990000L, e.getRawApiError());
+            Assertions.assertEquals("Testing error.", e.getApiErrorMessage());
             return;
         }
         Assertions.fail();
@@ -549,6 +552,11 @@ public class AppStoreServerAPIClientTest {
         try {
             client.getTransactionHistory("1234", "revision_input", request);
         } catch (APIException e) {
+            Assertions.assertNull(e.getApiErrorMessage());
+            Assertions.assertNull(e.getApiError());
+            Assertions.assertNull(e.getRawApiError());
+            Assertions.assertEquals(200, e.getHttpStatusCode());
+            Assertions.assertNotNull(e.getCause());
             return;
         }
         Assertions.fail();

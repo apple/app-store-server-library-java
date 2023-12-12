@@ -115,10 +115,8 @@ public class AppStoreServerAPIClient {
                 }
                 try {
                     return objectMapper.readValue(responseBody.charStream(), clazz);
-                } catch (JsonProcessingException suppressed) {
-                    APIException e = new APIException(r.code());
-                    e.addSuppressed(suppressed);
-                    throw e;
+                } catch (JsonProcessingException e) {
+                    throw new APIException(r.code(), e);
                 }
             } else {
                 // Best effort to decode the body
@@ -126,14 +124,12 @@ public class AppStoreServerAPIClient {
                     ResponseBody responseBody = r.body();
                     if (responseBody != null) {
                         ErrorPayload errorPayload = objectMapper.readValue(responseBody.charStream(), ErrorPayload.class);
-                        throw new APIException(r.code(), errorPayload.getErrorCode());
+                        throw new APIException(r.code(), errorPayload.getErrorCode(), errorPayload.getErrorMessage());
                     }
                 } catch (APIException e) {
                     throw e;
-                } catch (Exception suppressed) {
-                    APIException e = new APIException(r.code());
-                    e.addSuppressed(suppressed);
-                    throw e;
+                } catch (Exception e) {
+                    throw new APIException(r.code(), e);
                 }
                 throw new APIException(r.code());
             }

@@ -9,21 +9,35 @@ package com.apple.itunes.storekit.client;
  */
 public class APIException extends Exception {
     private final int httpStatusCode;
-    private final Long apiError;
+    private final Long apiErrorCode;
+    private final String apiErrorMessage;
+
+    public APIException(int httpStatusCode, Exception cause) {
+        super("Failed to call API with httpStatusCode=" + httpStatusCode, cause);
+        this.httpStatusCode = httpStatusCode;
+        this.apiErrorCode = null;
+        this.apiErrorMessage = null;
+    }
 
     public APIException(int httpStatusCode) {
+        super("Failed to call API with httpStatusCode=" + httpStatusCode);
         this.httpStatusCode = httpStatusCode;
-        this.apiError = null;
+        this.apiErrorCode = null;
+        this.apiErrorMessage = null;
     }
 
-    public APIException(int httpStatusCode, APIError apiError) {
+    public APIException(int httpStatusCode, APIError apiError, String apiErrorMessage) {
+        super("Failed to call API with error=\"" + apiErrorMessage + "\"");
         this.httpStatusCode = httpStatusCode;
-        this.apiError = apiError != null ? apiError.errorCode() : null;
+        this.apiErrorCode = apiError != null ? apiError.errorCode() : null;
+        this.apiErrorMessage = apiErrorMessage;
     }
 
-    public APIException(int httpStatusCode, Long rawApiError) {
+    public APIException(int httpStatusCode, Long rawApiError, String apiErrorMessage) {
+        super("Failed to call API with error=\"" + apiErrorMessage + "\"");
         this.httpStatusCode = httpStatusCode;
-        this.apiError = rawApiError;
+        this.apiErrorCode = rawApiError;
+        this.apiErrorMessage = apiErrorMessage;
     }
 
     public int getHttpStatusCode() {
@@ -31,18 +45,23 @@ public class APIException extends Exception {
     }
 
     public APIError getApiError() {
-        return apiError != null ? APIError.fetchErrorResponseFromErrorCode(apiError) : null;
+        return apiErrorCode != null ? APIError.fetchErrorResponseFromErrorCode(apiErrorCode) : null;
     }
 
     public Long getRawApiError() {
-        return apiError;
+        return apiErrorCode;
+    }
+
+    public String getApiErrorMessage() {
+        return apiErrorMessage;
     }
 
     @Override
     public String toString() {
         return "APIException{" +
                 "httpStatusCode=" + httpStatusCode +
-                ", apiError=" + apiError +
-                "} " + super.toString();
+                ", apiError=" + apiErrorCode +
+                ", apiErrorMessage='" + apiErrorMessage + '\'' +
+                '}';
     }
 }
