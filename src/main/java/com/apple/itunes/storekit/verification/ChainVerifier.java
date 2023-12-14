@@ -60,11 +60,11 @@ public class ChainVerifier {
                 parsedCertificates.add(certificateFactory.generateCertificate(derEncodedCert));
             }
         } catch (Exception e) {
-            throw new VerificationException(Status.INVALID_CERTIFICATE, e);
+            throw new VerificationException(VerificationStatus.INVALID_CERTIFICATE, e);
         }
 
         if (parsedCertificates.size() != EXPECTED_CHAIN_LENGTH) {
-            throw new VerificationException(Status.INVALID_CHAIN_LENGTH);
+            throw new VerificationException(VerificationStatus.INVALID_CHAIN_LENGTH);
         }
 
         try {
@@ -82,7 +82,7 @@ public class ChainVerifier {
             PKIXCertPathValidatorResult certPathValidatorResult = (PKIXCertPathValidatorResult) certPathValidator.validate(certPath, parameters);
             return certPathValidatorResult.getPublicKey();
         } catch (Exception e) {
-            throw new VerificationException(Status.INVALID_CHAIN, e);
+            throw new VerificationException(VerificationStatus.INVALID_CHAIN, e);
         }
     }
 }

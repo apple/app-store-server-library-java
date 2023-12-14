@@ -26,35 +26,35 @@ public class SignedDataVerifierTest {
     public void testMissingX5CHeader() throws IOException {
         SignedDataVerifier verifier = TestingUtility.getSignedPayloadVerifier(Environment.SANDBOX, "com.example");
         VerificationException exception = Assertions.assertThrows(VerificationException.class, () -> verifier.verifyAndDecodeNotification(TestingUtility.readFile("mock_signed_data/missingX5CHeaderClaim")));
-        Assertions.assertEquals(Status.VERIFICATION_FAILURE, exception.getStatus());
+        Assertions.assertEquals(VerificationStatus.VERIFICATION_FAILURE, exception.getStatus());
     }
 
     @Test
     public void testWrongBundleIdForServerNotification() throws IOException {
         SignedDataVerifier verifier = TestingUtility.getSignedPayloadVerifier(Environment.SANDBOX, "com.example");
         VerificationException exception = Assertions.assertThrows(VerificationException.class, () -> verifier.verifyAndDecodeNotification(TestingUtility.readFile("mock_signed_data/wrongBundleId")));
-        Assertions.assertEquals(Status.INVALID_APP_IDENTIFIER, exception.getStatus());
+        Assertions.assertEquals(VerificationStatus.INVALID_APP_IDENTIFIER, exception.getStatus());
     }
 
     @Test
     public void testWrongAppAppleIdForNotification() throws IOException {
         SignedDataVerifier verifier = TestingUtility.getSignedPayloadVerifier(Environment.PRODUCTION, "com.example", 1235L);
         VerificationException exception = Assertions.assertThrows(VerificationException.class, () -> verifier.verifyAndDecodeNotification(TestingUtility.readFile("mock_signed_data/testNotification")));
-        Assertions.assertEquals(Status.INVALID_APP_IDENTIFIER, exception.getStatus());
+        Assertions.assertEquals(VerificationStatus.INVALID_APP_IDENTIFIER, exception.getStatus());
     }
 
     @Test
     public void testWrongBundleIdForTransaction() throws IOException {
         SignedDataVerifier verifier = TestingUtility.getSignedPayloadVerifier(Environment.SANDBOX, "com.example.x");
         VerificationException exception = Assertions.assertThrows(VerificationException.class, () -> verifier.verifyAndDecodeTransaction(TestingUtility.readFile("mock_signed_data/transactionInfo")));
-        Assertions.assertEquals(Status.INVALID_APP_IDENTIFIER, exception.getStatus());
+        Assertions.assertEquals(VerificationStatus.INVALID_APP_IDENTIFIER, exception.getStatus());
     }
 
     @Test
     public void testWrongEnvironmentForServerNotification() throws IOException {
         SignedDataVerifier verifier = TestingUtility.getSignedPayloadVerifier(Environment.PRODUCTION, "com.example");
         VerificationException exception = Assertions.assertThrows(VerificationException.class, () -> verifier.verifyAndDecodeNotification(TestingUtility.readFile("mock_signed_data/testNotification")));
-        Assertions.assertEquals(Status.INVALID_ENVIRONMENT, exception.getStatus());
+        Assertions.assertEquals(VerificationStatus.INVALID_ENVIRONMENT, exception.getStatus());
     }
 
     @Test
@@ -75,13 +75,13 @@ public class SignedDataVerifierTest {
     public void testMalformedJWTWithTooManyParts() throws IOException {
         SignedDataVerifier verifier = TestingUtility.getSignedPayloadVerifier();
         VerificationException exception = Assertions.assertThrows(VerificationException.class, () -> verifier.verifyAndDecodeNotification("a.b.c.d"));
-        Assertions.assertEquals(Status.VERIFICATION_FAILURE, exception.getStatus());
+        Assertions.assertEquals(VerificationStatus.VERIFICATION_FAILURE, exception.getStatus());
     }
 
     @Test
     public void testMalformedJWTWithMalformedData() throws IOException {
         SignedDataVerifier verifier = TestingUtility.getSignedPayloadVerifier();
         VerificationException exception = Assertions.assertThrows(VerificationException.class, () -> verifier.verifyAndDecodeNotification("a.b.c"));
-        Assertions.assertEquals(Status.VERIFICATION_FAILURE, exception.getStatus());
+        Assertions.assertEquals(VerificationStatus.VERIFICATION_FAILURE, exception.getStatus());
     }
 }

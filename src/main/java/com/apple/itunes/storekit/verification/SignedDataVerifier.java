@@ -67,10 +67,10 @@ public class SignedDataVerifier {
     public JWSTransactionDecodedPayload verifyAndDecodeTransaction(String signedTransaction) throws VerificationException {
         JWSTransactionDecodedPayload transaction = decodeSignedObject(signedTransaction, JWSTransactionDecodedPayload.class);
         if (!bundleId.equals(transaction.getBundleId())) {
-            throw new VerificationException(Status.INVALID_APP_IDENTIFIER);
+            throw new VerificationException(VerificationStatus.INVALID_APP_IDENTIFIER);
         }
         if (!this.environment.equals(transaction.getEnvironment())) {
-            throw new VerificationException(Status.INVALID_ENVIRONMENT);
+            throw new VerificationException(VerificationStatus.INVALID_ENVIRONMENT);
         }
         return transaction;
     }
@@ -85,7 +85,7 @@ public class SignedDataVerifier {
     public JWSRenewalInfoDecodedPayload verifyAndDecodeRenewalInfo(String signedRenewalInfo) throws VerificationException {
         JWSRenewalInfoDecodedPayload renewalInfo = decodeSignedObject(signedRenewalInfo, JWSRenewalInfoDecodedPayload.class);
         if (!this.environment.equals(renewalInfo.getEnvironment())) {
-            throw new VerificationException(Status.INVALID_ENVIRONMENT);
+            throw new VerificationException(VerificationStatus.INVALID_ENVIRONMENT);
         }
         return renewalInfo;
     }
@@ -103,10 +103,10 @@ public class SignedDataVerifier {
         Long appAppleId = notification.getData() != null ? notification.getData().getAppAppleId() : (notification.getSummary() != null ? notification.getSummary().getAppAppleId() : null);
         String bundleId = notification.getData() != null ? notification.getData().getBundleId() : (notification.getSummary() != null ? notification.getSummary().getBundleId() : null);
         if (!this.bundleId.equals(bundleId) || (this.environment.equals(Environment.PRODUCTION) && !this.appAppleId.equals(appAppleId))) {
-            throw new VerificationException(Status.INVALID_APP_IDENTIFIER);
+            throw new VerificationException(VerificationStatus.INVALID_APP_IDENTIFIER);
         }
         if (!this.environment.equals(notificationEnv)) {
-            throw new VerificationException(Status.INVALID_ENVIRONMENT);
+            throw new VerificationException(VerificationStatus.INVALID_ENVIRONMENT);
         }
         return notification;
     }
@@ -121,10 +121,10 @@ public class SignedDataVerifier {
         AppTransaction appTransaction = decodeSignedObject(signedAppTransaction, AppTransaction.class);
         Environment environment = appTransaction.getReceiptType();
         if (!this.bundleId.equals(appTransaction.getBundleId()) || (this.environment.equals(Environment.PRODUCTION) && !this.appAppleId.equals(appTransaction.getAppAppleId()))) {
-            throw new VerificationException(Status.INVALID_APP_IDENTIFIER);
+            throw new VerificationException(VerificationStatus.INVALID_APP_IDENTIFIER);
         }
         if (!this.environment.equals(environment)) {
-            throw new VerificationException(Status.INVALID_ENVIRONMENT);
+            throw new VerificationException(VerificationStatus.INVALID_ENVIRONMENT);
         }
         return appTransaction;
     }
@@ -139,7 +139,7 @@ public class SignedDataVerifier {
             }
             String[] x5cChain = unverifiedJWT.getHeaderClaim("x5c").asArray(String.class);
             if (x5cChain == null) {
-                throw new VerificationException(Status.VERIFICATION_FAILURE, "x5c claim was null");
+                throw new VerificationException(VerificationStatus.VERIFICATION_FAILURE, "x5c claim was null");
             }
             T decodedData = parseJWTPayload(clazz, unverifiedJWT);
             Date effectiveDate = this.enableOnlineChecks || decodedData.getSignedDate() == null ? new Date() : new Date(decodedData.getSignedDate());
@@ -147,13 +147,13 @@ public class SignedDataVerifier {
             if ("ES256".equals(unverifiedJWT.getAlgorithm())) {
                 JWT.require(Algorithm.ECDSA256((ECPublicKey) signingKey)).build().verify(unverifiedJWT);
             } else {
-                throw new VerificationException(Status.VERIFICATION_FAILURE, "Unrecognized JWT algorithm + " + unverifiedJWT.getAlgorithm());
+                throw new VerificationException(VerificationStatus.VERIFICATION_FAILURE, "Unrecognized JWT algorithm + " + unverifiedJWT.getAlgorithm());
             }
             return decodedData;
         } catch (VerificationException e) {
             throw e;
         } catch (Exception e) {
-            throw new VerificationException(Status.VERIFICATION_FAILURE, e);
+            throw new VerificationException(VerificationStatus.VERIFICATION_FAILURE, e);
         }
     }
 
@@ -162,7 +162,7 @@ public class SignedDataVerifier {
         try {
             return objectMapper.readValue(payload, clazz);
         } catch (JsonProcessingException e) {
-            throw new VerificationException(Status.VERIFICATION_FAILURE, e);
+            throw new VerificationException(VerificationStatus.VERIFICATION_FAILURE, e);
         }
     }
 }
