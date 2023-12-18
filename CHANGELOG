@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 1.0.0
+- Switch from GSON to Jackson for parsing [#58]
+- Rename Status to VerificationStatus [#59]
+- Add message to APIException and update JavaDocs [#60]
+
 ## Version 0.2.0
 - Significantly increase unit test coverage [#51]
 - Add support for Xcode and LocalTesting environments [#49]

@@ -8,10 +8,6 @@ The Java server library for the [App Store Server API](https://developer.apple.c
 4. [Usage](#usage)
 5. [Support](#support)
 
-## ⚠️ Beta ⚠️
-
-This software is currently in Beta testing. Therefore, it should only be used for testing purposes, like for the Sandbox environment. API signatures may change between releases and signature verification may receive security updates.
-
 ## Installation
 
 #### Requirements
@@ -20,7 +16,7 @@ This software is currently in Beta testing. Therefore, it should only be used fo
 
 ### Gradle
 ```groovy
-implementation 'com.apple.itunes.storekit:app-store-server-library:0.2.0'
+implementation 'com.apple.itunes.storekit:app-store-server-library:1.0.0'
 
 ```
 
@@ -29,7 +25,7 @@ implementation 'com.apple.itunes.storekit:app-store-server-library:0.2.0'
 <dependency>
     <groupId>com.apple.itunes.storekit</groupId>
     <artifactId>app-store-server-library</artifactId>
-    <version>0.2.0</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
