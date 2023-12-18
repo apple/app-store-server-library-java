@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
 public class AppStoreServerAPIClient {
     private static final String PRODUCTION_URL = "https://api.storekit.itunes.apple.com";
     private static final String SANDBOX_URL = "https://api.storekit-sandbox.itunes.apple.com";
-    private static final String USER_AGENT = "app-store-server-library/java/0.2.0";
+    private static final String USER_AGENT = "app-store-server-library/java/1.0.0";
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     private final OkHttpClient httpClient;
