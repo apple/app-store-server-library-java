@@ -89,8 +89,9 @@ public class ExampleVerification {
                 new FileInputStream("/path/to/rootCA1"),
                 new FileInputStream("/path/to/rootCA2")
         );
+        Long appAppleId = null; // appAppleId must be provided for the Production environment
 
-        SignedDataVerifier signedPayloadVerifier = new SignedDataVerifier(rootCAs, bundleId, null, environment, true);
+        SignedDataVerifier signedPayloadVerifier = new SignedDataVerifier(rootCAs, bundleId, appAppleId, environment, true);
         
         String notificationPayload = "ey...";
 

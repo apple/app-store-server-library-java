@@ -55,6 +55,9 @@ public class SignedDataVerifier {
                 .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
+        if (appAppleId == null && Environment.PRODUCTION.equals(environment)) {
+            throw new IllegalArgumentException("appAppleId is required when the environment is Production");
+        }
     }
 
     /**
