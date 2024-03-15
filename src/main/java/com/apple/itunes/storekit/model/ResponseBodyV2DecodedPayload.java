@@ -21,6 +21,7 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
     private static final String SERIALIZED_NAME_VERSION = "version";
     private static final String SERIALIZED_NAME_SIGNED_DATE = "signedDate";
     private static final String SERIALIZED_NAME_SUMMARY = "summary";
+    private static final String SERIALIZED_NAME_EXTERNAL_PURCHASE_TOKEN = "externalPurchaseToken";
     @JsonProperty(SERIALIZED_NAME_NOTIFICATION_TYPE)
     private String notificationType;
     @JsonProperty(SERIALIZED_NAME_SUBTYPE)
@@ -35,6 +36,8 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
     private Long signedDate;
     @JsonProperty(SERIALIZED_NAME_SUMMARY)
     private Summary summary;
+    @JsonProperty(SERIALIZED_NAME_EXTERNAL_PURCHASE_TOKEN)
+    private ExternalPurchaseToken externalPurchaseToken;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
@@ -128,7 +131,7 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
 
     /**
      * The object that contains the app metadata and signed renewal and transaction information.
-     * The data and summary fields are mutually exclusive. The payload contains one of the fields, but not both.
+     * The data, summary, and externalPurchaseToken fields are mutually exclusive. The payload contains only one of these fields.
      *
      * @return data
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/data">data</a>
@@ -186,7 +189,7 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
 
     /**
      * The summary data that appears when the App Store server completes your request to extend a subscription renewal date for eligible subscribers.
-     * The data and summary fields are mutually exclusive. The payload contains one of the fields, but not both.
+     * The data, summary, and externalPurchaseToken fields are mutually exclusive. The payload contains only one of these fields.
      *
      * @return summary
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/summary">summary</a>
@@ -199,6 +202,25 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
         this.summary = summary;
     }
 
+    public ResponseBodyV2DecodedPayload externalPurchaseToken(ExternalPurchaseToken externalPurchaseToken) {
+        this.externalPurchaseToken = externalPurchaseToken;
+        return this;
+    }
+
+    /**
+     * This field appears when the notificationType is EXTERNAL_PURCHASE_TOKEN.
+     * The data, summary, and externalPurchaseToken fields are mutually exclusive. The payload contains only one of these fields.
+     *
+     * @return externalPurchaseToken
+     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/externalpurchasetoken">externalPurchaseToken</a>
+     **/
+    public ExternalPurchaseToken getExternalPurchaseToken() {
+        return externalPurchaseToken;
+    }
+
+    public void setExternalPurchaseToken(ExternalPurchaseToken externalPurchaseToken) {
+        this.externalPurchaseToken = externalPurchaseToken;
+    }
 
     public ResponseBodyV2DecodedPayload unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
@@ -234,12 +256,13 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
                 Objects.equals(this.version, responseBodyV2DecodedPayload.version) &&
                 Objects.equals(this.signedDate, responseBodyV2DecodedPayload.signedDate) &&
                 Objects.equals(this.summary, responseBodyV2DecodedPayload.summary) &&
+                Objects.equals(this.externalPurchaseToken, responseBodyV2DecodedPayload.externalPurchaseToken) &&
                 Objects.equals(this.unknownFields, responseBodyV2DecodedPayload.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(notificationType, subtype, notificationUUID, data, version, signedDate, summary, unknownFields);
+        return Objects.hash(notificationType, subtype, notificationUUID, data, version, signedDate, summary, externalPurchaseToken, unknownFields);
     }
 
     @Override
@@ -252,6 +275,7 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
                 ", version='" + version + '\'' +
                 ", signedDate=" + signedDate +
                 ", summary=" + summary +
+                ", externalPurchaseToken=" + externalPurchaseToken +
                 ", unknownFields=" + unknownFields +
                 '}';
     }

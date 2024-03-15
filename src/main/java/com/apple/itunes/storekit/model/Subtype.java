@@ -26,7 +26,8 @@ public enum Subtype {
     BILLING_RECOVERY("BILLING_RECOVERY"),
     PRODUCT_NOT_FOR_SALE("PRODUCT_NOT_FOR_SALE"),
     SUMMARY("SUMMARY"),
-    FAILURE("FAILURE");
+    FAILURE("FAILURE"),
+    UNREPORTED("UNREPORTED");
 
     private final String value;
 
