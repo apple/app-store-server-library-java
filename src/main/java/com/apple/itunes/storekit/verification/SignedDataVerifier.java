@@ -102,16 +102,42 @@ public class SignedDataVerifier {
      */
     public ResponseBodyV2DecodedPayload verifyAndDecodeNotification(String signedPayload) throws VerificationException {
         ResponseBodyV2DecodedPayload notification = decodeSignedObject(signedPayload, ResponseBodyV2DecodedPayload.class);
-        Environment notificationEnv = notification.getData() != null ? notification.getData().getEnvironment() : (notification.getSummary() != null ? notification.getSummary().getEnvironment() : null);
-        Long appAppleId = notification.getData() != null ? notification.getData().getAppAppleId() : (notification.getSummary() != null ? notification.getSummary().getAppAppleId() : null);
-        String bundleId = notification.getData() != null ? notification.getData().getBundleId() : (notification.getSummary() != null ? notification.getSummary().getBundleId() : null);
+        String bundleId;
+        Long appAppleId;
+        Environment notificationEnv;
+        if (notification.getData() != null) {
+            bundleId = notification.getData().getBundleId();
+            appAppleId = notification.getData().getAppAppleId();
+            notificationEnv = notification.getData().getEnvironment();
+        } else if (notification.getSummary() != null) {
+            bundleId = notification.getSummary().getBundleId();
+            appAppleId = notification.getSummary().getAppAppleId();
+            notificationEnv = notification.getSummary().getEnvironment();
+        } else if (notification.getExternalPurchaseToken() != null) {
+            bundleId = notification.getExternalPurchaseToken().getBundleId();
+            appAppleId = notification.getExternalPurchaseToken().getAppAppleId();
+            String externalPurchaseId = notification.getExternalPurchaseToken().getExternalPurchaseId();
+            if (externalPurchaseId != null && externalPurchaseId.startsWith("SANDBOX")) {
+                notificationEnv = Environment.SANDBOX;
+            } else {
+                notificationEnv = Environment.PRODUCTION;
+            }
+        } else {
+            bundleId = null;
+            appAppleId = null;
+            notificationEnv = null;
+        }
+        verifyNotification(bundleId, appAppleId, notificationEnv);
+        return notification;
+    }
+
+    protected void verifyNotification(String bundleId, Long appAppleId, Environment notificationEnv) throws VerificationException {
         if (!this.bundleId.equals(bundleId) || (this.environment.equals(Environment.PRODUCTION) && !this.appAppleId.equals(appAppleId))) {
             throw new VerificationException(VerificationStatus.INVALID_APP_IDENTIFIER);
         }
         if (!this.environment.equals(notificationEnv)) {
             throw new VerificationException(VerificationStatus.INVALID_ENVIRONMENT);
         }
-        return notification;
     }
 
     /**
