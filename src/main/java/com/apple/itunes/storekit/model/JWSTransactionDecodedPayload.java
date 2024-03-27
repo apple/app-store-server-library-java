@@ -94,7 +94,7 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
     @JsonProperty(SERIALIZED_NAME_TRANSACTION_REASON)
     private String transactionReason;
     @JsonProperty(SERIALIZED_NAME_PRICE)
-    private Integer price;
+    private Long price;
     @JsonProperty(SERIALIZED_NAME_CURRENCY)
     private String currency;
     @JsonProperty(SERIALIZED_NAME_OFFER_DISCOUNT_TYPE)
@@ -609,22 +609,22 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
         this.transactionReason = rawTransactionReason;
     }
 
-    public JWSTransactionDecodedPayload price(Integer price) {
+    public JWSTransactionDecodedPayload price(Long price) {
         this.price = price;
         return this;
     }
 
     /**
-     * The price of the in-app purchase or subscription offer that you configured in App Store Connect, as an integer.
+     * The price, in milliunits, of the in-app purchase or subscription offer that you configured in App Store Connect.
      *
      * @return price
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/price">price</a>
      **/
-    public Integer getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 
