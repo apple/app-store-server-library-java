@@ -62,6 +62,7 @@ public class SignedDataVerifier {
 
     /**
      * Verifies and decodes a signedTransaction obtained from the App Store Server API, an App Store Server Notification, or from a device
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/jwstransaction">JWSTransaction</a>
      *
      * @param signedTransaction The signedTransaction field
      * @return The decoded transaction info after verification
@@ -80,6 +81,7 @@ public class SignedDataVerifier {
 
     /**
      * Verifies and decodes a signedRenewalInfo obtained from the App Store Server API, an App Store Server Notification, or from a device
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/jwsrenewalinfo">JWSRenewalInfo</a>
      *
      * @param signedRenewalInfo The signedRenewalInfo field
      * @return The decoded renewal info after verification
@@ -95,6 +97,7 @@ public class SignedDataVerifier {
 
     /**
      * Verifies and decodes an App Store Server Notification signedPayload
+     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/signedpayload">signedPayload</a>
      *
      * @param signedPayload The payload received by your server
      * @return The decoded payload after verification
@@ -142,6 +145,8 @@ public class SignedDataVerifier {
 
     /**
      * Verifies and decodes a signed AppTransaction
+     * @see <a href="https://developer.apple.com/documentation/storekit/apptransaction">AppTransaction</a>
+     *
      * @param signedAppTransaction The signed AppTransaction
      * @return The decoded AppTransaction after validation
      * @throws VerificationException Thrown if the data could not be verified
