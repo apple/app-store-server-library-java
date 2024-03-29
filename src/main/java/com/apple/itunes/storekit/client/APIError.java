@@ -22,6 +22,8 @@ public enum APIError {
     /**
      * An error that indicates an invalid app identifier.
      *
+     * This error occurs when the provided app identifier does not match any existing app in the App Store's records, often due to a typo or incorrect app ID being used in the request.
+     *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidappidentifiererror">InvalidAppIdentifierError</a>
      */
     INVALID_APP_IDENTIFIER(4000002L),
