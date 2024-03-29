@@ -101,7 +101,9 @@ public enum APIError {
     START_DATE_AFTER_END_DATE(4000013L),
 
     /**
-     * An error that indicates the pagination token is invalid.
+     * An error indicating the pagination token used in the request is invalid.
+     *
+     * This error typically occurs when navigating through a list of items provided by the API and the supplied token for fetching the next set of results is malformed or expired.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidpaginationtokenerror">InvalidPaginationTokenError</a>
      */
