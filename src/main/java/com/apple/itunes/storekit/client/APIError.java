@@ -82,9 +82,10 @@ public enum APIError {
      */
     INVALID_REQUEST_IDENTIFIER(4000011L),
 
-
     /**
-     * An error that indicates that the start date is earlier than the earliest allowed date.
+     * An error indicating the specified start date is earlier than allowed.
+     *
+     * This occurs when a request includes a start date that falls before the earliest date permitted by the App Store's policies or the specific API's operational parameters.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/startdatetoofarinpasterror">StartDateTooFarInPastError</a>
      */
