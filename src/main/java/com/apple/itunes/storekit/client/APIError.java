@@ -92,7 +92,9 @@ public enum APIError {
     START_DATE_TOO_FAR_IN_PAST(4000012L),
 
     /**
-     * An error that indicates that the end date precedes the start date, or the two dates are equal.
+     * An error indicating the end date is set before the start date or the same as the start date.
+     *
+     * This error highlights logical inconsistencies in date ranges provided in requests, such as for subscription periods or event scheduling, which are not permitted.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/startdateafterenddateerror">StartDateAfterEndDateError</a>
      */
