@@ -47,7 +47,9 @@ public enum APIError {
     INVALID_TRANSACTION_ID(4000006L),
 
     /**
-     * An error that indicates an invalid original transaction identifier.
+     * An error indicating the original transaction identifier is invalid.
+     *
+     * This occurs when referencing a transaction that does not exist or the original transaction ID is incorrect, often during attempts to verify or modify a transaction's status.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidoriginaltransactioniderror">InvalidOriginalTransactionIdError</a>
      */
