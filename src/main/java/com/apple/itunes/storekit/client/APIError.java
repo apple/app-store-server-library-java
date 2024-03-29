@@ -74,11 +74,14 @@ public enum APIError {
     INVALID_EXTEND_REASON_CODE(4000010L),
 
     /**
-     * An error that indicates an invalid request identifier.
+     * An error indicating the provided request identifier is invalid.
+     *
+     * This error occurs when the specified request ID does not match any known or pending requests, possibly due to a mistyped or outdated identifier.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidrequestidentifiererror">InvalidRequestIdentifierError</a>
      */
     INVALID_REQUEST_IDENTIFIER(4000011L),
+
 
     /**
      * An error that indicates that the start date is earlier than the earliest allowed date.
