@@ -13,6 +13,8 @@ public enum APIError {
     /**
      * An error that indicates an invalid request.
      *
+     * This general error occurs for various reasons, suggesting the request to the server is malformed.
+     *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/generalbadrequesterror">GeneralBadRequestError</a>
      */
     GENERAL_BAD_REQUEST(4000000L),
