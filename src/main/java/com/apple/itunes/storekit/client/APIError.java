@@ -110,49 +110,63 @@ public enum APIError {
     INVALID_PAGINATION_TOKEN(4000014L),
 
     /**
-     * An error that indicates the start date is invalid.
+     * An error indicating the provided start date does not meet validation criteria.
+     *
+     * This may occur if the date format is incorrect, or the date is outside an acceptable range for the operation being performed.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidstartdateerror">InvalidStartDateError</a>
      */
     INVALID_START_DATE(4000015L),
 
     /**
-     * An error that indicates the end date is invalid.
+     * An error indicating the provided end date does not meet validation criteria.
+     *
+     * Similar to the start date error, this can happen if the date is improperly formatted or not within an expected range.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidenddateerror">InvalidEndDateError</a>
      */
     INVALID_END_DATE(4000016L),
 
     /**
-     * An error that indicates the pagination token expired.
+     * An error indicating the pagination token used in the request has expired.
+     *
+     * Pagination tokens are typically time-sensitive. This error occurs if a token is used beyond its valid lifespan.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/paginationtokenexpirederror">PaginationTokenExpiredError</a>
      */
     PAGINATION_TOKEN_EXPIRED(4000017L),
 
     /**
-     * An error that indicates the notification type or subtype is invalid.
+     * An error indicating the notification type or subtype specified in the request is not recognized.
+     *
+     * This error suggests a mismatch between the provided notification type/subtype and those defined by the API.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidnotificationtypeerror">InvalidNotificationTypeError</a>
      */
     INVALID_NOTIFICATION_TYPE(4000018L),
 
     /**
-     * An error that indicates the request is invalid because it has too many constraints applied.
+     * An error indicating that the request cannot be processed due to multiple conflicting filters.
+     *
+     * This occurs when a request includes multiple filters that cannot be applied together or are mutually exclusive.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/multiplefilterssuppliederror">MultipleFiltersSuppliedError</a>
      */
     MULTIPLE_FILTERS_SUPPLIED(4000019L),
 
     /**
-     * An error that indicates the test notification token is invalid.
+     * An error indicating the test notification token provided is invalid.
+     *
+     * This error can arise if the token format is incorrect or the token does not match any known valid tokens.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidtestnotificationtokenerror">InvalidTestNotificationTokenError</a>
      */
     INVALID_TEST_NOTIFICATION_TOKEN(4000020L),
 
     /**
-     * An error that indicates an invalid sort parameter.
+     * An error indicating the sort parameter provided in the request is invalid.
+     *
+     * This error is triggered if the sort parameter does not match any of the allowed sorting criteria for the API endpoint.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidsorterror">InvalidSortError</a>
      */
