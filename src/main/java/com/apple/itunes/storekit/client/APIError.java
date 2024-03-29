@@ -65,7 +65,9 @@ public enum APIError {
     INVALID_EXTEND_BY_DAYS(4000009L),
 
     /**
-     * An error that indicates an invalid reason code.
+     * An error indicating the reason code for an extension is invalid.
+     *
+     * This error suggests that the provided reason code for requesting an extension, such as for a subscription renewal, does not match any of the known or valid reason codes.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidextendreasoncodeerror">InvalidExtendReasonCodeError</a>
      */
