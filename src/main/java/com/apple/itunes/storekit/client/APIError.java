@@ -38,7 +38,9 @@ public enum APIError {
     INVALID_REQUEST_REVISION(4000005L),
 
     /**
-     * An error that indicates an invalid transaction identifier.
+     * An error indicating the provided transaction identifier is invalid.
+     *
+     * This error occurs when the transaction ID sent in the request cannot be found or does not match any existing transactions in the system, possibly due to a typo or outdated information.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidtransactioniderror">InvalidTransactionIdError</a>
      */
