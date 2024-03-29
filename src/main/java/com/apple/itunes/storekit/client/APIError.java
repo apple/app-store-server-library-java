@@ -56,7 +56,9 @@ public enum APIError {
     INVALID_ORIGINAL_TRANSACTION_ID(4000008L),
 
     /**
-     * An error that indicates an invalid extend-by-days value.
+     * An error indicating the 'extend-by-days' value provided is invalid.
+     *
+     * This error highlights issues with the number of days specified for extending a subscription or trial, usually because the value is out of the accepted range or format.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidextendbydayserror">InvalidExtendByDaysError</a>
      */
