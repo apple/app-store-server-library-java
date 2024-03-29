@@ -31,6 +31,8 @@ public enum APIError {
     /**
      * An error that indicates an invalid request revision.
      *
+     * This error signifies that the revision number or identifier provided in the request does not match any known revision, suggesting a potential error in specifying the revision details.
+     *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidrequestrevisionerror">InvalidRequestRevisionError</a>
      */
     INVALID_REQUEST_REVISION(4000005L),
