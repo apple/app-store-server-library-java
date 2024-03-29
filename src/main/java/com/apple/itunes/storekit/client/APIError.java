@@ -175,12 +175,16 @@ public enum APIError {
     /**
      * An error that indicates an invalid product type parameter.
      *
+     * This error occurs when the product type provided does not match any known product types, potentially due to incorrect data entry.
+     *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidproducttypeerror">InvalidProductTypeError</a>
      */
     INVALID_PRODUCT_TYPE(4000022L),
 
     /**
      * An error that indicates the product ID parameter is invalid.
+     *
+     * This error signifies that the provided product ID does not exist or is incorrectly formatted, indicating a possible error in data entry or retrieval.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidproductiderror">InvalidProductIdError</a>
      */
@@ -189,6 +193,8 @@ public enum APIError {
     /**
      * An error that indicates an invalid subscription group identifier.
      *
+     * This error arises when the subscription group identifier provided does not correspond to any existing subscription groups, suggesting an error in specifying the identifier.
+     *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidsubscriptiongroupidentifiererror">InvalidSubscriptionGroupIdentifierError</a>
      */
     INVALID_SUBSCRIPTION_GROUP_IDENTIFIER(4000024L),
@@ -196,13 +202,17 @@ public enum APIError {
     /**
      * An error that indicates the query parameter exclude-revoked is invalid.
      *
+     * This deprecated error occurs if the exclude-revoked parameter was not correctly specified, suggesting a format or logical error.
+     *
+     * @deprecated
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidexcluderevokederror">InvalidExcludeRevokedError</a>
      */
-    @Deprecated
     INVALID_EXCLUDE_REVOKED(4000025L),
 
     /**
      * An error that indicates an invalid in-app ownership type parameter.
+     *
+     * Triggered when the in-app ownership type specified does not align with valid ownership types, potentially due to incorrect data provision.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidinappownershiptypeerror">InvalidInAppOwnershipTypeError</a>
      */
@@ -211,6 +221,8 @@ public enum APIError {
     /**
      * An error that indicates a required storefront country code is empty.
      *
+     * This error occurs when the storefront country code, a necessary parameter for some requests, is not provided, indicating a missing value.
+     *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidemptystorefrontcountrycodelisterror">InvalidEmptyStorefrontCountryCodeListError</a>
      */
     INVALID_EMPTY_STOREFRONT_COUNTRY_CODE_LIST(4000027L),
@@ -218,12 +230,16 @@ public enum APIError {
     /**
      * An error that indicates a storefront code is invalid.
      *
+     * Occurs when the storefront country code provided does not match any known codes, suggesting an error in specifying the code.
+     *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidstorefrontcountrycodeerror">InvalidStorefrontCountryCodeError</a>
      */
     INVALID_STOREFRONT_COUNTRY_CODE(4000028L),
 
     /**
      * An error that indicates the revoked parameter contains an invalid value.
+     *
+     * This error signifies that the value provided for the revoked parameter is not recognized, possibly due to incorrect formatting or values.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidrevokederror">InvalidRevokedError</a>
      */
