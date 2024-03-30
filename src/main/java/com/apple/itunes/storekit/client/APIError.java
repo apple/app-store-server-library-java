@@ -354,98 +354,126 @@ public enum APIError {
     INVALID_USER_STATUS(4000042L),
 
     /**
-     * An error that indicates the transaction identifier doesn’t represent a consumable in-app purchase.
+     * An error indicating the transaction identifier doesn't represent a consumable in-app purchase.
+     *
+     * This error occurs when an attempt is made to perform an operation that is specific to consumable products on a transaction identifier associated with non-consumable products.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidtransactionnotconsumableerror">InvalidTransactionNotConsumableError</a>
      */
     INVALID_TRANSACTION_NOT_CONSUMABLE(4000043L),
 
     /**
-     * An error that indicates the subscription doesn't qualify for a renewal-date extension due to its subscription state.
+     * An error indicating the subscription doesn't qualify for a renewal-date extension due to its subscription state.
+     *
+     * This error is returned when a request for a subscription renewal-date extension is made under circumstances where the subscription's current state does not allow for such an extension.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/subscriptionextensionineligibleerror">SubscriptionExtensionIneligibleError</a>
      */
     SUBSCRIPTION_EXTENSION_INELIGIBLE(4030004L),
 
     /**
-     * An error that indicates the subscription doesn’t qualify for a renewal-date extension because it has already received the maximum extensions.
+     * An error indicating the subscription has already received the maximum number of renewal-date extensions.
+     *
+     * Occurs when an attempt is made to extend the renewal date of a subscription that has already reached the limit of allowable extensions.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/subscriptionmaxextensionerror">SubscriptionMaxExtensionError</a>
      */
     SUBSCRIPTION_MAX_EXTENSION(4030005L),
 
     /**
-     * An error that indicates a subscription isn't directly eligible for a renewal date extension because the user obtained it through Family Sharing.
+     * An error indicating a subscription isn't directly eligible for a renewal date extension because it was obtained through Family Sharing.
+     *
+     * This error is returned when a renewal date extension is requested for a subscription that was not directly purchased by the user but rather shared through Family Sharing.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/familysharedsubscriptionextensionineligibleerror">FamilySharedSubscriptionExtensionIneligibleError</a>
      */
     FAMILY_SHARED_SUBSCRIPTION_EXTENSION_INELIGIBLE(4030007L),
 
     /**
-     * An error that indicates the App Store account wasn’t found.
+     * An error indicating the App Store account wasn’t found.
+     *
+     * This error is returned when an operation is attempted with an account identifier that does not match any existing App Store accounts.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/accountnotfounderror">AccountNotFoundError</a>
      */
     ACCOUNT_NOT_FOUND(4040001L),
 
     /**
-     * An error response that indicates the App Store account wasn’t found, but you can try again.
+     * An error response indicating the App Store account wasn’t found, but you can try again.
+     *
+     * This retryable error suggests that the account lookup might have failed due to transient issues or the account may become available shortly.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/accountnotfoundretryableerror">AccountNotFoundRetryableError</a>
      */
     ACCOUNT_NOT_FOUND_RETRYABLE(4040002L),
 
     /**
-     * An error that indicates the app wasn’t found.
+     * An error indicating the app wasn’t found.
+     *
+     * This error occurs when an operation specifies an app identifier that does not correspond to any apps currently registered in the App Store.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/appnotfounderror">AppNotFoundError</a>
      */
     APP_NOT_FOUND(4040003L),
 
     /**
-     * An error response that indicates the app wasn’t found, but you can try again.
+     * An error response indicating the app wasn’t found, but you can try again.
+     *
+     * Similar to the account not found error, this indicates a potential temporary issue in locating the specified app.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/appnotfoundretryableerror">AppNotFoundRetryableError</a>
      */
     APP_NOT_FOUND_RETRYABLE(4040004L),
 
     /**
-     * An error that indicates an original transaction identifier wasn't found.
+     * An error indicating an original transaction identifier wasn't found.
+     *
+     * Occurs when a transaction operation is attempted with an original transaction identifier that is not recognized as valid or existing.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/originaltransactionidnotfounderror">OriginalTransactionIdNotFoundError</a>
      */
     ORIGINAL_TRANSACTION_ID_NOT_FOUND(4040005L),
 
     /**
-     * An error response that indicates the original transaction identifier wasn’t found, but you can try again.
+     * An error response indicating the original transaction identifier wasn’t found, but you can try again.
+     *
+     * Suggests that the failure to find the original transaction identifier might be due to temporary issues or the data may become available shortly.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/originaltransactionidnotfoundretryableerror">OriginalTransactionIdNotFoundRetryableError</a>
      */
     ORIGINAL_TRANSACTION_ID_NOT_FOUND_RETRYABLE(4040006L),
 
     /**
-     * An error that indicates that the App Store server couldn’t find a notifications URL for your app in this environment.
+     * An error indicating the App Store server couldn’t find a notifications URL for your app in this environment.
+     *
+     * This error is returned when server-to-server notification setup is incomplete or the provided URL is not recognized.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/servernotificationurlnotfounderror">ServerNotificationUrlNotFoundError</a>
      */
     SERVER_NOTIFICATION_URL_NOT_FOUND(4040007L),
 
     /**
-     * An error that indicates that the test notification token is expired or the test notification status isn’t available.
+     * An error indicating the test notification token is expired or the test notification status isn’t available.
+     *
+     * This error occurs when a test notification token provided for a simulated transaction is no longer valid or the corresponding status cannot be retrieved.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/testnotificationnotfounderror">TestNotificationNotFoundError</a>
      */
     TEST_NOTIFICATION_NOT_FOUND(4040008L),
 
     /**
-     * An error that indicates the server didn't find a subscription-renewal-date extension request for the request identifier and product identifier you provided.
+     * An error indicating the server didn't find a subscription-renewal-date extension request for the request identifier and product identifier provided.
+     *
+     * This error is returned when a status request for a subscription renewal-date extension cannot be matched with any submitted extension requests.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/statusrequestnotfounderror">StatusRequestNotFoundError</a>
      */
     STATUS_REQUEST_NOT_FOUND(4040009L),
 
     /**
-     * An error that indicates a transaction identifier wasn't found.
+     * An error indicating a transaction identifier wasn't found.
+     *
+     * Occurs when a specific transaction identifier provided in a request does not match any recorded transactions.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/transactionidnotfounderror">TransactionIdNotFoundError</a>
      */
