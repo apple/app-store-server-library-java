@@ -480,21 +480,27 @@ public enum APIError {
     TRANSACTION_ID_NOT_FOUND(4040010L),
 
     /**
-     * An error that indicates that the request exceeded the rate limit.
+     * An error indicating that the request exceeded the rate limit.
+     *
+     * This error is returned when a request to the server exceeds the allotted rate limit, suggesting too many requests have been made in a short period. It's a common measure to prevent abuse and overload of the server.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/ratelimitexceedederror">RateLimitExceededError</a>
      */
     RATE_LIMIT_EXCEEDED(4290000L),
 
     /**
-     * An error that indicates a general internal error.
+     * An error indicating a general internal error within the server.
+     *
+     * This broad error category is returned when the server encounters an unexpected condition that prevented it from fulfilling the request. These are often transient and can be retried after some delay.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/generalinternalerror">GeneralInternalError</a>
      */
     GENERAL_INTERNAL(5000000L),
 
     /**
-     * An error response that indicates an unknown error occurred, but you can try again.
+     * An error response indicating an unknown error occurred, but suggesting that the request may be retried.
+     *
+     * Unlike the general internal error, this error specifically suggests that while the error is unknown, retrying the request after some time may result in a successful response. It's indicative of potentially transient server-side issues.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/generalinternalretryableerror">GeneralInternalRetryableError</a>
      */
