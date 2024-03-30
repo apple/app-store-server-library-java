@@ -204,9 +204,10 @@ public enum APIError {
      *
      * This deprecated error occurs if the exclude-revoked parameter was not correctly specified, suggesting a format or logical error.
      *
-     * @deprecated
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidexcluderevokederror">InvalidExcludeRevokedError</a>
      */
+
+    @Deprecated
     INVALID_EXCLUDE_REVOKED(4000025L),
 
     /**
