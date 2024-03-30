@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.0.0
+- Incorporate changes for App Store Server API v1.10.1 [https://github.com/apple/app-store-server-library-java/pull/77]
+  - This change is a breaking change, as the datatype of the price field has changed from Integer to Long
+
 ## Version 1.1.0
 - Support App Store Server Notifications v2.10 [https://github.com/apple/app-store-server-library-java/pull/74]
 - Require appAppleId in SignedDataVerifier for the Production environment [https://github.com/apple/app-store-server-library-java/pull/68]
