@@ -246,84 +246,108 @@ public enum APIError {
     INVALID_REVOKED(4000030L),
 
     /**
-     * An error that indicates the status parameter is invalid.
+     * An error indicating the status parameter is invalid.
+     *
+     * Occurs when the status value provided in the request does not match any of the expected status values defined by the API.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidstatuserror">InvalidStatusError</a>
      */
     INVALID_STATUS(4000031L),
 
     /**
-     * An error that indicates the value of the account tenure field is invalid.
+     * An error indicating the account tenure value is invalid.
+     *
+     * This error can happen if the specified value for the account tenure does not conform to the expected format or range.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidaccounttenureerror">InvalidAccountTenureError</a>
      */
     INVALID_ACCOUNT_TENURE(4000032L),
 
     /**
-     * An error that indicates the value of the app account token field is invalid.
+     * An error indicating the app account token is invalid.
+     *
+     * This error occurs when the token provided does not match the format or has expired, suggesting an issue in token generation or provision.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidappaccounttokenerror">InvalidAppAccountTokenError</a>
      */
     INVALID_APP_ACCOUNT_TOKEN(4000033L),
 
     /**
-     * An error that indicates the value of the consumption status field is invalid.
+     * An error indicating the consumption status value is invalid.
+     *
+     * Triggered when the consumption status provided is not recognized, possibly due to incorrect data entry or misunderstanding of valid values.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidconsumptionstatuserror">InvalidConsumptionStatusError</a>
      */
     INVALID_CONSUMPTION_STATUS(4000034L),
 
     /**
-     * An error that indicates the customer consented field is invalid or doesn’t indicate that the customer consented.
+     * An error indicating the customer consented field is invalid.
+     *
+     * Occurs when the provided value does not clearly indicate customer consent, or the format is not as expected by the API.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidcustomerconsentederror">InvalidCustomerConsentedError</a>
      */
     INVALID_CUSTOMER_CONSENTED(4000035L),
 
     /**
-     * An error that indicates the value in the delivery status field is invalid.
+     * An error indicating the delivery status is invalid.
+     *
+     * This error highlights issues with the specified delivery status, either due to incorrect formatting or invalid status values.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invaliddeliverystatuserror">InvalidDeliveryStatusError</a>
      */
     INVALID_DELIVERY_STATUS(4000036L),
 
     /**
-     * An error that indicates the value in the lifetime dollars purchased field is invalid.
+     * An error indicating the lifetime dollars purchased value is invalid.
+     *
+     * Triggered when the amount specified does not align with expected values, possibly indicating a data entry error.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidlifetimedollarspurchasederror">InvalidLifetimeDollarsPurchasedError</a>
      */
     INVALID_LIFETIME_DOLLARS_PURCHASED(4000037L),
 
     /**
-     * An error that indicates the value in the lifetime dollars refunded field is invalid.
+     * An error indicating the lifetime dollars refunded value is invalid.
+     *
+     * Occurs when the specified refunded amount is outside expected ranges, suggesting an error in value provision.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidlifetimedollarsrefundederror">InvalidLifetimeDollarsRefundedError</a>
      */
     INVALID_LIFETIME_DOLLARS_REFUNDED(4000038L),
 
     /**
-     * An error that indicates the value in the platform field is invalid.
+     * An error indicating the platform specified is invalid.
+     *
+     * This error is encountered when the platform identifier provided does not match any known platforms within the App Store ecosystem.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidplatformerror">InvalidPlatformError</a>
      */
     INVALID_PLATFORM(4000039L),
 
     /**
-     * An error that indicates the value in the playtime field is invalid.
+     * An error indicating the playtime value is invalid.
+     *
+     * Triggered when playtime data provided does not adhere to the expected format or is outside allowable ranges.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidplaytimeerror">InvalidPlayTimeError</a>
      */
     INVALID_PLAY_TIME(4000040L),
 
     /**
-     * An error that indicates the value in the sample content provided field is invalid.
+     * An error indicating the sample content provided is invalid.
+     *
+     * Occurs when content samples submitted do not meet criteria set by the App Store, potentially due to format or content guidelines.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidsamplecontentprovidederror">InvalidSampleContentProvidedError</a>
      */
     INVALID_SAMPLE_CONTENT_PROVIDED(4000041L),
 
     /**
-     * An error that indicates the value in the user status field is invalid.
+     * An error indicating the user status value is invalid.
+     *
+     * This error suggests that the user status provided in the request is not recognized or outside the expected values.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invaliduserstatuserror">InvalidUserStatusError</a>
      */
