@@ -10,13 +10,12 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.UUID;
 
 public class JWSTransactionDecodedPayloadTest {
 
     @Test
-    public void testTransactionDecoding() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, VerificationException {
+    public void testTransactionDecoding() throws IOException, NoSuchAlgorithmException, VerificationException {
         String signedTransaction = SignedDataCreator.createSignedDataFromJson("models/signedTransaction.json");
 
         JWSTransactionDecodedPayload transaction = TestingUtility.getSignedPayloadVerifier().verifyAndDecodeTransaction(signedTransaction);

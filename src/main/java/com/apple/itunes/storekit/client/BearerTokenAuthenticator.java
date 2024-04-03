@@ -14,7 +14,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class BearerTokenAuthenticator {
     private static final String APP_STORE_CONNECT_AUDIENCE = "appstoreconnect-v1";

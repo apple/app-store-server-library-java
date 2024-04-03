@@ -10,12 +10,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 
 public class JWSRenewalInfoDecodedPayloadTest {
 
     @Test
-    public void testRenewalInfoDecoding() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, VerificationException {
+    public void testRenewalInfoDecoding() throws IOException, NoSuchAlgorithmException, VerificationException {
         String signedRenewalInfo = SignedDataCreator.createSignedDataFromJson("models/signedRenewalInfo.json");
 
         JWSRenewalInfoDecodedPayload renewalInfo = TestingUtility.getSignedPayloadVerifier().verifyAndDecodeRenewalInfo(signedRenewalInfo);

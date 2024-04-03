@@ -4,6 +4,7 @@ package com.apple.itunes.storekit.util;
 
 import com.apple.itunes.storekit.model.Environment;
 import com.apple.itunes.storekit.verification.SignedDataVerifier;
+import org.junit.jupiter.api.Assertions;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -19,6 +20,7 @@ public class TestingUtility {
 
     public static byte[] readBytes(String file) throws IOException {
         try (InputStream stream = TestingUtility.class.getClassLoader().getResourceAsStream(file)) {
+            Assertions.assertNotNull(stream);
             return stream.readAllBytes();
         }
     }

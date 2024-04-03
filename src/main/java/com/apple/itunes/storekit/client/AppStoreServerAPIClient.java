@@ -22,7 +22,6 @@ import com.apple.itunes.storekit.model.StatusResponse;
 import com.apple.itunes.storekit.model.TransactionHistoryRequest;
 import com.apple.itunes.storekit.model.TransactionInfoResponse;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.Call;
@@ -39,6 +38,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class AppStoreServerAPIClient {
@@ -79,7 +79,7 @@ public class AppStoreServerAPIClient {
         requestBuilder.addHeader("User-Agent", USER_AGENT);
         requestBuilder.addHeader("Authorization", "Bearer " + bearerTokenAuthenticator.generateToken());
         requestBuilder.addHeader("Accept", "application/json");
-        HttpUrl.Builder urlBuilder = urlBase.resolve(path).newBuilder();
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(urlBase.resolve(path)).newBuilder();
         for (Map.Entry<String, List<String>> entry : queryParameters.entrySet()) {
             for (String queryValue : entry.getValue()) {
                 urlBuilder.addQueryParameter(entry.getKey(), queryValue);
