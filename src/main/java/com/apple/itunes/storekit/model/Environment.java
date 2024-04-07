@@ -14,6 +14,7 @@ public enum Environment {
     SANDBOX("Sandbox"),
     PRODUCTION("Production"),
     XCODE("Xcode"),
+    // Used for unit testing
     LOCAL_TESTING("LocalTesting");
 
     private final String value;

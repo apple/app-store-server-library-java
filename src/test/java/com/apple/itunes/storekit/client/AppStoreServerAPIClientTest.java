@@ -562,6 +562,17 @@ public class AppStoreServerAPIClientTest {
         Assertions.fail();
     }
 
+    @Test
+    public void testXcodeEnvironmentNotSupportedError() throws IOException {
+        try (InputStream key = this.getClass().getClassLoader().getResourceAsStream("certs/testSigningKey.p8")) {
+            new AppStoreServerAPIClient(new String(key.readAllBytes()), "keyId", "issuerId", "com.example", Environment.XCODE);
+        } catch (IllegalArgumentException e) {
+            Assertions.assertEquals("Xcode is not a supported environment for an AppStoreServerAPIClient", e.getMessage());
+            return;
+        }
+        Assertions.fail();
+    }
+
     public AppStoreServerAPIClient getClientWithBody(String path, Consumer<Request> requestVerifier) throws IOException {
         String body = TestingUtility.readFile(path);
         return getAppStoreServerAPIClient(body, requestVerifier);
