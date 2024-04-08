@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
 public class AppStoreServerAPIClient {
     private static final String PRODUCTION_URL = "https://api.storekit.itunes.apple.com";
     private static final String SANDBOX_URL = "https://api.storekit-sandbox.itunes.apple.com";
+    private static final String LOCAL_TESTING_URL = "https://local-testing-base-url";
     private static final String USER_AGENT = "app-store-server-library/java/2.0.0";
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -64,7 +65,22 @@ public class AppStoreServerAPIClient {
         this.bearerTokenAuthenticator = new BearerTokenAuthenticator(signingKey, keyId, issuerId, bundleId);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         this.httpClient = builder.build();
-        this.urlBase = HttpUrl.parse(environment.equals(Environment.SANDBOX) ? SANDBOX_URL : PRODUCTION_URL);
+        switch (environment) {
+            case XCODE:
+                throw new IllegalArgumentException("Xcode is not a supported environment for an AppStoreServerAPIClient");
+            case PRODUCTION:
+                this.urlBase = HttpUrl.parse(PRODUCTION_URL);
+                break;
+            case LOCAL_TESTING:
+                this.urlBase = HttpUrl.parse(LOCAL_TESTING_URL);
+                break;
+            case SANDBOX:
+                this.urlBase = HttpUrl.parse(SANDBOX_URL);
+                break;
+            default:
+                // This switch statement is exhaustive
+                throw new IllegalStateException();
+        }
         this.objectMapper = new ObjectMapper();
         objectMapper.setVisibility(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
                 .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
