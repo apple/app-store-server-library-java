@@ -78,7 +78,7 @@ public class AppStoreServerAPIClientTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            Map<String, Object> root = null;
+            Map<String, Object> root;
             try {
                 root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
             } catch (JsonProcessingException e) {
@@ -118,7 +118,7 @@ public class AppStoreServerAPIClientTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            Map<String, Object> root = null;
+            Map<String, Object> root;
             try {
                 root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
             } catch (JsonProcessingException e) {
@@ -259,7 +259,7 @@ public class AppStoreServerAPIClientTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            Map<String, Object> root = null;
+            Map<String, Object> root;
             try {
                 root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
             } catch (JsonProcessingException e) {
@@ -412,7 +412,7 @@ public class AppStoreServerAPIClientTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            Map<String, Object> root = null;
+            Map<String, Object> root;
             try {
                 root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
             } catch (JsonProcessingException e) {
@@ -584,6 +584,7 @@ public class AppStoreServerAPIClientTest {
 
     private AppStoreServerAPIClient getAppStoreServerAPIClient(String body, Consumer<Request> requestVerifier, int statusCode) throws IOException {
         try (InputStream key = this.getClass().getClassLoader().getResourceAsStream("certs/testSigningKey.p8")) {
+            Assertions.assertNotNull(key);
             return new AppStoreServerAPIClient(new String(key.readAllBytes()), "keyId", "issuerId", "com.example", Environment.LOCAL_TESTING) {
                 @Override
                 protected Response getResponse(Request request) {

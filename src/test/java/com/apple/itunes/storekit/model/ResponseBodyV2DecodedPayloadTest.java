@@ -12,14 +12,13 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Set;
 
 public class ResponseBodyV2DecodedPayloadTest {
 
     @Test
-    public void testNotificationDecoding() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, VerificationException {
+    public void testNotificationDecoding() throws IOException, NoSuchAlgorithmException, VerificationException {
         String signedNotification = SignedDataCreator.createSignedDataFromJson("models/signedNotification.json");
 
         ResponseBodyV2DecodedPayload notification = TestingUtility.getSignedPayloadVerifier().verifyAndDecodeNotification(signedNotification);
@@ -46,7 +45,7 @@ public class ResponseBodyV2DecodedPayloadTest {
     }
 
     @Test
-    public void testSummaryNotificationDecoding() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, VerificationException {
+    public void testSummaryNotificationDecoding() throws IOException, NoSuchAlgorithmException, VerificationException {
         String signedNotification = SignedDataCreator.createSignedDataFromJson("models/signedSummaryNotification.json");
 
         ResponseBodyV2DecodedPayload notification = TestingUtility.getSignedPayloadVerifier().verifyAndDecodeNotification(signedNotification);
@@ -73,12 +72,12 @@ public class ResponseBodyV2DecodedPayloadTest {
     }
 
     @Test
-    public void testExternalPurchaseTokenNotificationDecoding() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, VerificationException {
+    public void testExternalPurchaseTokenNotificationDecoding() throws IOException, NoSuchAlgorithmException, VerificationException {
         String signedNotification = SignedDataCreator.createSignedDataFromJson("models/signedExternalPurchaseTokenNotification.json");
 
         SignedDataVerifier verifier = new SignedDataVerifier(Set.of(new ByteArrayInputStream(TestingUtility.readBytes("certs/testCA.der"))), "com.example", 1234L, Environment.LOCAL_TESTING, false) {
             @Override
-            protected void verifyNotification(String bundleId, Long appAppleId, Environment notificationEnv) throws VerificationException {
+            protected void verifyNotification(String bundleId, Long appAppleId, Environment notificationEnv) {
                 Assertions.assertEquals("com.example", bundleId);
                 Assertions.assertEquals(55555, appAppleId);
                 Assertions.assertEquals(Environment.PRODUCTION, notificationEnv);
@@ -104,12 +103,12 @@ public class ResponseBodyV2DecodedPayloadTest {
     }
 
     @Test
-    public void testExternalPurchaseTokenSandboxNotificationDecoding() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, VerificationException {
+    public void testExternalPurchaseTokenSandboxNotificationDecoding() throws IOException, NoSuchAlgorithmException, VerificationException {
         String signedNotification = SignedDataCreator.createSignedDataFromJson("models/signedExternalPurchaseTokenSandboxNotification.json");
 
         SignedDataVerifier verifier = new SignedDataVerifier(Set.of(new ByteArrayInputStream(TestingUtility.readBytes("certs/testCA.der"))), "com.example", 1234L, Environment.LOCAL_TESTING, false) {
             @Override
-            protected void verifyNotification(String bundleId, Long appAppleId, Environment notificationEnv) throws VerificationException {
+            protected void verifyNotification(String bundleId, Long appAppleId, Environment notificationEnv) {
                 Assertions.assertEquals("com.example", bundleId);
                 Assertions.assertEquals(55555, appAppleId);
                 Assertions.assertEquals(Environment.SANDBOX, notificationEnv);

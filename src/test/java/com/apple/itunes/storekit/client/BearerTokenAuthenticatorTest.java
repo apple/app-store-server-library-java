@@ -12,6 +12,7 @@ class BearerTokenAuthenticatorTest {
     @Test
     void testCreatingToken() throws Exception {
         try (InputStream key = this.getClass().getClassLoader().getResourceAsStream("certs/testSigningKey.p8")) {
+            Assertions.assertNotNull(key);
             var tokenGenerator = new BearerTokenAuthenticator(new String(key.readAllBytes()), "keyId", "issuerId", "bundleId");
             String token = tokenGenerator.generateToken();
             Assertions.assertNotNull(token);

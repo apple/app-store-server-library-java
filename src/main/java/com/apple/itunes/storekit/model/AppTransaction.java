@@ -12,7 +12,6 @@ import java.util.UUID;
  Information that represents the customer’s purchase of the app, cryptographically signed by the App Store.
 
  @see <a href="https://developer.apple.com/documentation/storekit/apptransaction">AppTransaction</a>
-
  */
 public class AppTransaction implements DecodedSignedData {
 
@@ -253,7 +252,6 @@ public class AppTransaction implements DecodedSignedData {
 
      @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/4013175-preorderdate">preorderDate</a>
      */
-    
     public Long getPreorderDate() {
         return preorderDate;
     }
