@@ -13,12 +13,16 @@ public enum APIError {
     /**
      * An error that indicates an invalid request.
      *
+     * This general error occurs for various reasons, suggesting the request to the server is malformed.
+     *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/generalbadrequesterror">GeneralBadRequestError</a>
      */
     GENERAL_BAD_REQUEST(4000000L),
 
     /**
      * An error that indicates an invalid app identifier.
+     *
+     * This error occurs when the provided app identifier does not match any existing app in the App Store's records, often due to a typo or incorrect app ID being used in the request.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidappidentifiererror">InvalidAppIdentifierError</a>
      */
@@ -27,110 +31,142 @@ public enum APIError {
     /**
      * An error that indicates an invalid request revision.
      *
+     * This error signifies that the revision number or identifier provided in the request does not match any known revision, suggesting a potential error in specifying the revision details.
+     *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidrequestrevisionerror">InvalidRequestRevisionError</a>
      */
     INVALID_REQUEST_REVISION(4000005L),
 
     /**
-     * An error that indicates an invalid transaction identifier.
+     * An error indicating the provided transaction identifier is invalid.
+     *
+     * This error occurs when the transaction ID sent in the request cannot be found or does not match any existing transactions in the system, possibly due to a typo or outdated information.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidtransactioniderror">InvalidTransactionIdError</a>
      */
     INVALID_TRANSACTION_ID(4000006L),
 
     /**
-     * An error that indicates an invalid original transaction identifier.
+     * An error indicating the original transaction identifier is invalid.
+     *
+     * This occurs when referencing a transaction that does not exist or the original transaction ID is incorrect, often during attempts to verify or modify a transaction's status.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidoriginaltransactioniderror">InvalidOriginalTransactionIdError</a>
      */
     INVALID_ORIGINAL_TRANSACTION_ID(4000008L),
 
     /**
-     * An error that indicates an invalid extend-by-days value.
+     * An error indicating the 'extend-by-days' value provided is invalid.
+     *
+     * This error highlights issues with the number of days specified for extending a subscription or trial, usually because the value is out of the accepted range or format.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidextendbydayserror">InvalidExtendByDaysError</a>
      */
     INVALID_EXTEND_BY_DAYS(4000009L),
 
     /**
-     * An error that indicates an invalid reason code.
+     * An error indicating the reason code for an extension is invalid.
+     *
+     * This error suggests that the provided reason code for requesting an extension, such as for a subscription renewal, does not match any of the known or valid reason codes.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidextendreasoncodeerror">InvalidExtendReasonCodeError</a>
      */
     INVALID_EXTEND_REASON_CODE(4000010L),
 
     /**
-     * An error that indicates an invalid request identifier.
+     * An error indicating the provided request identifier is invalid.
+     *
+     * This error occurs when the specified request ID does not match any known or pending requests, possibly due to a mistyped or outdated identifier.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidrequestidentifiererror">InvalidRequestIdentifierError</a>
      */
     INVALID_REQUEST_IDENTIFIER(4000011L),
 
     /**
-     * An error that indicates that the start date is earlier than the earliest allowed date.
+     * An error indicating the specified start date is earlier than allowed.
+     *
+     * This occurs when a request includes a start date that falls before the earliest date permitted by the App Store's policies or the specific API's operational parameters.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/startdatetoofarinpasterror">StartDateTooFarInPastError</a>
      */
     START_DATE_TOO_FAR_IN_PAST(4000012L),
 
     /**
-     * An error that indicates that the end date precedes the start date, or the two dates are equal.
+     * An error indicating the end date is set before the start date or the same as the start date.
+     *
+     * This error highlights logical inconsistencies in date ranges provided in requests, such as for subscription periods or event scheduling, which are not permitted.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/startdateafterenddateerror">StartDateAfterEndDateError</a>
      */
     START_DATE_AFTER_END_DATE(4000013L),
 
     /**
-     * An error that indicates the pagination token is invalid.
+     * An error indicating the pagination token used in the request is invalid.
+     *
+     * This error typically occurs when navigating through a list of items provided by the API and the supplied token for fetching the next set of results is malformed or expired.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidpaginationtokenerror">InvalidPaginationTokenError</a>
      */
     INVALID_PAGINATION_TOKEN(4000014L),
 
     /**
-     * An error that indicates the start date is invalid.
+     * An error indicating the provided start date does not meet validation criteria.
+     *
+     * This may occur if the date format is incorrect, or the date is outside an acceptable range for the operation being performed.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidstartdateerror">InvalidStartDateError</a>
      */
     INVALID_START_DATE(4000015L),
 
     /**
-     * An error that indicates the end date is invalid.
+     * An error indicating the provided end date does not meet validation criteria.
+     *
+     * Similar to the start date error, this can happen if the date is improperly formatted or not within an expected range.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidenddateerror">InvalidEndDateError</a>
      */
     INVALID_END_DATE(4000016L),
 
     /**
-     * An error that indicates the pagination token expired.
+     * An error indicating the pagination token used in the request has expired.
+     *
+     * Pagination tokens are typically time-sensitive. This error occurs if a token is used beyond its valid lifespan.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/paginationtokenexpirederror">PaginationTokenExpiredError</a>
      */
     PAGINATION_TOKEN_EXPIRED(4000017L),
 
     /**
-     * An error that indicates the notification type or subtype is invalid.
+     * An error indicating the notification type or subtype specified in the request is not recognized.
+     *
+     * This error suggests a mismatch between the provided notification type/subtype and those defined by the API.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidnotificationtypeerror">InvalidNotificationTypeError</a>
      */
     INVALID_NOTIFICATION_TYPE(4000018L),
 
     /**
-     * An error that indicates the request is invalid because it has too many constraints applied.
+     * An error indicating that the request cannot be processed due to multiple conflicting filters.
+     *
+     * This occurs when a request includes multiple filters that cannot be applied together or are mutually exclusive.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/multiplefilterssuppliederror">MultipleFiltersSuppliedError</a>
      */
     MULTIPLE_FILTERS_SUPPLIED(4000019L),
 
     /**
-     * An error that indicates the test notification token is invalid.
+     * An error indicating the test notification token provided is invalid.
+     *
+     * This error can arise if the token format is incorrect or the token does not match any known valid tokens.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidtestnotificationtokenerror">InvalidTestNotificationTokenError</a>
      */
     INVALID_TEST_NOTIFICATION_TOKEN(4000020L),
 
     /**
-     * An error that indicates an invalid sort parameter.
+     * An error indicating the sort parameter provided in the request is invalid.
+     *
+     * This error is triggered if the sort parameter does not match any of the allowed sorting criteria for the API endpoint.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidsorterror">InvalidSortError</a>
      */
@@ -139,12 +175,16 @@ public enum APIError {
     /**
      * An error that indicates an invalid product type parameter.
      *
+     * This error occurs when the product type provided does not match any known product types, potentially due to incorrect data entry.
+     *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidproducttypeerror">InvalidProductTypeError</a>
      */
     INVALID_PRODUCT_TYPE(4000022L),
 
     /**
      * An error that indicates the product ID parameter is invalid.
+     *
+     * This error signifies that the provided product ID does not exist or is incorrectly formatted, indicating a possible error in data entry or retrieval.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidproductiderror">InvalidProductIdError</a>
      */
@@ -153,6 +193,8 @@ public enum APIError {
     /**
      * An error that indicates an invalid subscription group identifier.
      *
+     * This error arises when the subscription group identifier provided does not correspond to any existing subscription groups, suggesting an error in specifying the identifier.
+     *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidsubscriptiongroupidentifiererror">InvalidSubscriptionGroupIdentifierError</a>
      */
     INVALID_SUBSCRIPTION_GROUP_IDENTIFIER(4000024L),
@@ -160,13 +202,18 @@ public enum APIError {
     /**
      * An error that indicates the query parameter exclude-revoked is invalid.
      *
+     * This deprecated error occurs if the exclude-revoked parameter was not correctly specified, suggesting a format or logical error.
+     *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidexcluderevokederror">InvalidExcludeRevokedError</a>
      */
+
     @Deprecated
     INVALID_EXCLUDE_REVOKED(4000025L),
 
     /**
      * An error that indicates an invalid in-app ownership type parameter.
+     *
+     * Triggered when the in-app ownership type specified does not align with valid ownership types, potentially due to incorrect data provision.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidinappownershiptypeerror">InvalidInAppOwnershipTypeError</a>
      */
@@ -175,12 +222,16 @@ public enum APIError {
     /**
      * An error that indicates a required storefront country code is empty.
      *
+     * This error occurs when the storefront country code, a necessary parameter for some requests, is not provided, indicating a missing value.
+     *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidemptystorefrontcountrycodelisterror">InvalidEmptyStorefrontCountryCodeListError</a>
      */
     INVALID_EMPTY_STOREFRONT_COUNTRY_CODE_LIST(4000027L),
 
     /**
      * An error that indicates a storefront code is invalid.
+     *
+     * Occurs when the storefront country code provided does not match any known codes, suggesting an error in specifying the code.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidstorefrontcountrycodeerror">InvalidStorefrontCountryCodeError</a>
      */
@@ -189,208 +240,268 @@ public enum APIError {
     /**
      * An error that indicates the revoked parameter contains an invalid value.
      *
+     * This error signifies that the value provided for the revoked parameter is not recognized, possibly due to incorrect formatting or values.
+     *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidrevokederror">InvalidRevokedError</a>
      */
     INVALID_REVOKED(4000030L),
 
     /**
-     * An error that indicates the status parameter is invalid.
+     * An error indicating the status parameter is invalid.
+     *
+     * Occurs when the status value provided in the request does not match any of the expected status values defined by the API.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidstatuserror">InvalidStatusError</a>
      */
     INVALID_STATUS(4000031L),
 
     /**
-     * An error that indicates the value of the account tenure field is invalid.
+     * An error indicating the account tenure value is invalid.
+     *
+     * This error can happen if the specified value for the account tenure does not conform to the expected format or range.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidaccounttenureerror">InvalidAccountTenureError</a>
      */
     INVALID_ACCOUNT_TENURE(4000032L),
 
     /**
-     * An error that indicates the value of the app account token field is invalid.
+     * An error indicating the app account token is invalid.
+     *
+     * This error occurs when the token provided does not match the format or has expired, suggesting an issue in token generation or provision.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidappaccounttokenerror">InvalidAppAccountTokenError</a>
      */
     INVALID_APP_ACCOUNT_TOKEN(4000033L),
 
     /**
-     * An error that indicates the value of the consumption status field is invalid.
+     * An error indicating the consumption status value is invalid.
+     *
+     * Triggered when the consumption status provided is not recognized, possibly due to incorrect data entry or misunderstanding of valid values.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidconsumptionstatuserror">InvalidConsumptionStatusError</a>
      */
     INVALID_CONSUMPTION_STATUS(4000034L),
 
     /**
-     * An error that indicates the customer consented field is invalid or doesn’t indicate that the customer consented.
+     * An error indicating the customer consented field is invalid.
+     *
+     * Occurs when the provided value does not clearly indicate customer consent, or the format is not as expected by the API.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidcustomerconsentederror">InvalidCustomerConsentedError</a>
      */
     INVALID_CUSTOMER_CONSENTED(4000035L),
 
     /**
-     * An error that indicates the value in the delivery status field is invalid.
+     * An error indicating the delivery status is invalid.
+     *
+     * This error highlights issues with the specified delivery status, either due to incorrect formatting or invalid status values.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invaliddeliverystatuserror">InvalidDeliveryStatusError</a>
      */
     INVALID_DELIVERY_STATUS(4000036L),
 
     /**
-     * An error that indicates the value in the lifetime dollars purchased field is invalid.
+     * An error indicating the lifetime dollars purchased value is invalid.
+     *
+     * Triggered when the amount specified does not align with expected values, possibly indicating a data entry error.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidlifetimedollarspurchasederror">InvalidLifetimeDollarsPurchasedError</a>
      */
     INVALID_LIFETIME_DOLLARS_PURCHASED(4000037L),
 
     /**
-     * An error that indicates the value in the lifetime dollars refunded field is invalid.
+     * An error indicating the lifetime dollars refunded value is invalid.
+     *
+     * Occurs when the specified refunded amount is outside expected ranges, suggesting an error in value provision.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidlifetimedollarsrefundederror">InvalidLifetimeDollarsRefundedError</a>
      */
     INVALID_LIFETIME_DOLLARS_REFUNDED(4000038L),
 
     /**
-     * An error that indicates the value in the platform field is invalid.
+     * An error indicating the platform specified is invalid.
+     *
+     * This error is encountered when the platform identifier provided does not match any known platforms within the App Store ecosystem.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidplatformerror">InvalidPlatformError</a>
      */
     INVALID_PLATFORM(4000039L),
 
     /**
-     * An error that indicates the value in the playtime field is invalid.
+     * An error indicating the playtime value is invalid.
+     *
+     * Triggered when playtime data provided does not adhere to the expected format or is outside allowable ranges.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidplaytimeerror">InvalidPlayTimeError</a>
      */
     INVALID_PLAY_TIME(4000040L),
 
     /**
-     * An error that indicates the value in the sample content provided field is invalid.
+     * An error indicating the sample content provided is invalid.
+     *
+     * Occurs when content samples submitted do not meet criteria set by the App Store, potentially due to format or content guidelines.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidsamplecontentprovidederror">InvalidSampleContentProvidedError</a>
      */
     INVALID_SAMPLE_CONTENT_PROVIDED(4000041L),
 
     /**
-     * An error that indicates the value in the user status field is invalid.
+     * An error indicating the user status value is invalid.
+     *
+     * This error suggests that the user status provided in the request is not recognized or outside the expected values.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invaliduserstatuserror">InvalidUserStatusError</a>
      */
     INVALID_USER_STATUS(4000042L),
 
     /**
-     * An error that indicates the transaction identifier doesn’t represent a consumable in-app purchase.
+     * An error indicating the transaction identifier doesn't represent a consumable in-app purchase.
+     *
+     * This error occurs when an attempt is made to perform an operation that is specific to consumable products on a transaction identifier associated with non-consumable products.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidtransactionnotconsumableerror">InvalidTransactionNotConsumableError</a>
      */
     INVALID_TRANSACTION_NOT_CONSUMABLE(4000043L),
 
     /**
-     * An error that indicates the subscription doesn't qualify for a renewal-date extension due to its subscription state.
+     * An error indicating the subscription doesn't qualify for a renewal-date extension due to its subscription state.
+     *
+     * This error is returned when a request for a subscription renewal-date extension is made under circumstances where the subscription's current state does not allow for such an extension.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/subscriptionextensionineligibleerror">SubscriptionExtensionIneligibleError</a>
      */
     SUBSCRIPTION_EXTENSION_INELIGIBLE(4030004L),
 
     /**
-     * An error that indicates the subscription doesn’t qualify for a renewal-date extension because it has already received the maximum extensions.
+     * An error indicating the subscription has already received the maximum number of renewal-date extensions.
+     *
+     * Occurs when an attempt is made to extend the renewal date of a subscription that has already reached the limit of allowable extensions.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/subscriptionmaxextensionerror">SubscriptionMaxExtensionError</a>
      */
     SUBSCRIPTION_MAX_EXTENSION(4030005L),
 
     /**
-     * An error that indicates a subscription isn't directly eligible for a renewal date extension because the user obtained it through Family Sharing.
+     * An error indicating a subscription isn't directly eligible for a renewal date extension because it was obtained through Family Sharing.
+     *
+     * This error is returned when a renewal date extension is requested for a subscription that was not directly purchased by the user but rather shared through Family Sharing.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/familysharedsubscriptionextensionineligibleerror">FamilySharedSubscriptionExtensionIneligibleError</a>
      */
     FAMILY_SHARED_SUBSCRIPTION_EXTENSION_INELIGIBLE(4030007L),
 
     /**
-     * An error that indicates the App Store account wasn’t found.
+     * An error indicating the App Store account wasn’t found.
+     *
+     * This error is returned when an operation is attempted with an account identifier that does not match any existing App Store accounts.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/accountnotfounderror">AccountNotFoundError</a>
      */
     ACCOUNT_NOT_FOUND(4040001L),
 
     /**
-     * An error response that indicates the App Store account wasn’t found, but you can try again.
+     * An error response indicating the App Store account wasn’t found, but you can try again.
+     *
+     * This retryable error suggests that the account lookup might have failed due to transient issues or the account may become available shortly.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/accountnotfoundretryableerror">AccountNotFoundRetryableError</a>
      */
     ACCOUNT_NOT_FOUND_RETRYABLE(4040002L),
 
     /**
-     * An error that indicates the app wasn’t found.
+     * An error indicating the app wasn’t found.
+     *
+     * This error occurs when an operation specifies an app identifier that does not correspond to any apps currently registered in the App Store.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/appnotfounderror">AppNotFoundError</a>
      */
     APP_NOT_FOUND(4040003L),
 
     /**
-     * An error response that indicates the app wasn’t found, but you can try again.
+     * An error response indicating the app wasn’t found, but you can try again.
+     *
+     * Similar to the account not found error, this indicates a potential temporary issue in locating the specified app.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/appnotfoundretryableerror">AppNotFoundRetryableError</a>
      */
     APP_NOT_FOUND_RETRYABLE(4040004L),
 
     /**
-     * An error that indicates an original transaction identifier wasn't found.
+     * An error indicating an original transaction identifier wasn't found.
+     *
+     * Occurs when a transaction operation is attempted with an original transaction identifier that is not recognized as valid or existing.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/originaltransactionidnotfounderror">OriginalTransactionIdNotFoundError</a>
      */
     ORIGINAL_TRANSACTION_ID_NOT_FOUND(4040005L),
 
     /**
-     * An error response that indicates the original transaction identifier wasn’t found, but you can try again.
+     * An error response indicating the original transaction identifier wasn’t found, but you can try again.
+     *
+     * Suggests that the failure to find the original transaction identifier might be due to temporary issues or the data may become available shortly.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/originaltransactionidnotfoundretryableerror">OriginalTransactionIdNotFoundRetryableError</a>
      */
     ORIGINAL_TRANSACTION_ID_NOT_FOUND_RETRYABLE(4040006L),
 
     /**
-     * An error that indicates that the App Store server couldn’t find a notifications URL for your app in this environment.
+     * An error indicating the App Store server couldn’t find a notifications URL for your app in this environment.
+     *
+     * This error is returned when server-to-server notification setup is incomplete or the provided URL is not recognized.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/servernotificationurlnotfounderror">ServerNotificationUrlNotFoundError</a>
      */
     SERVER_NOTIFICATION_URL_NOT_FOUND(4040007L),
 
     /**
-     * An error that indicates that the test notification token is expired or the test notification status isn’t available.
+     * An error indicating the test notification token is expired or the test notification status isn’t available.
+     *
+     * This error occurs when a test notification token provided for a simulated transaction is no longer valid or the corresponding status cannot be retrieved.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/testnotificationnotfounderror">TestNotificationNotFoundError</a>
      */
     TEST_NOTIFICATION_NOT_FOUND(4040008L),
 
     /**
-     * An error that indicates the server didn't find a subscription-renewal-date extension request for the request identifier and product identifier you provided.
+     * An error indicating the server didn't find a subscription-renewal-date extension request for the request identifier and product identifier provided.
+     *
+     * This error is returned when a status request for a subscription renewal-date extension cannot be matched with any submitted extension requests.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/statusrequestnotfounderror">StatusRequestNotFoundError</a>
      */
     STATUS_REQUEST_NOT_FOUND(4040009L),
 
     /**
-     * An error that indicates a transaction identifier wasn't found.
+     * An error indicating a transaction identifier wasn't found.
+     *
+     * Occurs when a specific transaction identifier provided in a request does not match any recorded transactions.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/transactionidnotfounderror">TransactionIdNotFoundError</a>
      */
     TRANSACTION_ID_NOT_FOUND(4040010L),
 
     /**
-     * An error that indicates that the request exceeded the rate limit.
+     * An error indicating that the request exceeded the rate limit.
+     *
+     * This error is returned when a request to the server exceeds the allotted rate limit, suggesting too many requests have been made in a short period. It's a common measure to prevent abuse and overload of the server.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/ratelimitexceedederror">RateLimitExceededError</a>
      */
     RATE_LIMIT_EXCEEDED(4290000L),
 
     /**
-     * An error that indicates a general internal error.
+     * An error indicating a general internal error within the server.
+     *
+     * This broad error category is returned when the server encounters an unexpected condition that prevented it from fulfilling the request. These are often transient and can be retried after some delay.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/generalinternalerror">GeneralInternalError</a>
      */
     GENERAL_INTERNAL(5000000L),
 
     /**
-     * An error response that indicates an unknown error occurred, but you can try again.
+     * An error response indicating an unknown error occurred, but suggesting that the request may be retried.
+     *
+     * Unlike the general internal error, this error specifically suggests that while the error is unknown, retrying the request after some time may result in a successful response. It's indicative of potentially transient server-side issues.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/generalinternalretryableerror">GeneralInternalRetryableError</a>
      */
