@@ -21,6 +21,7 @@ public class Data {
     private static final String SERIALIZED_NAME_SIGNED_TRANSACTION_INFO = "signedTransactionInfo";
     private static final String SERIALIZED_NAME_SIGNED_RENEWAL_INFO = "signedRenewalInfo";
     private static final String SERIALIZED_NAME_STATUS = "status";
+    private static final String SERIALIZED_NAME_CONSUMPTION_REQUEST_REASON = "consumptionRequestReason";
     @JsonProperty(SERIALIZED_NAME_ENVIRONMENT)
     private String environment;
     @JsonProperty(SERIALIZED_NAME_APP_APPLE_ID)
@@ -35,6 +36,8 @@ public class Data {
     private String signedRenewalInfo;
     @JsonProperty(SERIALIZED_NAME_STATUS)
     private Integer status;
+    @JsonProperty(SERIALIZED_NAME_CONSUMPTION_REQUEST_REASON)
+    private String consumptionRequestReason;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
@@ -197,6 +200,36 @@ public class Data {
         this.status = rawStatus;
     }
 
+    public Data consumptionRequestReason(ConsumptionRequestReason consumptionRequestReason) {
+        this.consumptionRequestReason = consumptionRequestReason != null ? consumptionRequestReason.getValue() : null;
+        return this;
+    }
+
+    /**
+     * The reason the customer requested the refund.
+     *
+     * @return consumptionRequestReason
+     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/consumptionrequestreason">consumptionRequestReason</a>
+     **/
+    public ConsumptionRequestReason getConsumptionRequestReason() {
+        return consumptionRequestReason != null ? ConsumptionRequestReason.fromValue(consumptionRequestReason) : null;
+    }
+
+    /**
+     * @see #getConsumptionRequestReason()
+     */
+    public String getRawConsumptionRequestReason() {
+        return consumptionRequestReason;
+    }
+
+    public void setConsumptionRequestReason(ConsumptionRequestReason consumptionRequestReason) {
+        this.consumptionRequestReason = consumptionRequestReason != null ? consumptionRequestReason.getValue() : null;
+    }
+
+    public void setRawConsumptionRequestReason(String rawConsumptionRequestReason) {
+        this.consumptionRequestReason = rawConsumptionRequestReason;
+    }
+
     public Data unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
         return this;
@@ -231,12 +264,13 @@ public class Data {
                 Objects.equals(this.signedTransactionInfo, data.signedTransactionInfo) &&
                 Objects.equals(this.signedRenewalInfo, data.signedRenewalInfo) &&
                 Objects.equals(this.status, data.status) &&
+                Objects.equals(this.consumptionRequestReason, data.consumptionRequestReason) &&
                 Objects.equals(this.unknownFields, data.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(environment, appAppleId, bundleId, bundleVersion, signedTransactionInfo, signedRenewalInfo, status, unknownFields);
+        return Objects.hash(environment, appAppleId, bundleId, bundleVersion, signedTransactionInfo, signedRenewalInfo, status, consumptionRequestReason, unknownFields);
     }
 
     @Override
@@ -249,6 +283,7 @@ public class Data {
                 ", signedTransactionInfo='" + signedTransactionInfo + '\'' +
                 ", signedRenewalInfo='" + signedRenewalInfo + '\'' +
                 ", status=" + status +
+                ", consumptionRequestReason='" + consumptionRequestReason + '\'' +
                 ", unknownFields=" + unknownFields +
                 '}';
     }

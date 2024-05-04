@@ -282,7 +282,15 @@ public enum APIError {
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidtransactionnotconsumableerror">InvalidTransactionNotConsumableError</a>
      */
+    @Deprecated
     INVALID_TRANSACTION_NOT_CONSUMABLE(4000043L),
+
+    /**
+     * An error that indicates the transaction identifier represents an unsupported in-app purchase type.
+     *
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidtransactiontypenotsupportederror">InvalidTransactionTypeNotSupportedError</a>
+     */
+    INVALID_TRANSACTION_TYPE_NOT_SUPPORTED(4000047L),
 
     /**
      * An error that indicates the subscription doesn't qualify for a renewal-date extension due to its subscription state.
