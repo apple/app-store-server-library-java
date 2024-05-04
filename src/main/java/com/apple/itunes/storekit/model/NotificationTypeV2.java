@@ -5,9 +5,9 @@ package com.apple.itunes.storekit.model;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * A notification type value that App Store Server Notifications V2 uses.
+ * The type that describes the in-app purchase or external purchase event for which the App Store sends the version 2 notification.
  *
- * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/notificationtype">notificationType</a>
+ * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/notificationtype">notificationType</a>
  */
 public enum NotificationTypeV2 {
 

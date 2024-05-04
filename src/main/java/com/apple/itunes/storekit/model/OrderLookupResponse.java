@@ -76,6 +76,7 @@ public class OrderLookupResponse {
      * An array of in-app purchase transactions that are part of order, signed by Apple, in JSON Web Signature format.
      *
      * @return signedTransactions
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/jwstransaction">JWSTransaction</a>
      **/
     public List<String> getSignedTransactions() {
         return signedTransactions;
