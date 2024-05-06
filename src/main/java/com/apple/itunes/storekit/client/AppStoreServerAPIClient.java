@@ -24,6 +24,7 @@ import com.apple.itunes.storekit.model.TransactionInfoResponse;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import okhttp3.Authenticator;
 import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
@@ -64,6 +65,8 @@ public class AppStoreServerAPIClient {
     public AppStoreServerAPIClient(String signingKey, String keyId, String issuerId, String bundleId, Environment environment) {
         this.bearerTokenAuthenticator = new BearerTokenAuthenticator(signingKey, keyId, issuerId, bundleId);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        // If a proxy is configured via java.net.ProxySelector.setDefault, this will allow java.net.Authenticator.setDefault to serve as its auth source
+        builder.proxyAuthenticator(Authenticator.JAVA_NET_AUTHENTICATOR);
         this.httpClient = builder.build();
         switch (environment) {
             case XCODE:
