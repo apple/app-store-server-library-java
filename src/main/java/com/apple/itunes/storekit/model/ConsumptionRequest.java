@@ -24,6 +24,7 @@ public class ConsumptionRequest {
     private static final String SERIALIZED_NAME_LIFETIME_DOLLARS_REFUNDED = "lifetimeDollarsRefunded";
     private static final String SERIALIZED_NAME_LIFETIME_DOLLARS_PURCHASED = "lifetimeDollarsPurchased";
     private static final String SERIALIZED_NAME_USER_STATUS = "userStatus";
+    private static final String SERIALIZED_NAME_REFUND_PREFERENCE = "refundPreference";
     @JsonProperty(SERIALIZED_NAME_CUSTOMER_CONSENTED)
     private Boolean customerConsented;
     @JsonProperty(SERIALIZED_NAME_CONSUMPTION_STATUS)
@@ -46,6 +47,8 @@ public class ConsumptionRequest {
     private Integer lifetimeDollarsPurchased;
     @JsonProperty(SERIALIZED_NAME_USER_STATUS)
     private Integer userStatus;
+    @JsonProperty(SERIALIZED_NAME_REFUND_PREFERENCE)
+    private Integer refundPreference;
 
 
     public ConsumptionRequest() {
@@ -348,6 +351,36 @@ public class ConsumptionRequest {
         this.userStatus = rawUserStatus;
     }
 
+    public ConsumptionRequest refundPreference(RefundPreference refundPreference) {
+        this.refundPreference = refundPreference != null ? refundPreference.getValue() : null;
+        return this;
+    }
+
+    /**
+     * A value that indicates your preference, based on your operational logic, as to whether Apple should grant the refund.
+     *
+     * @return refundPreference
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/refundpreference">refundPreference</a>
+     **/
+    public RefundPreference getRefundPreference() {
+        return refundPreference != null ? RefundPreference.fromValue(refundPreference) : null;
+    }
+
+    /**
+     * @see #getRefundPreference()
+     */
+    public Integer getRawRefundPreference() {
+        return refundPreference;
+    }
+
+    public void setRefundPreference(RefundPreference refundPreference) {
+        this.refundPreference = refundPreference != null ? refundPreference.getValue() : null;
+    }
+
+    public void setRawRefundPreference(Integer rawRefundPreference) {
+        this.refundPreference = rawRefundPreference;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -367,12 +400,13 @@ public class ConsumptionRequest {
                 Objects.equals(this.playTime, consumptionRequest.playTime) &&
                 Objects.equals(this.lifetimeDollarsRefunded, consumptionRequest.lifetimeDollarsRefunded) &&
                 Objects.equals(this.lifetimeDollarsPurchased, consumptionRequest.lifetimeDollarsPurchased) &&
-                Objects.equals(this.userStatus, consumptionRequest.userStatus);
+                Objects.equals(this.userStatus, consumptionRequest.userStatus) &&
+                Objects.equals(this.refundPreference, consumptionRequest.refundPreference);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(customerConsented, consumptionStatus, platform, sampleContentProvided, deliveryStatus, appAccountToken, accountTenure, playTime, lifetimeDollarsRefunded, lifetimeDollarsPurchased, userStatus);
+        return Objects.hash(customerConsented, consumptionStatus, platform, sampleContentProvided, deliveryStatus, appAccountToken, accountTenure, playTime, lifetimeDollarsRefunded, lifetimeDollarsPurchased, userStatus, refundPreference);
     }
 
     @Override
@@ -389,6 +423,7 @@ public class ConsumptionRequest {
                 ", lifetimeDollarsRefunded=" + lifetimeDollarsRefunded +
                 ", lifetimeDollarsPurchased=" + lifetimeDollarsPurchased +
                 ", userStatus=" + userStatus +
+                ", refundPreference=" + refundPreference +
                 '}';
     }
 }

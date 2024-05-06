@@ -42,6 +42,37 @@ public class ResponseBodyV2DecodedPayloadTest {
         Assertions.assertEquals("signed_renewal_info_value", notification.getData().getSignedRenewalInfo());
         Assertions.assertEquals(Status.ACTIVE, notification.getData().getStatus());
         Assertions.assertEquals(1, notification.getData().getRawStatus());
+        Assertions.assertNull(notification.getData().getConsumptionRequestReason());
+        Assertions.assertNull(notification.getData().getRawConsumptionRequestReason());
+    }
+
+    @Test
+    public void testConsumptionRequestNotificationDecoding() throws IOException, NoSuchAlgorithmException, VerificationException {
+        String signedNotification = SignedDataCreator.createSignedDataFromJson("models/signedConsumptionRequestNotification.json");
+
+        ResponseBodyV2DecodedPayload notification = TestingUtility.getSignedPayloadVerifier().verifyAndDecodeNotification(signedNotification);
+
+        Assertions.assertEquals(NotificationTypeV2.CONSUMPTION_REQUEST, notification.getNotificationType());
+        Assertions.assertEquals("CONSUMPTION_REQUEST", notification.getRawNotificationType());
+        Assertions.assertNull(notification.getSubtype());
+        Assertions.assertNull(notification.getRawSubtype());
+        Assertions.assertEquals("002e14d5-51f5-4503-b5a8-c3a1af68eb20", notification.getNotificationUUID());
+        Assertions.assertEquals("2.0", notification.getVersion());
+        Assertions.assertEquals(1698148900000L, notification.getSignedDate());
+        Assertions.assertNotNull(notification.getData());
+        Assertions.assertNull(notification.getSummary());
+        Assertions.assertNull(notification.getExternalPurchaseToken());
+        Assertions.assertEquals(Environment.LOCAL_TESTING, notification.getData().getEnvironment());
+        Assertions.assertEquals("LocalTesting", notification.getData().getRawEnvironment());
+        Assertions.assertEquals(41234L, notification.getData().getAppAppleId());
+        Assertions.assertEquals("com.example", notification.getData().getBundleId());
+        Assertions.assertEquals("1.2.3", notification.getData().getBundleVersion());
+        Assertions.assertEquals("signed_transaction_info_value", notification.getData().getSignedTransactionInfo());
+        Assertions.assertEquals("signed_renewal_info_value", notification.getData().getSignedRenewalInfo());
+        Assertions.assertEquals(Status.ACTIVE, notification.getData().getStatus());
+        Assertions.assertEquals(1, notification.getData().getRawStatus());
+        Assertions.assertEquals(ConsumptionRequestReason.UNINTENDED_PURCHASE, notification.getData().getConsumptionRequestReason());
+        Assertions.assertEquals("UNINTENDED_PURCHASE", notification.getData().getRawConsumptionRequestReason());
     }
 
     @Test

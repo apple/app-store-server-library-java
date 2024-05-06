@@ -28,6 +28,7 @@ import com.apple.itunes.storekit.model.OrderLookupStatus;
 import com.apple.itunes.storekit.model.Platform;
 import com.apple.itunes.storekit.model.PlayTime;
 import com.apple.itunes.storekit.model.RefundHistoryResponse;
+import com.apple.itunes.storekit.model.RefundPreference;
 import com.apple.itunes.storekit.model.SendAttemptItem;
 import com.apple.itunes.storekit.model.SendAttemptResult;
 import com.apple.itunes.storekit.model.SendTestNotificationResponse;
@@ -429,6 +430,7 @@ public class AppStoreServerAPIClientTest {
             Assertions.assertEquals(6, ((Number) root.get("lifetimeDollarsRefunded")).intValue());
             Assertions.assertEquals(7, ((Number) root.get("lifetimeDollarsPurchased")).intValue());
             Assertions.assertEquals(4, ((Number) root.get("userStatus")).intValue());
+            Assertions.assertEquals(3, ((Number) root.get("refundPreference")).intValue());
         });
 
         ConsumptionRequest consumptionRequest = new ConsumptionRequest()
@@ -442,7 +444,8 @@ public class AppStoreServerAPIClientTest {
                 .playTime(PlayTime.ONE_DAY_TO_FOUR_DAYS)
                 .lifetimeDollarsRefunded(LifetimeDollarsRefunded.ONE_THOUSAND_DOLLARS_TO_ONE_THOUSAND_NINE_HUNDRED_NINETY_NINE_DOLLARS_AND_NINETY_NINE_CENTS)
                 .lifetimeDollarsPurchased(LifetimeDollarsPurchased.TWO_THOUSAND_DOLLARS_OR_GREATER)
-                .userStatus(UserStatus.LIMITED_ACCESS);
+                .userStatus(UserStatus.LIMITED_ACCESS)
+                .refundPreference(RefundPreference.NO_PREFERENCE);
 
         client.sendConsumptionData("49571273", consumptionRequest);
     }
