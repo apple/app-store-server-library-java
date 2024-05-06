@@ -65,6 +65,7 @@ public class SubscriptionGroupIdentifierItem {
      * An array of the most recent App Store-signed transaction information and App Store-signed renewal information for all auto-renewable subscriptions in the subscription group.
      *
      * @return lastTransactions
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/lasttransactionsitem">lastTransactionsItem</a>
      **/
     public List<LastTransactionsItem> getLastTransactions() {
         return lastTransactions;

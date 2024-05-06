@@ -87,6 +87,7 @@ public class NotificationHistoryResponse {
      * An array of App Store server notification history records.
      *
      * @return notificationHistory
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/notificationhistoryresponseitem">notificationHistoryResponseItem</a>
      **/
     public List<NotificationHistoryResponseItem> getNotificationHistory() {
         return notificationHistory;

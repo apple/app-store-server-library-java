@@ -5,9 +5,9 @@ package com.apple.itunes.storekit.model;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * A notification subtype value that App Store Server Notifications 2 uses.
+ * A string that provides details about select notification types in version 2.
  *
- * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/notificationsubtype">notificationSubtype</a>
+ * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/subtype">subtype</a>
  */
 public enum Subtype {
 
