@@ -451,6 +451,56 @@ public class AppStoreServerAPIClientTest {
     }
 
     @Test
+    public void testSendConsumptionDataWithNullAppAccountToken() throws APIException, IOException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {
+            Assertions.assertEquals("PUT", request.method());
+            Assertions.assertEquals("/inApps/v1/transactions/consumption/49571273", request.url().encodedPath());
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertEquals(expectedMediaType, body.contentType());
+            Buffer buffer = new Buffer();
+            try {
+                body.writeTo(buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Map<String, Object> root;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            Assertions.assertTrue((Boolean) root.get("customerConsented"));
+            Assertions.assertEquals(1, ((Number) root.get("consumptionStatus")).intValue());
+            Assertions.assertEquals(2, ((Number) root.get("platform")).intValue());
+            Assertions.assertFalse((Boolean) root.get("sampleContentProvided"));
+            Assertions.assertEquals(3, ((Number) root.get("deliveryStatus")).intValue());
+            Assertions.assertEquals("", root.get("appAccountToken"));
+            Assertions.assertEquals(4, ((Number) root.get("accountTenure")).intValue());
+            Assertions.assertEquals(5, ((Number) root.get("playTime")).intValue());
+            Assertions.assertEquals(6, ((Number) root.get("lifetimeDollarsRefunded")).intValue());
+            Assertions.assertEquals(7, ((Number) root.get("lifetimeDollarsPurchased")).intValue());
+            Assertions.assertEquals(4, ((Number) root.get("userStatus")).intValue());
+            Assertions.assertEquals(3, ((Number) root.get("refundPreference")).intValue());
+        });
+
+        ConsumptionRequest consumptionRequest = new ConsumptionRequest()
+                .customerConsented(true)
+                .consumptionStatus(ConsumptionStatus.NOT_CONSUMED)
+                .platform(Platform.NON_APPLE)
+                .sampleContentProvided(false)
+                .deliveryStatus(DeliveryStatus.DID_NOT_DELIVER_DUE_TO_SERVER_OUTAGE)
+                .accountTenure(AccountTenure.THIRTY_DAYS_TO_NINETY_DAYS)
+                .playTime(PlayTime.ONE_DAY_TO_FOUR_DAYS)
+                .lifetimeDollarsRefunded(LifetimeDollarsRefunded.ONE_THOUSAND_DOLLARS_TO_ONE_THOUSAND_NINE_HUNDRED_NINETY_NINE_DOLLARS_AND_NINETY_NINE_CENTS)
+                .lifetimeDollarsPurchased(LifetimeDollarsPurchased.TWO_THOUSAND_DOLLARS_OR_GREATER)
+                .userStatus(UserStatus.LIMITED_ACCESS)
+                .refundPreference(RefundPreference.NO_PREFERENCE);
+
+        client.sendConsumptionData("49571273", consumptionRequest);
+    }
+
+    @Test
     public void testHeaders() throws APIException, IOException {
         AppStoreServerAPIClient client = getClientWithBody("models/transactionInfoResponse.json", request -> {
             Assertions.assertTrue(request.header("User-Agent").startsWith("app-store-server-library/java"));
