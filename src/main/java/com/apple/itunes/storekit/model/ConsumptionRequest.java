@@ -3,6 +3,7 @@
 package com.apple.itunes.storekit.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -36,6 +37,7 @@ public class ConsumptionRequest {
     @JsonProperty(SERIALIZED_NAME_DELIVERY_STATUS)
     private Integer deliveryStatus;
     @JsonProperty(SERIALIZED_NAME_APP_ACCOUNT_TOKEN)
+    @JsonSerialize(nullsUsing = AppAccountTokenNullSerializer.class)
     private UUID appAccountToken;
     @JsonProperty(SERIALIZED_NAME_ACCOUNT_TENURE)
     private Integer accountTenure;
