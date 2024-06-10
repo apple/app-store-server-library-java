@@ -310,7 +310,7 @@ public class AppStoreServerAPIClientTest {
     }
 
     @Test
-    public void testGetTransactionHistory() throws APIException, IOException {
+    public void testGetTransactionHistoryV1() throws APIException, IOException {
         AppStoreServerAPIClient client = getClientWithBody("models/transactionHistoryResponse.json", request -> {
             Assertions.assertEquals("GET", request.method());
             Assertions.assertEquals("/inApps/v1/history/1234", request.url().encodedPath());
@@ -336,7 +336,46 @@ public class AppStoreServerAPIClientTest {
                 .productIds(List.of("com.example.1", "com.example.2"))
                 .subscriptionGroupIdentifiers(List.of("sub_group_id", "sub_group_id_2"));
 
-        HistoryResponse historyResponse = client.getTransactionHistory("1234", "revision_input", request);
+        HistoryResponse historyResponse = client.getTransactionHistory("1234", "revision_input", request, GetTransactionHistoryVersion.V1);
+
+        Assertions.assertNotNull(historyResponse);
+        Assertions.assertEquals("revision_output", historyResponse.getRevision());
+        Assertions.assertTrue(historyResponse.getHasMore());
+        Assertions.assertEquals("com.example", historyResponse.getBundleId());
+        Assertions.assertEquals(323232L, historyResponse.getAppAppleId());
+        Assertions.assertEquals(Environment.LOCAL_TESTING, historyResponse.getEnvironment());
+        Assertions.assertEquals("LocalTesting", historyResponse.getRawEnvironment());
+        Assertions.assertEquals(List.of("signed_transaction_value", "signed_transaction_value2"), historyResponse.getSignedTransactions());
+    }
+
+    @Test
+    public void testGetTransactionHistoryV2() throws APIException, IOException {
+        AppStoreServerAPIClient client = getClientWithBody("models/transactionHistoryResponse.json", request -> {
+            Assertions.assertEquals("GET", request.method());
+            Assertions.assertEquals("/inApps/v2/history/1234", request.url().encodedPath());
+            Assertions.assertEquals("revision_input", request.url().queryParameter("revision"));
+            Assertions.assertEquals("123455", request.url().queryParameter("startDate"));
+            Assertions.assertEquals("123456", request.url().queryParameter("endDate"));
+            Assertions.assertEquals(List.of("com.example.1", "com.example.2"), request.url().queryParameterValues("productId"));
+            Assertions.assertEquals(List.of("CONSUMABLE", "AUTO_RENEWABLE"), request.url().queryParameterValues("productType"));
+            Assertions.assertEquals("ASCENDING", request.url().queryParameter("sort"));
+            Assertions.assertEquals(List.of("sub_group_id", "sub_group_id_2"), request.url().queryParameterValues("subscriptionGroupIdentifier"));
+            Assertions.assertEquals("FAMILY_SHARED", request.url().queryParameter("inAppOwnershipType"));
+            Assertions.assertEquals("false", request.url().queryParameter("revoked"));
+            Assertions.assertNull(request.body());
+        });
+
+        TransactionHistoryRequest request = new TransactionHistoryRequest()
+                .sort(TransactionHistoryRequest.Order.ASCENDING)
+                .productTypes(List.of(TransactionHistoryRequest.ProductType.CONSUMABLE, TransactionHistoryRequest.ProductType.AUTO_RENEWABLE))
+                .endDate(123456L)
+                .startDate(123455L)
+                .revoked(false)
+                .inAppOwnershipType(InAppOwnershipType.FAMILY_SHARED)
+                .productIds(List.of("com.example.1", "com.example.2"))
+                .subscriptionGroupIdentifiers(List.of("sub_group_id", "sub_group_id_2"));
+
+        HistoryResponse historyResponse = client.getTransactionHistory("1234", "revision_input", request, GetTransactionHistoryVersion.V2);
 
         Assertions.assertNotNull(historyResponse);
         Assertions.assertEquals("revision_output", historyResponse.getRevision());
@@ -581,7 +620,7 @@ public class AppStoreServerAPIClientTest {
                 .productIds(List.of("com.example.1", "com.example.2"))
                 .subscriptionGroupIdentifiers(List.of("sub_group_id", "sub_group_id_2"));
 
-        HistoryResponse historyResponse = client.getTransactionHistory("1234", "revision_input", request);
+        HistoryResponse historyResponse = client.getTransactionHistory("1234", "revision_input", request, GetTransactionHistoryVersion.V2);
 
         Assertions.assertNull(historyResponse.getEnvironment());
         Assertions.assertEquals("LocalTestingxxx", historyResponse.getRawEnvironment());

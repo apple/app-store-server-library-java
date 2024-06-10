@@ -265,16 +265,25 @@ public class AppStoreServerAPIClient {
     }
 
     /**
+     * @see #getTransactionHistory(String, String, TransactionHistoryRequest, GetTransactionHistoryVersion)
+     */
+    @Deprecated(since = "2.2.0")
+    public HistoryResponse getTransactionHistory(String transactionId, String revision, TransactionHistoryRequest transactionHistoryRequest) throws APIException, IOException {
+        return this.getTransactionHistory(transactionId, revision, transactionHistoryRequest, GetTransactionHistoryVersion.V1);
+    }
+
+    /**
      * Get a customer’s in-app purchase transaction history for your app.
      *
      * @param transactionId The identifier of a transaction that belongs to the customer, and which may be an original transaction identifier.
      * @param revision              A token you provide to get the next set of up to 20 transactions. All responses include a revision token. Note: For requests that use the revision token, include the same query parameters from the initial request. Use the revision token from the previous HistoryResponse.
+     * @param version The version of the Get Transaction History endpoint to use. V2 is recommended.
      * @return A response that contains the customer’s transaction history for an app.
      * @throws APIException If a response was returned indicating the request could not be processed
      * @throws IOException  If an exception was thrown while making the request
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get_transaction_history">Get Transaction History</a>
      */
-    public HistoryResponse getTransactionHistory(String transactionId, String revision, TransactionHistoryRequest transactionHistoryRequest) throws APIException, IOException {
+    public HistoryResponse getTransactionHistory(String transactionId, String revision, TransactionHistoryRequest transactionHistoryRequest, GetTransactionHistoryVersion version) throws APIException, IOException {
         Map<String, List<String>> queryParameters = new HashMap<>();
         if (revision != null) {
             queryParameters.put("revision", List.of(revision));
@@ -303,7 +312,7 @@ public class AppStoreServerAPIClient {
         if (transactionHistoryRequest.getRevoked() != null) {
             queryParameters.put("revoked", List.of(transactionHistoryRequest.getRevoked().toString()));
         }
-        return makeHttpCall("/inApps/v1/history/" + transactionId, "GET", queryParameters, null, HistoryResponse.class);
+        return makeHttpCall("/inApps/" + version.getUrlVersion() + "/history/" + transactionId, "GET", queryParameters, null, HistoryResponse.class);
     }
 
     /**
