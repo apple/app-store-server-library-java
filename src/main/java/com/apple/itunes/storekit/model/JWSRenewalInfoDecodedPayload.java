@@ -29,6 +29,9 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
     private static final String SERIALIZED_NAME_ENVIRONMENT = "environment";
     private static final String SERIALIZED_NAME_RECENT_SUBSCRIPTION_START_DATE = "recentSubscriptionStartDate";
     private static final String SERIALIZED_NAME_RENEWAL_DATE = "renewalDate";
+    private static final String SERIALIZED_NAME_RENEWAL_PRICE = "renewalPrice";
+    private static final String SERIALIZED_NAME_CURRENCY = "currency";
+    private static final String SERIALIZED_NAME_OFFER_DISCOUNT_TYPE = "offerDiscountType";
     @JsonProperty(SERIALIZED_NAME_EXPIRATION_INTENT)
     private Integer expirationIntent;
     @JsonProperty(SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID)
@@ -61,6 +64,12 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
     @JsonProperty(SERIALIZED_NAME_RENEWAL_DATE)
     @JsonDeserialize(using=XcodeCompatibleTimestampDeserializer.class)
     private Long renewalDate;
+    @JsonProperty(SERIALIZED_NAME_RENEWAL_PRICE)
+    private Long renewalPrice;
+    @JsonProperty(SERIALIZED_NAME_CURRENCY)
+    private String currency;
+    @JsonProperty(SERIALIZED_NAME_OFFER_DISCOUNT_TYPE)
+    private String offerDiscountType;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
@@ -389,6 +398,73 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
         this.renewalDate = renewalDate;
     }
 
+    public JWSRenewalInfoDecodedPayload renewalPrice(Long renewalPrice) {
+        this.renewalPrice = renewalPrice;
+        return this;
+    }
+
+    /**
+     * The renewal price, in milliunits, of the auto-renewable subscription that renews at the next billing period.
+     *
+     * @return renewalPrice
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/renewalprice">renewalPrice</a>
+     **/
+    public Long getRenewalPrice() {
+        return renewalPrice;
+    }
+
+    public void setRenewalPrice(Long renewalPrice) {
+        this.renewalPrice = renewalPrice;
+    }
+
+    public JWSRenewalInfoDecodedPayload currency(String currency) {
+        this.currency = currency;
+        return this;
+    }
+
+    /**
+     * The currency code for the renewalPrice of the subscription.
+     *
+     * @return currency
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/currency">currency</a>
+     **/
+    public String getCurrency() {
+        return this.currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public JWSRenewalInfoDecodedPayload offerDiscountType(OfferDiscountType offerDiscountType) {
+        this.offerDiscountType = offerDiscountType != null ? offerDiscountType.getValue() : null;
+        return this;
+    }
+
+    /**
+     * The payment mode of the discount offer.
+     *
+     * @return offerDiscountType
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/offerdiscounttype">offerDiscountType</a>
+     **/
+    public OfferDiscountType getOfferDiscountType() {
+        return offerDiscountType != null ? OfferDiscountType.fromValue(offerDiscountType) : null;
+    }
+
+    /**
+     * @see #getOfferDiscountType()
+     */
+    public String getRawOfferDiscountType() {
+        return offerDiscountType;
+    }
+
+    public void setOfferDiscountType(OfferDiscountType offerDiscountType) {
+        this.offerDiscountType = offerDiscountType != null ? offerDiscountType.getValue() : null;
+    }
+
+    public void setRawOfferDiscountType(String rawOfferDiscountType) {
+        this.offerDiscountType = rawOfferDiscountType;
+    }
 
     public JWSRenewalInfoDecodedPayload unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
@@ -431,12 +507,15 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
                 Objects.equals(this.environment, jwSRenewalInfoDecodedPayload.environment) &&
                 Objects.equals(this.recentSubscriptionStartDate, jwSRenewalInfoDecodedPayload.recentSubscriptionStartDate) &&
                 Objects.equals(this.renewalDate, jwSRenewalInfoDecodedPayload.renewalDate) &&
+                Objects.equals(this.renewalPrice, jwSRenewalInfoDecodedPayload.renewalPrice) &&
+                Objects.equals(this.currency, jwSRenewalInfoDecodedPayload.currency) &&
+                Objects.equals(this.offerDiscountType, jwSRenewalInfoDecodedPayload.offerDiscountType) &&
                 Objects.equals(this.unknownFields, jwSRenewalInfoDecodedPayload.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(expirationIntent, originalTransactionId, autoRenewProductId, productId, autoRenewStatus, isInBillingRetryPeriod, priceIncreaseStatus, gracePeriodExpiresDate, offerType, offerIdentifier, signedDate, environment, recentSubscriptionStartDate, renewalDate, unknownFields);
+        return Objects.hash(expirationIntent, originalTransactionId, autoRenewProductId, productId, autoRenewStatus, isInBillingRetryPeriod, priceIncreaseStatus, gracePeriodExpiresDate, offerType, offerIdentifier, signedDate, environment, recentSubscriptionStartDate, renewalDate, renewalPrice, currency, offerDiscountType, unknownFields);
     }
 
     @Override
@@ -456,6 +535,9 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
                 ", environment='" + environment + '\'' +
                 ", recentSubscriptionStartDate=" + recentSubscriptionStartDate +
                 ", renewalDate=" + renewalDate +
+                ", renewalPrice=" + renewalPrice +
+                ", currency='" + currency + '\'' +
+                ", offerDiscountType='" + offerDiscountType + '\'' +
                 ", unknownFields=" + unknownFields +
                 '}';
     }

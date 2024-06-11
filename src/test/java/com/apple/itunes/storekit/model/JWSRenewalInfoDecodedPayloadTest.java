@@ -38,5 +38,9 @@ public class JWSRenewalInfoDecodedPayloadTest {
         Assertions.assertEquals("LocalTesting", renewalInfo.getRawEnvironment());
         Assertions.assertEquals(1698148800000L, renewalInfo.getRecentSubscriptionStartDate());
         Assertions.assertEquals(1698148850000L, renewalInfo.getRenewalDate());
+        Assertions.assertEquals(9990, renewalInfo.getRenewalPrice());
+        Assertions.assertEquals("USD", renewalInfo.getCurrency());
+        Assertions.assertEquals(OfferDiscountType.PAY_AS_YOU_GO, renewalInfo.getOfferDiscountType());
+        Assertions.assertEquals("PAY_AS_YOU_GO", renewalInfo.getRawOfferDiscountType());
     }
 }
