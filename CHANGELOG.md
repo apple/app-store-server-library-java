@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.2.0
+- Incorporate changes for App Store Server API v1.12 and App Store Server Notifications v2.12 [https://github.com/apple/app-store-server-library-java/pull/103]
+- Handle null appAccountToken appropriately in PromotionalOfferSignatureCreator [https://github.com/apple/app-store-server-library-java/pull/100]
+
 ## Version 2.1.0
 - Incorporate changes for App Store Server API v1.11 and App Store Server Notifications v2.11 [https://github.com/apple/app-store-server-library-java/pull/94]
 - Add proxy authenticator support [https://github.com/apple/app-store-server-library-java/pull/93]
