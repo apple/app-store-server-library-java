@@ -118,6 +118,7 @@ public class ExampleVerification {
 
 ```java
 import com.apple.itunes.storekit.client.AppStoreServerAPIClient;
+import com.apple.itunes.storekit.client.GetTransactionHistoryVersion;
 import com.apple.itunes.storekit.migration.ReceiptUtility;
 import com.apple.itunes.storekit.model.Environment;
 import com.apple.itunes.storekit.model.HistoryResponse;
@@ -152,7 +153,7 @@ public class ExampleMigration {
             List<String> transactions = new LinkedList<>();
             do {
                 String revision = response != null ? response.getRevision() : null;
-                response = client.getTransactionHistory(transactionId, revision, request);
+                response = client.getTransactionHistory(transactionId, revision, request, GetTransactionHistoryVersion.V2);
                 transactions.addAll(response.getSignedTransactions());
             } while (response.getHasMore());
             System.out.println(transactions);
