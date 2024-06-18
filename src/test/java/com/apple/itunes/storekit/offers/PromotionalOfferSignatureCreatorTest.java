@@ -15,7 +15,7 @@ class PromotionalOfferSignatureCreatorTest {
         try (InputStream key = this.getClass().getClassLoader().getResourceAsStream("certs/testSigningKey.p8")) {
             Assertions.assertNotNull(key);
             PromotionalOfferSignatureCreator signatureCreator = new PromotionalOfferSignatureCreator(new String(key.readAllBytes()), "keyId", "bundleId");
-            String signature = signatureCreator.createSignature("productId", "offerId", "applicationUsername", UUID.fromString("20fba8a0-2b80-4a7d-a17f-85c1854727f8"), 1698148900000L);
+            String signature = signatureCreator.createSignature("productId", "offerId", "appAccountToken", UUID.fromString("20fba8a0-2b80-4a7d-a17f-85c1854727f8"), 1698148900000L);
             Assertions.assertNotNull(signature);
         }
     }
