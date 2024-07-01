@@ -72,7 +72,7 @@ public class AppStoreServerAPIClient {
         builder.proxyAuthenticator(Authenticator.JAVA_NET_AUTHENTICATOR);
 
         // https://github.com/apple/app-store-server-library-java/issues/111
-        if (Boolean.TRUE.equals(enableSSLCheck)){
+        if (Boolean.FALSE.equals(enableSSLCheck)){
             builder.sslSocketFactory(ignoreInitedSslContext().getSocketFactory(), IGNORE_SSL_TRUST_MANAGER_X509)
                     .hostnameVerifier(ignoreSslHostnameVerifier());
         }
