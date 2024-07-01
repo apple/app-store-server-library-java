@@ -34,7 +34,12 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
+import javax.net.ssl.*;
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +59,51 @@ public class AppStoreServerAPIClient {
     private final HttpUrl urlBase;
     private final ObjectMapper objectMapper;
 
+    public AppStoreServerAPIClient(String signingKey,
+                                   String keyId,
+                                   String issuerId,
+                                   String bundleId,
+                                   Environment environment,
+                                   Boolean enableSSLCheck) throws NoSuchAlgorithmException, KeyManagementException {
+        this.bearerTokenAuthenticator = new BearerTokenAuthenticator(signingKey, keyId, issuerId, bundleId);
+
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        // If a proxy is configured via java.net.ProxySelector.setDefault, this will allow java.net.Authenticator.setDefault to serve as its auth source
+        builder.proxyAuthenticator(Authenticator.JAVA_NET_AUTHENTICATOR);
+
+        // https://github.com/apple/app-store-server-library-java/issues/111
+        if (Boolean.TRUE.equals(enableSSLCheck)){
+            builder.sslSocketFactory(ignoreInitedSslContext().getSocketFactory(), IGNORE_SSL_TRUST_MANAGER_X509)
+                    .hostnameVerifier(ignoreSslHostnameVerifier());
+        }
+
+        this.httpClient = builder.build();
+
+        switch (environment) {
+            case XCODE:
+                throw new IllegalArgumentException("Xcode is not a supported environment for an AppStoreServerAPIClient");
+            case PRODUCTION:
+                this.urlBase = HttpUrl.parse(PRODUCTION_URL);
+                break;
+            case LOCAL_TESTING:
+                this.urlBase = HttpUrl.parse(LOCAL_TESTING_URL);
+                break;
+            case SANDBOX:
+                this.urlBase = HttpUrl.parse(SANDBOX_URL);
+                break;
+            default:
+                // This switch statement is exhaustive
+                throw new IllegalStateException();
+        }
+        this.objectMapper = new ObjectMapper();
+        objectMapper.setVisibility(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
+                .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+                .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
+    }
+
     /**
      * Create an App Store Server API client
      * @param signingKey Your private key downloaded from App Store Connect
@@ -62,7 +112,11 @@ public class AppStoreServerAPIClient {
      * @param bundleId Your app’s bundle ID
      * @param environment The environment to target
      */
-    public AppStoreServerAPIClient(String signingKey, String keyId, String issuerId, String bundleId, Environment environment) {
+    public AppStoreServerAPIClient(String signingKey,
+                                   String keyId,
+                                   String issuerId,
+                                   String bundleId,
+                                   Environment environment) {
         this.bearerTokenAuthenticator = new BearerTokenAuthenticator(signingKey, keyId, issuerId, bundleId);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         // If a proxy is configured via java.net.ProxySelector.setDefault, this will allow java.net.Authenticator.setDefault to serve as its auth source
@@ -92,6 +146,8 @@ public class AppStoreServerAPIClient {
                 .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
     }
+
+
 
     private Response makeRequest(String path, String method, Map<String, List<String>> queryParameters, Object body) throws IOException {
         Request.Builder requestBuilder = new Request.Builder();
@@ -364,5 +420,50 @@ public class AppStoreServerAPIClient {
      */
     public void sendConsumptionData(String transactionId, ConsumptionRequest consumptionRequest) throws APIException, IOException {
         makeHttpCall("/inApps/v1/transactions/consumption/" + transactionId, "PUT", Map.of(), consumptionRequest, Void.class);
+    }
+
+    /**
+     * X509TrustManager instance which ignored SSL certification
+     */
+    public static final X509TrustManager IGNORE_SSL_TRUST_MANAGER_X509 = new X509TrustManager() {
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType) {
+        }
+
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType) {
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return new X509Certificate[] {};
+        }
+    };
+
+    /**
+     * Get initialized SSLContext instance which ignored SSL certification
+     *
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws KeyManagementException
+     */
+    public static SSLContext ignoreInitedSslContext() throws NoSuchAlgorithmException, KeyManagementException {
+        var sslContext = SSLContext.getInstance("SSL");
+        sslContext.init(null, new TrustManager[] { IGNORE_SSL_TRUST_MANAGER_X509 }, new SecureRandom());
+        return sslContext;
+    }
+
+    /**
+     * Get HostnameVerifier which ignored SSL certification
+     *
+     * @return
+     */
+    public static HostnameVerifier ignoreSslHostnameVerifier() {
+        return new HostnameVerifier() {
+            @Override
+            public boolean verify(String arg0, SSLSession arg1) {
+                return true;
+            }
+        };
     }
 }
