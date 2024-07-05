@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 3.0.0
+- Allow providing a custom bearer token provider and HTTP client implementation [https://github.com/apple/app-store-server-library-java/pull/109]
+  - This change refactors the internal implementation of the AppStoreServerAPIClient class. Users extending this class may see interface changes
+- Rename applicationUsername to appAccountToken [https://github.com/apple/app-store-server-library-java/pull/104]
+
 ## Version 2.2.0
 - Incorporate changes for App Store Server API v1.12 and App Store Server Notifications v2.12 [https://github.com/apple/app-store-server-library-java/pull/103]
 - Handle null appAccountToken appropriately in PromotionalOfferSignatureCreator [https://github.com/apple/app-store-server-library-java/pull/100]
