@@ -15,7 +15,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Map;
 
-public class BearerTokenAuthenticator {
+public class BearerTokenAuthenticator implements BearerTokenAuthenticatorInterface {
     private static final String APP_STORE_CONNECT_AUDIENCE = "appstoreconnect-v1";
     private static final String BUNDLE_ID_KEY = "bid";
 
