@@ -182,10 +182,10 @@ public class ExampleSignatureCreation {
         
         String productId = "<product_id>";
         String subscriptionOfferId = "<subscription_offer_id>";
-        String applicationUsername = "<application_username>";
+        String appAccountToken = "<app_account_token>";
         UUID nonce = UUID.randomUUID();
         long timestamp = System.currentTimeMillis();
-        String encodedSignature = signatureCreator.createSignature(productId, subscriptionOfferId, applicationUsername, nonce, timestamp);
+        String encodedSignature = signatureCreator.createSignature(productId, subscriptionOfferId, appAccountToken, nonce, timestamp);
         System.out.println(encodedSignature);
     }
 }
