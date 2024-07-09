@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 public class JWSRenewalInfoDecodedPayloadTest {
 
@@ -42,5 +43,6 @@ public class JWSRenewalInfoDecodedPayloadTest {
         Assertions.assertEquals("USD", renewalInfo.getCurrency());
         Assertions.assertEquals(OfferDiscountType.PAY_AS_YOU_GO, renewalInfo.getOfferDiscountType());
         Assertions.assertEquals("PAY_AS_YOU_GO", renewalInfo.getRawOfferDiscountType());
+        Assertions.assertEquals(List.of("eligible1", "eligible2"), renewalInfo.getEligibleWinBackOfferIds());
     }
 }

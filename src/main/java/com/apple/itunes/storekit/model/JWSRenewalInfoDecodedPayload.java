@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -32,6 +34,7 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
     private static final String SERIALIZED_NAME_RENEWAL_PRICE = "renewalPrice";
     private static final String SERIALIZED_NAME_CURRENCY = "currency";
     private static final String SERIALIZED_NAME_OFFER_DISCOUNT_TYPE = "offerDiscountType";
+    private static final String SERIALIZED_NAME_ELIGIBLE_WIN_BACK_OFFER_IDS = "eligibleWinBackOfferIds";
     @JsonProperty(SERIALIZED_NAME_EXPIRATION_INTENT)
     private Integer expirationIntent;
     @JsonProperty(SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID)
@@ -70,6 +73,8 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
     private String currency;
     @JsonProperty(SERIALIZED_NAME_OFFER_DISCOUNT_TYPE)
     private String offerDiscountType;
+    @JsonProperty(SERIALIZED_NAME_ELIGIBLE_WIN_BACK_OFFER_IDS)
+    private List<String> eligibleWinBackOfferIds = null;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
@@ -466,6 +471,34 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
         this.offerDiscountType = rawOfferDiscountType;
     }
 
+    public JWSRenewalInfoDecodedPayload eligibleWinBackOfferIds(List<String> eligibleWinBackOfferIds) {
+        this.eligibleWinBackOfferIds = eligibleWinBackOfferIds;
+        return this;
+    }
+
+    public JWSRenewalInfoDecodedPayload addEligibleWinBackOfferId(String eligibleWinBackOfferId) {
+        if (this.eligibleWinBackOfferIds == null) {
+            this.eligibleWinBackOfferIds = new ArrayList<>();
+        }
+        this.eligibleWinBackOfferIds.add(eligibleWinBackOfferId);
+        return this;
+    }
+
+    /**
+     * An array of win-back offer identifiers that a customer is eligible to redeem, which sorts the identifiers to present the better offers first.
+     *
+     * @return eligibleWinBackOfferIds
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/eligiblewinbackofferids">eligibleWinBackOfferIds</a>
+     **/
+    public List<String> getEligibleWinBackOfferIds() {
+        return eligibleWinBackOfferIds;
+    }
+
+    public void setEligibleWinBackOfferIds(List<String> eligibleWinBackOfferIds) {
+        this.eligibleWinBackOfferIds = eligibleWinBackOfferIds;
+    }
+
+
     public JWSRenewalInfoDecodedPayload unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
         return this;
@@ -510,12 +543,13 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
                 Objects.equals(this.renewalPrice, jwSRenewalInfoDecodedPayload.renewalPrice) &&
                 Objects.equals(this.currency, jwSRenewalInfoDecodedPayload.currency) &&
                 Objects.equals(this.offerDiscountType, jwSRenewalInfoDecodedPayload.offerDiscountType) &&
+                Objects.equals(this.eligibleWinBackOfferIds, jwSRenewalInfoDecodedPayload.eligibleWinBackOfferIds) &&
                 Objects.equals(this.unknownFields, jwSRenewalInfoDecodedPayload.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(expirationIntent, originalTransactionId, autoRenewProductId, productId, autoRenewStatus, isInBillingRetryPeriod, priceIncreaseStatus, gracePeriodExpiresDate, offerType, offerIdentifier, signedDate, environment, recentSubscriptionStartDate, renewalDate, renewalPrice, currency, offerDiscountType, unknownFields);
+        return Objects.hash(expirationIntent, originalTransactionId, autoRenewProductId, productId, autoRenewStatus, isInBillingRetryPeriod, priceIncreaseStatus, gracePeriodExpiresDate, offerType, offerIdentifier, signedDate, environment, recentSubscriptionStartDate, renewalDate, renewalPrice, currency, offerDiscountType, eligibleWinBackOfferIds, unknownFields);
     }
 
     @Override
@@ -538,6 +572,7 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
                 ", renewalPrice=" + renewalPrice +
                 ", currency='" + currency + '\'' +
                 ", offerDiscountType='" + offerDiscountType + '\'' +
+                ", eligibleWinBackOfferIds=" + eligibleWinBackOfferIds +
                 ", unknownFields=" + unknownFields +
                 '}';
     }
