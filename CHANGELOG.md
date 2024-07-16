@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 3.1.0
+- Incorporate changes for App Store Server API v1.13 and App Store Server Notifications v2.13 [https://github.com/apple/app-store-server-library-java/pull/116]
+- Handle parsing empty or unexpected bodies on API exceptions without throwing a caused-by exception [https://github.com/apple/app-store-server-library-java/pull/119]
+
 ## Version 3.0.0
 - Allow providing a custom bearer token provider and HTTP client implementation [https://github.com/apple/app-store-server-library-java/pull/109]
   - This change refactors the internal implementation of the AppStoreServerAPIClient class. Users extending this class may see interface changes
