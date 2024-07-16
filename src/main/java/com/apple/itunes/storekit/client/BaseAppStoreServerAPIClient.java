@@ -129,7 +129,13 @@ public abstract class BaseAppStoreServerAPIClient {
                 try {
                     var responseBody = r.body();
                     if (responseBody != null) {
-                        ErrorPayload errorPayload = objectMapper.readValue(responseBody, ErrorPayload.class);
+                        ErrorPayload errorPayload;
+                        try {
+                            errorPayload = objectMapper.readValue(responseBody, ErrorPayload.class);
+                        } catch (JsonProcessingException ignored) {
+                            // If we cannot parse the body, then simply return the status code
+                            throw new APIException(r.statusCode());
+                        }
                         throw new APIException(r.statusCode(), errorPayload.getErrorCode(), errorPayload.getErrorMessage());
                     }
                 } catch (APIException e) {
