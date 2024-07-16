@@ -606,6 +606,23 @@ public class AppStoreServerAPIClientTest {
     }
 
     @Test
+    public void testExceptionWithMalformedJson() throws IOException {
+        String body = "<html><body>I'm not a JSON error</body></html>";
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 400);
+        try {
+            client.getTransactionInfo("1234");
+        } catch (APIException e) {
+            Assertions.assertEquals(400, e.getHttpStatusCode());
+            Assertions.assertNull(e.getApiError());
+            Assertions.assertNull(e.getRawApiError());
+            Assertions.assertNull(e.getApiErrorMessage());
+            Assertions.assertNull(e.getCause());
+            return;
+        }
+        Assertions.fail();
+    }
+
+    @Test
     public void testDecodingWithUnknownEnumValue() throws IOException, APIException {
         String body = TestingUtility.readFile("models/transactionHistoryResponseWithMalformedEnvironment.json");
         AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 200);
