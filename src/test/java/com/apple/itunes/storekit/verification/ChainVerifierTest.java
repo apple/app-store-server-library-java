@@ -3,12 +3,16 @@
 package com.apple.itunes.storekit.verification;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
 import java.security.cert.CertPathValidatorException;
+import java.time.Clock;
+import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Set;
@@ -30,6 +34,23 @@ public class ChainVerifierTest {
     private static final String REAL_APPLE_SIGNING_CERTIFICATE_BASE64_ENCODED = "MIIEMDCCA7agAwIBAgIQaPoPldvpSoEH0lBrjDPv9jAKBggqhkjOPQQDAzB1MUQwQgYDVQQDDDtBcHBsZSBXb3JsZHdpZGUgRGV2ZWxvcGVyIFJlbGF0aW9ucyBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTELMAkGA1UECwwCRzYxEzARBgNVBAoMCkFwcGxlIEluYy4xCzAJBgNVBAYTAlVTMB4XDTIxMDgyNTAyNTAzNFoXDTIzMDkyNDAyNTAzM1owgZIxQDA+BgNVBAMMN1Byb2QgRUNDIE1hYyBBcHAgU3RvcmUgYW5kIGlUdW5lcyBTdG9yZSBSZWNlaXB0IFNpZ25pbmcxLDAqBgNVBAsMI0FwcGxlIFdvcmxkd2lkZSBEZXZlbG9wZXIgUmVsYXRpb25zMRMwEQYDVQQKDApBcHBsZSBJbmMuMQswCQYDVQQGEwJVUzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABOoTcaPcpeipNL9eQ06tCu7pUcwdCXdN8vGqaUjd58Z8tLxiUC0dBeA+euMYggh1/5iAk+FMxUFmA2a1r4aCZ8SjggIIMIICBDAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFD8vlCNR01DJmig97bB85c+lkGKZMHAGCCsGAQUFBwEBBGQwYjAtBggrBgEFBQcwAoYhaHR0cDovL2NlcnRzLmFwcGxlLmNvbS93d2RyZzYuZGVyMDEGCCsGAQUFBzABhiVodHRwOi8vb2NzcC5hcHBsZS5jb20vb2NzcDAzLXd3ZHJnNjAyMIIBHgYDVR0gBIIBFTCCAREwggENBgoqhkiG92NkBQYBMIH+MIHDBggrBgEFBQcCAjCBtgyBs1JlbGlhbmNlIG9uIHRoaXMgY2VydGlmaWNhdGUgYnkgYW55IHBhcnR5IGFzc3VtZXMgYWNjZXB0YW5jZSBvZiB0aGUgdGhlbiBhcHBsaWNhYmxlIHN0YW5kYXJkIHRlcm1zIGFuZCBjb25kaXRpb25zIG9mIHVzZSwgY2VydGlmaWNhdGUgcG9saWN5IGFuZCBjZXJ0aWZpY2F0aW9uIHByYWN0aWNlIHN0YXRlbWVudHMuMDYGCCsGAQUFBwIBFipodHRwOi8vd3d3LmFwcGxlLmNvbS9jZXJ0aWZpY2F0ZWF1dGhvcml0eS8wHQYDVR0OBBYEFCOCmMBq//1L5imvVmqX1oCYeqrMMA4GA1UdDwEB/wQEAwIHgDAQBgoqhkiG92NkBgsBBAIFADAKBggqhkjOPQQDAwNoADBlAjEAl4JB9GJHixP2nuibyU1k3wri5psGIxPME05sFKq7hQuzvbeyBu82FozzxmbzpogoAjBLSFl0dZWIYl2ejPV+Di5fBnKPu8mymBQtoE/H2bES0qAs8bNueU3CBjjh1lwnDsI=";
 
     private static final Date EFFECTIVE_DATE = new Date(1681312846000L); // April 2023
+
+    private Clock clock;
+    private PublicKey publicKey;
+    private ChainVerifier mockedChainVerifier;
+    private static final long CLOCK_DATE = 41231L;
+
+    @BeforeEach
+    public void setup() throws VerificationException {
+        clock = Mockito.mock(Clock.class);
+        publicKey = Mockito.mock(PublicKey.class);
+        mockedChainVerifier = Mockito.spy(getChainVerifier(ROOT_CA_BASE64_ENCODED));
+        Mockito.doReturn(publicKey)
+                .when(mockedChainVerifier)
+                .verifyChainWithoutCaching(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
+        Mockito.when(clock.instant()).thenReturn(Instant.ofEpochMilli(CLOCK_DATE));
+
+    }
 
     @Test
     public void testValidChainWithoutOCSP() throws VerificationException {
@@ -137,6 +158,73 @@ public class ChainVerifierTest {
         Assertions.assertInstanceOf(CertPathValidatorException.class, cause);
     }
 
+    @Test
+    public void testOcspResponseCaching() throws VerificationException {
+        mockedChainVerifier.verifyChain(new String[] {
+                LEAF_CERT_BASE64_ENCODED,
+                INTERMEDIATE_CA_BASE64_ENCODED,
+                ROOT_CA_BASE64_ENCODED
+        }, true, EFFECTIVE_DATE);
+        Mockito.verify(mockedChainVerifier, Mockito.times(1)).verifyChainWithoutCaching(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
+        // Move one second to the future, should be cached
+        Mockito.when(clock.instant()).thenReturn(Instant.ofEpochMilli(CLOCK_DATE + 1_000)); // 1 second
+        mockedChainVerifier.verifyChain(new String[] {
+                LEAF_CERT_BASE64_ENCODED,
+                INTERMEDIATE_CA_BASE64_ENCODED,
+                ROOT_CA_BASE64_ENCODED
+        }, true, EFFECTIVE_DATE);
+        Mockito.verify(mockedChainVerifier, Mockito.times(1)).verifyChainWithoutCaching(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
+    }
+
+    @Test
+    public void testOcspResponseCachingHasExpiration() throws VerificationException {
+        mockedChainVerifier.verifyChain(new String[] {
+                LEAF_CERT_BASE64_ENCODED,
+                INTERMEDIATE_CA_BASE64_ENCODED,
+                ROOT_CA_BASE64_ENCODED
+        }, true, EFFECTIVE_DATE);
+        // Move 15 minutes into the future (such that the cache has expired)
+        Mockito.when(clock.instant()).thenReturn(Instant.ofEpochMilli(CLOCK_DATE + 900_000)); // 15 minutes
+        mockedChainVerifier.verifyChain(new String[] {
+                LEAF_CERT_BASE64_ENCODED,
+                INTERMEDIATE_CA_BASE64_ENCODED,
+                ROOT_CA_BASE64_ENCODED
+        }, true, EFFECTIVE_DATE);
+        Mockito.verify(mockedChainVerifier, Mockito.times(2)).verifyChainWithoutCaching(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
+    }
+
+    @Test
+    public void testOcspResponseCachingWithDifferentChains() throws VerificationException {
+        mockedChainVerifier.verifyChain(new String[] {
+                LEAF_CERT_BASE64_ENCODED,
+                INTERMEDIATE_CA_BASE64_ENCODED,
+                ROOT_CA_BASE64_ENCODED
+        }, true, EFFECTIVE_DATE);
+        // Different certificates result in different cache entry
+        mockedChainVerifier.verifyChain(new String[] {
+                REAL_APPLE_SIGNING_CERTIFICATE_BASE64_ENCODED,
+                REAL_APPLE_INTERMEDIATE_BASE64_ENCODED,
+                REAL_APPLE_ROOT_BASE64_ENCODED
+        }, true, EFFECTIVE_DATE);
+        Mockito.verify(mockedChainVerifier, Mockito.times(2)).verifyChainWithoutCaching(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
+    }
+
+    @Test
+    public void testOcspResponseCachingWithSlightlyDifferentChains() throws VerificationException {
+        mockedChainVerifier.verifyChain(new String[] {
+                LEAF_CERT_BASE64_ENCODED,
+                INTERMEDIATE_CA_BASE64_ENCODED,
+                ROOT_CA_BASE64_ENCODED
+        }, true, EFFECTIVE_DATE);
+        // Different certificates result in different cache entry
+        mockedChainVerifier.verifyChain(new String[] {
+                LEAF_CERT_BASE64_ENCODED,
+                INTERMEDIATE_CA_BASE64_ENCODED,
+                REAL_APPLE_ROOT_BASE64_ENCODED
+        }, true, EFFECTIVE_DATE);
+        Mockito.verify(mockedChainVerifier, Mockito.times(2)).verifyChainWithoutCaching(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
+    }
+
     /**
      * The following test will communicate with Apple's OCSP servers, disable this test for offline testing
      */
@@ -150,7 +238,7 @@ public class ChainVerifierTest {
         }, true, EFFECTIVE_DATE);
     }
 
-    private static ChainVerifier getChainVerifier(String base64EncodedRootCertificate) {
-        return new ChainVerifier(Set.of(new ByteArrayInputStream(Base64.getDecoder().decode(base64EncodedRootCertificate))));
+    private ChainVerifier getChainVerifier(String base64EncodedRootCertificate) {
+        return new ChainVerifier(Set.of(new ByteArrayInputStream(Base64.getDecoder().decode(base64EncodedRootCertificate))), clock);
     }
 }
