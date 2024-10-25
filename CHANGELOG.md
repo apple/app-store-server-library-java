@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 3.2.0
+- Incorporate caching of validated certificate chains to prevent repetitive OCSP fetches [https://github.com/apple/app-store-server-library-java/pull/127]
+
 ## Version 3.1.0
 - Incorporate changes for App Store Server API v1.13 and App Store Server Notifications v2.13 [https://github.com/apple/app-store-server-library-java/pull/116]
 - Handle parsing empty or unexpected bodies on API exceptions without throwing a caused-by exception [https://github.com/apple/app-store-server-library-java/pull/119]
