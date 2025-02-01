@@ -41,7 +41,7 @@ public abstract class BaseAppStoreServerAPIClient {
     private static final String PRODUCTION_URL = "https://api.storekit.itunes.apple.com";
     private static final String SANDBOX_URL = "https://api.storekit-sandbox.itunes.apple.com";
     private static final String LOCAL_TESTING_URL = "https://local-testing-base-url";
-    private static final String USER_AGENT = "app-store-server-library/java/3.2.0";
+    private static final String USER_AGENT = "app-store-server-library/java/3.3.0";
     private static final String JSON = "application/json; charset=utf-8";
 
     private final BearerTokenAuthenticatorInterface bearerTokenAuthenticator;
@@ -55,22 +55,7 @@ public abstract class BaseAppStoreServerAPIClient {
 
     public BaseAppStoreServerAPIClient(BearerTokenAuthenticatorInterface bearerTokenAuthenticator, Environment environment) {
         this.bearerTokenAuthenticator = bearerTokenAuthenticator;
-        switch (environment) {
-            case XCODE:
-                throw new IllegalArgumentException("Xcode is not a supported environment for an AppStoreServerAPIClient");
-            case PRODUCTION:
-                this.url = PRODUCTION_URL;
-                break;
-            case LOCAL_TESTING:
-                this.url = LOCAL_TESTING_URL;
-                break;
-            case SANDBOX:
-                this.url = SANDBOX_URL;
-                break;
-            default:
-                // This switch statement is exhaustive
-                throw new IllegalStateException();
-        }
+        this.url = getUrlForEnvironment(environment);
         this.objectMapper = new ObjectMapper();
         objectMapper.setVisibility(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
                 .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
@@ -78,6 +63,22 @@ public abstract class BaseAppStoreServerAPIClient {
                 .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
+    }
+
+    protected String getUrlForEnvironment(Environment environment) {
+        switch (environment) {
+            case XCODE:
+                throw new IllegalArgumentException("Xcode is not a supported environment for an AppStoreServerAPIClient");
+            case PRODUCTION:
+                return PRODUCTION_URL;
+            case LOCAL_TESTING:
+                return LOCAL_TESTING_URL;
+            case SANDBOX:
+                return SANDBOX_URL;
+            default:
+                // This switch statement is exhaustive
+                throw new IllegalStateException();
+        }
     }
 
     /**

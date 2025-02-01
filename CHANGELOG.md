@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 3.3.0
+- Update BaseAppStoreServerAPIClient to move URL selection to a method
+
 ## Version 3.2.0
 - Incorporate caching of validated certificate chains to prevent repetitive OCSP fetches [https://github.com/apple/app-store-server-library-java/pull/127]
 
