@@ -42,6 +42,8 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
     private static final String SERIALIZED_NAME_PRICE = "price";
     private static final String SERIALIZED_NAME_CURRENCY = "currency";
     private static final String SERIALIZED_NAME_OFFER_DISCOUNT_TYPE = "offerDiscountType";
+    private static final String SERIALIZED_NAME_APP_TRANSACTION_ID = "appTransactionId";
+    private static final String SERIALIZED_NAME_OFFER_PERIOD = "offerPeriod";
     @JsonProperty(SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID)
     private String originalTransactionId;
     @JsonProperty(SERIALIZED_NAME_TRANSACTION_ID)
@@ -99,6 +101,10 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
     private String currency;
     @JsonProperty(SERIALIZED_NAME_OFFER_DISCOUNT_TYPE)
     private String offerDiscountType;
+    @JsonProperty(SERIALIZED_NAME_APP_TRANSACTION_ID)
+    private String appTransactionId;
+    @JsonProperty(SERIALIZED_NAME_OFFER_PERIOD)
+    private String offerPeriod;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
@@ -677,6 +683,45 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
         this.offerDiscountType = rawOfferDiscountType;
     }
 
+    public JWSTransactionDecodedPayload appTransactionId(String appTransactionId) {
+        this.appTransactionId = appTransactionId;
+        return this;
+    }
+
+    /**
+     * The unique identifier of the app download transaction.
+     *
+     * @return appTransactionId
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/appTransactionId">appTransactionId</a>
+     **/
+    public String getAppTransactionId() {
+        return this.appTransactionId;
+    }
+
+    public void setAppTransactionId(String appTransactionId) {
+        this.appTransactionId = appTransactionId;
+    }
+
+    public JWSTransactionDecodedPayload offerPeriod(String offerPeriod) {
+        this.offerPeriod = offerPeriod;
+        return this;
+    }
+
+    /**
+     * The duration of the offer.
+     *
+     * @return offerPeriod
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/offerPeriod">offerPeriod</a>
+     **/
+    public String getOfferPeriod() {
+        return this.offerPeriod;
+    }
+
+    public void setOfferPeriod(String offerPeriod) {
+        this.offerPeriod = offerPeriod;
+    }
+
+
     public JWSTransactionDecodedPayload unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
         return this;
@@ -697,45 +742,15 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        JWSTransactionDecodedPayload jwSTransactionDecodedPayload = (JWSTransactionDecodedPayload) o;
-        return Objects.equals(this.originalTransactionId, jwSTransactionDecodedPayload.originalTransactionId) &&
-                Objects.equals(this.transactionId, jwSTransactionDecodedPayload.transactionId) &&
-                Objects.equals(this.webOrderLineItemId, jwSTransactionDecodedPayload.webOrderLineItemId) &&
-                Objects.equals(this.bundleId, jwSTransactionDecodedPayload.bundleId) &&
-                Objects.equals(this.productId, jwSTransactionDecodedPayload.productId) &&
-                Objects.equals(this.subscriptionGroupIdentifier, jwSTransactionDecodedPayload.subscriptionGroupIdentifier) &&
-                Objects.equals(this.purchaseDate, jwSTransactionDecodedPayload.purchaseDate) &&
-                Objects.equals(this.originalPurchaseDate, jwSTransactionDecodedPayload.originalPurchaseDate) &&
-                Objects.equals(this.expiresDate, jwSTransactionDecodedPayload.expiresDate) &&
-                Objects.equals(this.quantity, jwSTransactionDecodedPayload.quantity) &&
-                Objects.equals(this.type, jwSTransactionDecodedPayload.type) &&
-                Objects.equals(this.appAccountToken, jwSTransactionDecodedPayload.appAccountToken) &&
-                Objects.equals(this.inAppOwnershipType, jwSTransactionDecodedPayload.inAppOwnershipType) &&
-                Objects.equals(this.signedDate, jwSTransactionDecodedPayload.signedDate) &&
-                Objects.equals(this.revocationReason, jwSTransactionDecodedPayload.revocationReason) &&
-                Objects.equals(this.revocationDate, jwSTransactionDecodedPayload.revocationDate) &&
-                Objects.equals(this.isUpgraded, jwSTransactionDecodedPayload.isUpgraded) &&
-                Objects.equals(this.offerType, jwSTransactionDecodedPayload.offerType) &&
-                Objects.equals(this.offerIdentifier, jwSTransactionDecodedPayload.offerIdentifier) &&
-                Objects.equals(this.environment, jwSTransactionDecodedPayload.environment) &&
-                Objects.equals(this.storefront, jwSTransactionDecodedPayload.storefront) &&
-                Objects.equals(this.storefrontId, jwSTransactionDecodedPayload.storefrontId) &&
-                Objects.equals(this.transactionReason, jwSTransactionDecodedPayload.transactionReason) &&
-                Objects.equals(this.price, jwSTransactionDecodedPayload.price) &&
-                Objects.equals(this.currency, jwSTransactionDecodedPayload.currency) &&
-                Objects.equals(this.offerDiscountType, jwSTransactionDecodedPayload.offerDiscountType) &&
-                Objects.equals(this.unknownFields, jwSTransactionDecodedPayload.unknownFields);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JWSTransactionDecodedPayload that = (JWSTransactionDecodedPayload) o;
+        return Objects.equals(originalTransactionId, that.originalTransactionId) && Objects.equals(transactionId, that.transactionId) && Objects.equals(webOrderLineItemId, that.webOrderLineItemId) && Objects.equals(bundleId, that.bundleId) && Objects.equals(productId, that.productId) && Objects.equals(subscriptionGroupIdentifier, that.subscriptionGroupIdentifier) && Objects.equals(purchaseDate, that.purchaseDate) && Objects.equals(originalPurchaseDate, that.originalPurchaseDate) && Objects.equals(expiresDate, that.expiresDate) && Objects.equals(quantity, that.quantity) && Objects.equals(type, that.type) && Objects.equals(appAccountToken, that.appAccountToken) && Objects.equals(inAppOwnershipType, that.inAppOwnershipType) && Objects.equals(signedDate, that.signedDate) && Objects.equals(revocationReason, that.revocationReason) && Objects.equals(revocationDate, that.revocationDate) && Objects.equals(isUpgraded, that.isUpgraded) && Objects.equals(offerType, that.offerType) && Objects.equals(offerIdentifier, that.offerIdentifier) && Objects.equals(environment, that.environment) && Objects.equals(storefront, that.storefront) && Objects.equals(storefrontId, that.storefrontId) && Objects.equals(transactionReason, that.transactionReason) && Objects.equals(price, that.price) && Objects.equals(currency, that.currency) && Objects.equals(offerDiscountType, that.offerDiscountType) && Objects.equals(appTransactionId, that.appTransactionId) && Objects.equals(offerPeriod, that.offerPeriod) && Objects.equals(unknownFields, that.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(originalTransactionId, transactionId, webOrderLineItemId, bundleId, productId, subscriptionGroupIdentifier, purchaseDate, originalPurchaseDate, expiresDate, quantity, type, appAccountToken, inAppOwnershipType, signedDate, revocationReason, revocationDate, isUpgraded, offerType, offerIdentifier, environment, storefront, storefrontId, transactionReason, price, currency, offerDiscountType, unknownFields);
+        return Objects.hash(originalTransactionId, transactionId, webOrderLineItemId, bundleId, productId, subscriptionGroupIdentifier, purchaseDate, originalPurchaseDate, expiresDate, quantity, type, appAccountToken, inAppOwnershipType, signedDate, revocationReason, revocationDate, isUpgraded, offerType, offerIdentifier, environment, storefront, storefrontId, transactionReason, price, currency, offerDiscountType, appTransactionId, offerPeriod, unknownFields);
     }
 
     @Override
@@ -767,6 +782,8 @@ public class JWSTransactionDecodedPayload implements DecodedSignedData {
                 ", price=" + price +
                 ", currency='" + currency + '\'' +
                 ", offerDiscountType='" + offerDiscountType + '\'' +
+                ", appTransactionId='" + appTransactionId + '\'' +
+                ", offerPeriod='" + offerPeriod + '\'' +
                 ", unknownFields=" + unknownFields +
                 '}';
     }

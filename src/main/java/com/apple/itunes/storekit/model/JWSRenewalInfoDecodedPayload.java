@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * A decoded payload containing subscription renewal information for an auto-renewable subscription.
@@ -35,6 +36,9 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
     private static final String SERIALIZED_NAME_CURRENCY = "currency";
     private static final String SERIALIZED_NAME_OFFER_DISCOUNT_TYPE = "offerDiscountType";
     private static final String SERIALIZED_NAME_ELIGIBLE_WIN_BACK_OFFER_IDS = "eligibleWinBackOfferIds";
+    private static final String SERIALIZED_NAME_APP_TRANSACTION_ID = "appTransactionId";
+    private static final String SERIALIZED_NAME_OFFER_PERIOD = "offerPeriod";
+    private static final String SERIALIZED_NAME_APP_ACCOUNT_TOKEN = "appAccountToken";
     @JsonProperty(SERIALIZED_NAME_EXPIRATION_INTENT)
     private Integer expirationIntent;
     @JsonProperty(SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID)
@@ -75,6 +79,12 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
     private String offerDiscountType;
     @JsonProperty(SERIALIZED_NAME_ELIGIBLE_WIN_BACK_OFFER_IDS)
     private List<String> eligibleWinBackOfferIds = null;
+    @JsonProperty(SERIALIZED_NAME_APP_TRANSACTION_ID)
+    private String appTransactionId;
+    @JsonProperty(SERIALIZED_NAME_OFFER_PERIOD)
+    private String offerPeriod;
+    @JsonProperty(SERIALIZED_NAME_APP_ACCOUNT_TOKEN)
+    private UUID appAccountToken;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
@@ -498,6 +508,62 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
         this.eligibleWinBackOfferIds = eligibleWinBackOfferIds;
     }
 
+    public JWSRenewalInfoDecodedPayload appTransactionId(String appTransactionId) {
+        this.appTransactionId = appTransactionId;
+        return this;
+    }
+
+    /**
+     * The unique identifier of the app download transaction.
+     *
+     * @return appTransactionId
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/appTransactionId">appTransactionId</a>
+     **/
+    public String getAppTransactionId() {
+        return this.appTransactionId;
+    }
+
+    public void setAppTransactionId(String appTransactionId) {
+        this.appTransactionId = appTransactionId;
+    }
+
+    public JWSRenewalInfoDecodedPayload offerPeriod(String offerPeriod) {
+        this.offerPeriod = offerPeriod;
+        return this;
+    }
+
+    /**
+     * The duration of the offer.
+     *
+     * @return offerPeriod
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/offerPeriod">offerPeriod</a>
+     **/
+    public String getOfferPeriod() {
+        return this.offerPeriod;
+    }
+
+    public void setOfferPeriod(String offerPeriod) {
+        this.offerPeriod = offerPeriod;
+    }
+
+    public JWSRenewalInfoDecodedPayload appAccountToken(UUID appAccountToken) {
+        this.appAccountToken = appAccountToken;
+        return this;
+    }
+
+    /**
+     * The UUID that an app optionally generates to map a customer’s In-App Purchase with its resulting App Store transaction.
+     *
+     * @return appAccountToken
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/appAccountToken">appAccountToken</a>
+     **/
+    public UUID getAppAccountToken() {
+        return this.appAccountToken;
+    }
+
+    public void setAppAccountToken(UUID appAccountToken) {
+        this.appAccountToken = appAccountToken;
+    }
 
     public JWSRenewalInfoDecodedPayload unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
@@ -519,37 +585,15 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        JWSRenewalInfoDecodedPayload jwSRenewalInfoDecodedPayload = (JWSRenewalInfoDecodedPayload) o;
-        return Objects.equals(this.expirationIntent, jwSRenewalInfoDecodedPayload.expirationIntent) &&
-                Objects.equals(this.originalTransactionId, jwSRenewalInfoDecodedPayload.originalTransactionId) &&
-                Objects.equals(this.autoRenewProductId, jwSRenewalInfoDecodedPayload.autoRenewProductId) &&
-                Objects.equals(this.productId, jwSRenewalInfoDecodedPayload.productId) &&
-                Objects.equals(this.autoRenewStatus, jwSRenewalInfoDecodedPayload.autoRenewStatus) &&
-                Objects.equals(this.isInBillingRetryPeriod, jwSRenewalInfoDecodedPayload.isInBillingRetryPeriod) &&
-                Objects.equals(this.priceIncreaseStatus, jwSRenewalInfoDecodedPayload.priceIncreaseStatus) &&
-                Objects.equals(this.gracePeriodExpiresDate, jwSRenewalInfoDecodedPayload.gracePeriodExpiresDate) &&
-                Objects.equals(this.offerType, jwSRenewalInfoDecodedPayload.offerType) &&
-                Objects.equals(this.offerIdentifier, jwSRenewalInfoDecodedPayload.offerIdentifier) &&
-                Objects.equals(this.signedDate, jwSRenewalInfoDecodedPayload.signedDate) &&
-                Objects.equals(this.environment, jwSRenewalInfoDecodedPayload.environment) &&
-                Objects.equals(this.recentSubscriptionStartDate, jwSRenewalInfoDecodedPayload.recentSubscriptionStartDate) &&
-                Objects.equals(this.renewalDate, jwSRenewalInfoDecodedPayload.renewalDate) &&
-                Objects.equals(this.renewalPrice, jwSRenewalInfoDecodedPayload.renewalPrice) &&
-                Objects.equals(this.currency, jwSRenewalInfoDecodedPayload.currency) &&
-                Objects.equals(this.offerDiscountType, jwSRenewalInfoDecodedPayload.offerDiscountType) &&
-                Objects.equals(this.eligibleWinBackOfferIds, jwSRenewalInfoDecodedPayload.eligibleWinBackOfferIds) &&
-                Objects.equals(this.unknownFields, jwSRenewalInfoDecodedPayload.unknownFields);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JWSRenewalInfoDecodedPayload that = (JWSRenewalInfoDecodedPayload) o;
+        return Objects.equals(expirationIntent, that.expirationIntent) && Objects.equals(originalTransactionId, that.originalTransactionId) && Objects.equals(autoRenewProductId, that.autoRenewProductId) && Objects.equals(productId, that.productId) && Objects.equals(autoRenewStatus, that.autoRenewStatus) && Objects.equals(isInBillingRetryPeriod, that.isInBillingRetryPeriod) && Objects.equals(priceIncreaseStatus, that.priceIncreaseStatus) && Objects.equals(gracePeriodExpiresDate, that.gracePeriodExpiresDate) && Objects.equals(offerType, that.offerType) && Objects.equals(offerIdentifier, that.offerIdentifier) && Objects.equals(signedDate, that.signedDate) && Objects.equals(environment, that.environment) && Objects.equals(recentSubscriptionStartDate, that.recentSubscriptionStartDate) && Objects.equals(renewalDate, that.renewalDate) && Objects.equals(renewalPrice, that.renewalPrice) && Objects.equals(currency, that.currency) && Objects.equals(offerDiscountType, that.offerDiscountType) && Objects.equals(eligibleWinBackOfferIds, that.eligibleWinBackOfferIds) && Objects.equals(appTransactionId, that.appTransactionId) && Objects.equals(offerPeriod, that.offerPeriod) && Objects.equals(appAccountToken, that.appAccountToken) && Objects.equals(unknownFields, that.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(expirationIntent, originalTransactionId, autoRenewProductId, productId, autoRenewStatus, isInBillingRetryPeriod, priceIncreaseStatus, gracePeriodExpiresDate, offerType, offerIdentifier, signedDate, environment, recentSubscriptionStartDate, renewalDate, renewalPrice, currency, offerDiscountType, eligibleWinBackOfferIds, unknownFields);
+        return Objects.hash(expirationIntent, originalTransactionId, autoRenewProductId, productId, autoRenewStatus, isInBillingRetryPeriod, priceIncreaseStatus, gracePeriodExpiresDate, offerType, offerIdentifier, signedDate, environment, recentSubscriptionStartDate, renewalDate, renewalPrice, currency, offerDiscountType, eligibleWinBackOfferIds, appTransactionId, offerPeriod, appAccountToken, unknownFields);
     }
 
     @Override
@@ -573,6 +617,9 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
                 ", currency='" + currency + '\'' +
                 ", offerDiscountType='" + offerDiscountType + '\'' +
                 ", eligibleWinBackOfferIds=" + eligibleWinBackOfferIds +
+                ", appTransactionId='" + appTransactionId + '\'' +
+                ", offerPeriod='" + offerPeriod + '\'' +
+                ", appAccountToken='" + appAccountToken + '\'' +
                 ", unknownFields=" + unknownFields +
                 '}';
     }
