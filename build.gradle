@@ -12,7 +12,7 @@ dependencies {
     implementation 'org.bouncycastle:bcprov-jdk18on:1.80'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
-    testImplementation 'org.mockito:mockito-core:5.15.2'
+    testImplementation 'org.mockito:mockito-core:5.16.0'
 }
 
 repositories {
