@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 3.4.0
+- Incorporate changes for App Store Server API v1.15 and App Store Server Notifications v2.15 [https://github.com/apple/app-store-server-library-java/pull/152]
+
 ## Version 3.3.0
 - Update BaseAppStoreServerAPIClient to move URL selection to a method [https://github.com/apple/app-store-server-library-java/pull/136]
 
