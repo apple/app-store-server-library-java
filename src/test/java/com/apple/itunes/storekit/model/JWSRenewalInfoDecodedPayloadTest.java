@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.UUID;
 
 public class JWSRenewalInfoDecodedPayloadTest {
 
@@ -44,5 +45,8 @@ public class JWSRenewalInfoDecodedPayloadTest {
         Assertions.assertEquals(OfferDiscountType.PAY_AS_YOU_GO, renewalInfo.getOfferDiscountType());
         Assertions.assertEquals("PAY_AS_YOU_GO", renewalInfo.getRawOfferDiscountType());
         Assertions.assertEquals(List.of("eligible1", "eligible2"), renewalInfo.getEligibleWinBackOfferIds());
+        Assertions.assertEquals("71134", renewalInfo.getAppTransactionId());
+        Assertions.assertEquals("P1Y", renewalInfo.getOfferPeriod());
+        Assertions.assertEquals(UUID.fromString("7e3fb20b-4cdb-47cc-936d-99d65f608138"), renewalInfo.getAppAccountToken());
     }
 }

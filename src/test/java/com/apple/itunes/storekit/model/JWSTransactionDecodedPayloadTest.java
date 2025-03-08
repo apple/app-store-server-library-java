@@ -53,5 +53,7 @@ public class JWSTransactionDecodedPayloadTest {
         Assertions.assertEquals("USD", transaction.getCurrency());
         Assertions.assertEquals(OfferDiscountType.PAY_AS_YOU_GO, transaction.getOfferDiscountType());
         Assertions.assertEquals("PAY_AS_YOU_GO", transaction.getRawOfferDiscountType());
+        Assertions.assertEquals("71134", transaction.getAppTransactionId());
+        Assertions.assertEquals("P1Y", transaction.getOfferPeriod());
     }
 }

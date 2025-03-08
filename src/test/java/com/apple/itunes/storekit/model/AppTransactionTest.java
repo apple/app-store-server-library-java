@@ -33,5 +33,8 @@ public class AppTransactionTest {
         Assertions.assertEquals("device_verification_value", appTransaction.getDeviceVerification());
         Assertions.assertEquals(UUID.fromString("48ccfa42-7431-4f22-9908-7e88983e105a"), appTransaction.getDeviceVerificationNonce());
         Assertions.assertEquals(1698148700000L, appTransaction.getPreorderDate());
+        Assertions.assertEquals("71134", appTransaction.getAppTransactionId());
+        Assertions.assertEquals(PurchasePlatform.IOS, appTransaction.getOriginalPlatform());
+        Assertions.assertEquals("iOS", appTransaction.getRawOriginalPlatform());
     }
 }

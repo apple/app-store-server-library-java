@@ -26,6 +26,8 @@ public class AppTransaction implements DecodedSignedData {
     private static final String SERIALIZED_NAME_DEVICE_VERIFICATION = "deviceVerification";
     private static final String SERIALIZED_NAME_DEVICE_VERIFICATION_NONCE = "deviceVerificationNonce";
     private static final String SERIALIZED_NAME_PREORDER_DATE = "preorderDate";
+    private static final String SERIALIZED_NAME_APP_TRANSACTION_ID = "appTransactionId";
+    private static final String SERIALIZED_NAME_ORIGINAL_PLATFORM = "originalPlatform";
 
     @JsonProperty(SERIALIZED_NAME_RECEIPT_TYPE)
     private String receiptType;
@@ -52,6 +54,10 @@ public class AppTransaction implements DecodedSignedData {
     @JsonProperty(SERIALIZED_NAME_PREORDER_DATE)
     @JsonDeserialize(using = XcodeCompatibleTimestampDeserializer.class)
     private Long preorderDate;
+    @JsonProperty(SERIALIZED_NAME_APP_TRANSACTION_ID)
+    private String appTransactionId;
+    @JsonProperty(SERIALIZED_NAME_ORIGINAL_PLATFORM)
+    private String originalPlatform;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
@@ -266,6 +272,55 @@ public class AppTransaction implements DecodedSignedData {
     }
 
     /**
+     * The unique identifier of the app download transaction.
+     *
+     * @return appTransactionId
+     * @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/apptransactionid">appTransactionId</a>
+     **/
+    public String getAppTransactionId() {
+        return this.appTransactionId;
+    }
+
+    public void setAppTransactionId(String appTransactionId) {
+        this.appTransactionId = appTransactionId;
+    }
+
+    public AppTransaction appTransactionId(String appTransactionId) {
+        this.appTransactionId = appTransactionId;
+        return this;
+    }
+
+    public AppTransaction originalPlatform(PurchasePlatform originalPlatform) {
+        this.originalPlatform = originalPlatform != null ? originalPlatform.getValue() : null;
+        return this;
+    }
+
+    /**
+     * The platform on which the customer originally purchased the app.
+     *
+     * @return originalPlatform
+     * @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/originalplatform-4mogz">originalPlatform</a>
+     **/
+    public PurchasePlatform getOriginalPlatform() {
+        return originalPlatform != null ? PurchasePlatform.fromValue(originalPlatform) : null;
+    }
+
+    /**
+     * @see #getOriginalPlatform()
+     */
+    public String getRawOriginalPlatform() {
+        return originalPlatform;
+    }
+
+    public void setOriginalPlatform(PurchasePlatform originalPlatform) {
+        this.originalPlatform = originalPlatform != null ? originalPlatform.getValue() : null;
+    }
+
+    public void setRawOriginalPlatform(String rawOriginalPlatform) {
+        this.originalPlatform = rawOriginalPlatform;
+    }
+
+    /**
      Fields that are not recognized for this object
 
      @return A map of JSON keys to objects
@@ -292,12 +347,12 @@ public class AppTransaction implements DecodedSignedData {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AppTransaction that = (AppTransaction) o;
-        return Objects.equals(receiptType, that.receiptType) && Objects.equals(appAppleId, that.appAppleId) && Objects.equals(bundleId, that.bundleId) && Objects.equals(applicationVersion, that.applicationVersion) && Objects.equals(versionExternalIdentifier, that.versionExternalIdentifier) && Objects.equals(originalPurchaseDate, that.originalPurchaseDate) && Objects.equals(originalApplicationVersion, that.originalApplicationVersion) && Objects.equals(deviceVerification, that.deviceVerification) && Objects.equals(deviceVerificationNonce, that.deviceVerificationNonce) && Objects.equals(preorderDate, that.preorderDate) && Objects.equals(unknownFields, that.unknownFields);
+        return Objects.equals(receiptType, that.receiptType) && Objects.equals(appAppleId, that.appAppleId) && Objects.equals(bundleId, that.bundleId) && Objects.equals(applicationVersion, that.applicationVersion) && Objects.equals(versionExternalIdentifier, that.versionExternalIdentifier) && Objects.equals(receiptCreationDate, that.receiptCreationDate) && Objects.equals(originalPurchaseDate, that.originalPurchaseDate) && Objects.equals(originalApplicationVersion, that.originalApplicationVersion) && Objects.equals(deviceVerification, that.deviceVerification) && Objects.equals(deviceVerificationNonce, that.deviceVerificationNonce) && Objects.equals(preorderDate, that.preorderDate) && Objects.equals(appTransactionId, that.appTransactionId) && Objects.equals(originalPlatform, that.originalPlatform) && Objects.equals(unknownFields, that.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(receiptType, appAppleId, bundleId, applicationVersion, versionExternalIdentifier, originalPurchaseDate, originalApplicationVersion, deviceVerification, deviceVerificationNonce, preorderDate, unknownFields);
+        return Objects.hash(receiptType, appAppleId, bundleId, applicationVersion, versionExternalIdentifier, receiptCreationDate, originalPurchaseDate, originalApplicationVersion, deviceVerification, deviceVerificationNonce, preorderDate, appTransactionId, originalPlatform, unknownFields);
     }
 
     @Override
@@ -314,6 +369,8 @@ public class AppTransaction implements DecodedSignedData {
                 ", deviceVerification='" + deviceVerification + '\'' +
                 ", deviceVerificationNonce=" + deviceVerificationNonce +
                 ", preorderDate=" + preorderDate +
+                ", appTransactionId='" + appTransactionId + '\'' +
+                ", originalPlatform='" + originalPlatform + '\'' +
                 ", unknownFields=" + unknownFields +
                 '}';
     }
