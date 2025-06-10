@@ -38,6 +38,7 @@ import com.apple.itunes.storekit.model.SubscriptionGroupIdentifierItem;
 import com.apple.itunes.storekit.model.Subtype;
 import com.apple.itunes.storekit.model.TransactionHistoryRequest;
 import com.apple.itunes.storekit.model.TransactionInfoResponse;
+import com.apple.itunes.storekit.model.UpdateAppAccountTokenRequest;
 import com.apple.itunes.storekit.model.UserStatus;
 import com.apple.itunes.storekit.util.TestingUtility;
 import com.auth0.jwt.JWT;
@@ -677,6 +678,64 @@ public class AppStoreServerAPIClientTest {
             new AppStoreServerAPIClient(new String(key.readAllBytes()), "keyId", "issuerId", "com.example", Environment.XCODE);
         } catch (IllegalArgumentException e) {
             Assertions.assertEquals("Xcode is not a supported environment for an AppStoreServerAPIClient", e.getMessage());
+            return;
+        }
+        Assertions.fail();
+    }
+
+    @Test
+    public void testSetAppAccountToken() throws IOException, APIException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {
+            Assertions.assertEquals("PUT", request.method());
+            Assertions.assertEquals("/inApps/v1/transactions/49571273/appAccountToken", request.url().encodedPath());
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertEquals(expectedMediaType, body.contentType());
+            Buffer buffer = new Buffer();
+            try {
+                body.writeTo(buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Map<String, Object> root;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            Assertions.assertEquals("7389a31a-fb6d-4569-a2a6-db7d85d84813", root.get("appAccountToken"));
+        });
+
+        UpdateAppAccountTokenRequest updateAppAccountTokenRequest = new UpdateAppAccountTokenRequest(UUID.fromString("7389a31a-fb6d-4569-a2a6-db7d85d84813"));
+
+        client.setAppAccountToken("49571273", updateAppAccountTokenRequest);
+    }
+
+    @Test
+    public void testFamilyTransactionNotSupportedError() throws IOException {
+        String body = TestingUtility.readFile("models/familyTransactionNotSupportedError.json");
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 400);
+        try {
+            UpdateAppAccountTokenRequest updateAppAccountTokenRequest = new UpdateAppAccountTokenRequest(UUID.fromString("7389a31a-fb6d-4569-a2a6-db7d85d84813"));
+            client.setAppAccountToken("1234", updateAppAccountTokenRequest);
+        } catch (APIException e) {
+            Assertions.assertEquals(400, e.getHttpStatusCode());
+            Assertions.assertEquals(APIError.FAMILY_TRANSACTION_NOT_SUPPORTED_ERROR, e.getApiError());
+            return;
+        }
+        Assertions.fail();
+    }
+
+    @Test
+    public void testTransactionIdNotOriginalTransactionId() throws IOException {
+        String body = TestingUtility.readFile("models/transactionIdNotOriginalTransactionId.json");
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 400);
+        try {
+            UpdateAppAccountTokenRequest updateAppAccountTokenRequest = new UpdateAppAccountTokenRequest(UUID.fromString("7389a31a-fb6d-4569-a2a6-db7d85d84813"));
+            client.setAppAccountToken("1234", updateAppAccountTokenRequest);
+        } catch (APIException e) {
+            Assertions.assertEquals(400, e.getHttpStatusCode());
+            Assertions.assertEquals(APIError.TRANSACTION_ID_IS_NOT_ORIGINAL_TRANSACTION_ID_ERROR, e.getApiError());
             return;
         }
         Assertions.fail();
