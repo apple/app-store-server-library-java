@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 3.5.0
+- Incorporate changes for App Store Server API v1.16 [https://github.com/apple/app-store-server-library-java/pull/165]
+
 ## Version 3.4.0
 - Incorporate changes for App Store Server API v1.15 and App Store Server Notifications v2.15 [https://github.com/apple/app-store-server-library-java/pull/152]
 
