@@ -74,4 +74,20 @@ class PromotionalOfferV2SignatureCreatorTest {
             Assertions.assertThrows(IllegalArgumentException.class, () -> signatureCreator.createSignature(null, OFFER_IDENTIFIER, TRANSACTION_ID));
         }
     }
+
+    @Test
+    void testNonceIsProvided() throws Exception {
+        try (InputStream key = this.getClass().getClassLoader().getResourceAsStream("certs/testSigningKey.p8")) {
+            Assertions.assertNotNull(key);
+            UUID nonce = UUID.randomUUID();
+            PromotionalOfferV2SignatureCreator signatureCreator = new PromotionalOfferV2SignatureCreator(new String(key.readAllBytes()), KEY_ID, ISSUER_ID, BUNDLE_ID) {
+                protected UUID createNonce() {
+                    return nonce;
+                }
+            };
+            String signature = signatureCreator.createSignature(PRODUCT_ID, OFFER_IDENTIFIER, TRANSACTION_ID);
+            DecodedJWT decodedJWT = JWT.decode(signature);
+            Assertions.assertEquals(decodedJWT.getClaim("nonce").asString(), nonce.toString());
+        }
+    }
 }
