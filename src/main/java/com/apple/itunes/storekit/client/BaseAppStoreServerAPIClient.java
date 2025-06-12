@@ -21,6 +21,7 @@ import com.apple.itunes.storekit.model.Status;
 import com.apple.itunes.storekit.model.StatusResponse;
 import com.apple.itunes.storekit.model.TransactionHistoryRequest;
 import com.apple.itunes.storekit.model.TransactionInfoResponse;
+import com.apple.itunes.storekit.model.UpdateAppAccountTokenRequest;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -357,6 +358,20 @@ public abstract class BaseAppStoreServerAPIClient {
      */
     public void sendConsumptionData(String transactionId, ConsumptionRequest consumptionRequest) throws APIException, IOException {
         makeHttpCall("/inApps/v1/transactions/consumption/" + transactionId, "PUT", Map.of(), consumptionRequest, Void.class);
+    }
+
+
+    /**
+     * Sets the app account token value for a purchase the customer makes outside your app, or updates its value in an existing transaction.
+     *
+     * @param originalTransactionId The original transaction identifier of the transaction to receive the app account token update.
+     * @param updateAppAccountTokenRequest The request body that contains a valid app account token value.
+     * @throws APIException If a response was returned indicating the request could not be processed.
+     * @throws IOException  If an exception was thrown while making the request.
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/set-app-account-token">Set App Account Token</a>
+     */
+    public void setAppAccountToken(String originalTransactionId, UpdateAppAccountTokenRequest updateAppAccountTokenRequest) throws APIException, IOException {
+        makeHttpCall("/inApps/v1/transactions/" + originalTransactionId + "/appAccountToken", "PUT", Map.of(), updateAppAccountTokenRequest, Void.class);
     }
 
     protected interface HttpResponseInterface extends Closeable {
