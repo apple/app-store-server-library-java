@@ -49,7 +49,7 @@ public abstract class JWSSignatureCreator {
     protected String createSignature(Map<String, ?> featureSpecificClaims) {
         Map<String, Object> claims = new HashMap<>(featureSpecificClaims);
         claims.put(BUNDLE_ID_KEY, bundleId);
-        claims.put(NONCE_KEY, UUID.randomUUID().toString());
+        claims.put(NONCE_KEY, createNonce().toString());
         return JWT.create()
                 .withAudience(audience)
                 .withIssuedAt(Instant.now())
@@ -57,5 +57,9 @@ public abstract class JWSSignatureCreator {
                 .withKeyId(keyId)
                 .withPayload(claims)
                 .sign(Algorithm.ECDSA256(signingKey));
+    }
+
+    protected UUID createNonce() {
+        return UUID.randomUUID();
     }
 }
