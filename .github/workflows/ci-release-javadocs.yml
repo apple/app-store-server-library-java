@@ -25,7 +25,7 @@ jobs:
       - name: Build javadocs
         run: ./gradlew --no-daemon --parallel javadoc
       - name: Upload javadocs
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: build/docs/javadoc
   deploy:
