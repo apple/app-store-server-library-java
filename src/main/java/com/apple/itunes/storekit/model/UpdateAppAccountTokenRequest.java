@@ -23,13 +23,11 @@ public class UpdateAppAccountTokenRequest {
     }
 
     public UpdateAppAccountTokenRequest(UUID appAccountToken) {
-        Objects.requireNonNull(appAccountToken);
-        this.appAccountToken = appAccountToken;
+        this.appAccountToken = Objects.requireNonNull(appAccountToken);
     }
 
     public UpdateAppAccountTokenRequest appAccountToken(UUID appAccountToken) {
-        Objects.requireNonNull(appAccountToken);
-        this.appAccountToken = appAccountToken;
+        this.appAccountToken = Objects.requireNonNull(appAccountToken);
         return this;
     }
 
@@ -44,8 +42,7 @@ public class UpdateAppAccountTokenRequest {
     }
 
     public void setAppAccountToken(UUID appAccountToken) {
-        Objects.requireNonNull(appAccountToken);
-        this.appAccountToken = appAccountToken;
+        this.appAccountToken = Objects.requireNonNull(appAccountToken);
     }
 
     @Override
