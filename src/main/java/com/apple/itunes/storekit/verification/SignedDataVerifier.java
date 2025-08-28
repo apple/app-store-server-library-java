@@ -70,12 +70,8 @@ public class SignedDataVerifier {
      */
     public JWSTransactionDecodedPayload verifyAndDecodeTransaction(String signedTransaction) throws VerificationException {
         JWSTransactionDecodedPayload transaction = decodeSignedObject(signedTransaction, JWSTransactionDecodedPayload.class);
-        if (!bundleId.equals(transaction.getBundleId())) {
-            throw new VerificationException(VerificationStatus.INVALID_APP_IDENTIFIER);
-        }
-        if (!this.environment.equals(transaction.getEnvironment())) {
-            throw new VerificationException(VerificationStatus.INVALID_ENVIRONMENT);
-        }
+        validateBundleId(transaction.getBundleId());
+        validateEnvironment(transaction.getEnvironment());
         return transaction;
     }
 
@@ -89,9 +85,7 @@ public class SignedDataVerifier {
      */
     public JWSRenewalInfoDecodedPayload verifyAndDecodeRenewalInfo(String signedRenewalInfo) throws VerificationException {
         JWSRenewalInfoDecodedPayload renewalInfo = decodeSignedObject(signedRenewalInfo, JWSRenewalInfoDecodedPayload.class);
-        if (!this.environment.equals(renewalInfo.getEnvironment())) {
-            throw new VerificationException(VerificationStatus.INVALID_ENVIRONMENT);
-        }
+        validateEnvironment(renewalInfo.getEnvironment());
         return renewalInfo;
     }
 
@@ -135,12 +129,9 @@ public class SignedDataVerifier {
     }
 
     protected void verifyNotification(String bundleId, Long appAppleId, Environment notificationEnv) throws VerificationException {
-        if (!this.bundleId.equals(bundleId) || (this.environment.equals(Environment.PRODUCTION) && !this.appAppleId.equals(appAppleId))) {
-            throw new VerificationException(VerificationStatus.INVALID_APP_IDENTIFIER);
-        }
-        if (!this.environment.equals(notificationEnv)) {
-            throw new VerificationException(VerificationStatus.INVALID_ENVIRONMENT);
-        }
+        validateBundleId(bundleId);
+        validateAppAppleId(appAppleId);
+        validateEnvironment(notificationEnv);
     }
 
     /**
@@ -154,13 +145,28 @@ public class SignedDataVerifier {
     public AppTransaction verifyAndDecodeAppTransaction(String signedAppTransaction) throws VerificationException {
         AppTransaction appTransaction = decodeSignedObject(signedAppTransaction, AppTransaction.class);
         Environment environment = appTransaction.getReceiptType();
-        if (!this.bundleId.equals(appTransaction.getBundleId()) || (this.environment.equals(Environment.PRODUCTION) && !this.appAppleId.equals(appTransaction.getAppAppleId()))) {
+        validateBundleId(appTransaction.getBundleId());
+        validateAppAppleId(appTransaction.getAppAppleId());
+        validateEnvironment(environment);
+        return appTransaction;
+    }
+
+    protected void validateAppAppleId(Long appAppleId) throws VerificationException {
+        if (this.environment.equals(Environment.PRODUCTION) && !this.appAppleId.equals(appAppleId)) {
             throw new VerificationException(VerificationStatus.INVALID_APP_IDENTIFIER);
         }
+    }
+
+    protected void validateBundleId(String bundleId) throws VerificationException {
+        if (!this.bundleId.equals(bundleId)) {
+            throw new VerificationException(VerificationStatus.INVALID_APP_IDENTIFIER);
+        }
+    }
+
+    protected void validateEnvironment(Environment environment) throws VerificationException {
         if (!this.environment.equals(environment)) {
             throw new VerificationException(VerificationStatus.INVALID_ENVIRONMENT);
         }
-        return appTransaction;
     }
 
     protected <T extends DecodedSignedData> T decodeSignedObject(String signedObject, Class<T> clazz) throws VerificationException {
