@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 3.6.0
+- Testing new Maven Central deployment process [https://github.com/apple/app-store-server-library-java/pull/185]
+
 ## Version 3.5.0
 - Incorporate changes for App Store Server API v1.16 [https://github.com/apple/app-store-server-library-java/pull/165]
 
