@@ -75,9 +75,35 @@ publishing {
                 password findProperty("mavenPassword")
             }
             if(project.version.endsWith('-SNAPSHOT')) {
-                url "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                url "https://central.sonatype.com/repository/maven-snapshots/"
             } else {
-                url "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                url "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
+            }
+        }
+    }
+}
+
+tasks.named('publish') {
+    finalizedBy tasks.named('postRelease')
+}
+
+tasks.register('postRelease') {
+    doLast {
+        if (!project.version.endsWith('-SNAPSHOT')) {
+            def username = findProperty("mavenUsername")
+            def password = findProperty("mavenPassword")
+            def url = "https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/com.apple.itunes.storekit"
+            def connection = new URL(url).openConnection() as HttpURLConnection
+            connection.setRequestMethod("POST")
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+            connection.setRequestProperty('Authorization', 'Basic ' + "${username}:${password}".bytes.encodeBase64().toString())
+            def responseCode = connection.responseCode
+            if (responseCode == 200) {
+                def response = connection.inputStream.text
+                println "Success: $response"
+            } else {
+                def error = connection.errorStream?.text ?: "No error details"
+                println "Error $responseCode: $error"
             }
         }
     }
