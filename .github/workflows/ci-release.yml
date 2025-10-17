@@ -1,4 +1,6 @@
 name: Release Builder
+permissions:
+  contents: read
 on:
   release:
     types: [published]
