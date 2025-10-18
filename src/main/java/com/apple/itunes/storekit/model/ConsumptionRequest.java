@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -13,6 +14,7 @@ import java.util.UUID;
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/consumptionrequest">ConsumptionRequest</a>
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ConsumptionRequest {
     private static final String SERIALIZED_NAME_CUSTOMER_CONSENTED = "customerConsented";
     private static final String SERIALIZED_NAME_CONSUMPTION_STATUS = "consumptionStatus";

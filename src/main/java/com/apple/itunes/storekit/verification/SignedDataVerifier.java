@@ -3,6 +3,7 @@
 package com.apple.itunes.storekit.verification;
 
 import com.apple.itunes.storekit.model.AppTransaction;
+import com.apple.itunes.storekit.model.DecodedRealtimeRequestBody;
 import com.apple.itunes.storekit.model.DecodedSignedData;
 import com.apple.itunes.storekit.model.Environment;
 import com.apple.itunes.storekit.model.JWSRenewalInfoDecodedPayload;
@@ -149,6 +150,21 @@ public class SignedDataVerifier {
         validateAppAppleId(appTransaction.getAppAppleId());
         validateEnvironment(environment);
         return appTransaction;
+    }
+
+    /**
+     * Verifies and decodes a Retention Messaging API signedPayload
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/signedpayload">signedPayload</a>
+     *
+     * @param signedPayload The payload received by your server
+     * @return The decoded payload after verification
+     * @throws VerificationException Thrown if the data could not be verified
+     */
+    public DecodedRealtimeRequestBody verifyAndDecodeRealtimeRequest(String signedPayload) throws VerificationException {
+        DecodedRealtimeRequestBody request = decodeSignedObject(signedPayload, DecodedRealtimeRequestBody.class);
+        validateAppAppleId(request.getAppAppleId());
+        validateEnvironment(request.getEnvironment());
+        return request;
     }
 
     protected void validateAppAppleId(Long appAppleId) throws VerificationException {

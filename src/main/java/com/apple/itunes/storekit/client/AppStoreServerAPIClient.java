@@ -58,7 +58,7 @@ public class AppStoreServerAPIClient extends BaseAppStoreServerAPIClient {
                                                 Map<String, List<String>> queryParameters,
                                                 Map<String, String> headers,
                                                 String contentType,
-                                                String body) throws IOException {
+                                                byte[] body) throws IOException {
         Request.Builder requestBuilder = new Request.Builder();
         headers.forEach(requestBuilder::addHeader);
         HttpUrl.Builder urlBuilder = Objects.requireNonNull(urlBase.resolve(path)).newBuilder();

@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -11,6 +12,7 @@ import java.util.Objects;
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/notificationhistoryrequest">NotificationHistoryRequest</a>
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class NotificationHistoryRequest {
     private static final String SERIALIZED_NAME_START_DATE = "startDate";
     private static final String SERIALIZED_NAME_END_DATE = "endDate";
