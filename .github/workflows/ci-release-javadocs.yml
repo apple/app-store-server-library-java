@@ -1,10 +1,9 @@
 name: Javadoc Builder
+permissions:
+  contents: read
 on:
   release:
     types: [published]
-permissions:
-  pages: write
-  id-token: write
 jobs:
   build:
     name: Javadoc Builder
@@ -29,6 +28,9 @@ jobs:
         with:
           path: build/docs/javadoc
   deploy:
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

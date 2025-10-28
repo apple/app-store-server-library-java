@@ -1,4 +1,6 @@
 name: "Validate Gradle Wrapper"
+permissions:
+  contents: read
 on: [push, pull_request]
 
 jobs:
