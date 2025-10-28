@@ -4,10 +4,13 @@ package com.apple.itunes.storekit.client;
 
 import com.apple.itunes.storekit.model.CheckTestNotificationResponse;
 import com.apple.itunes.storekit.model.ConsumptionRequest;
+import com.apple.itunes.storekit.model.DefaultConfigurationRequest;
 import com.apple.itunes.storekit.model.Environment;
 import com.apple.itunes.storekit.model.ErrorPayload;
 import com.apple.itunes.storekit.model.ExtendRenewalDateRequest;
 import com.apple.itunes.storekit.model.ExtendRenewalDateResponse;
+import com.apple.itunes.storekit.model.GetImageListResponse;
+import com.apple.itunes.storekit.model.GetMessageListResponse;
 import com.apple.itunes.storekit.model.HistoryResponse;
 import com.apple.itunes.storekit.model.MassExtendRenewalDateRequest;
 import com.apple.itunes.storekit.model.MassExtendRenewalDateResponse;
@@ -22,6 +25,7 @@ import com.apple.itunes.storekit.model.StatusResponse;
 import com.apple.itunes.storekit.model.TransactionHistoryRequest;
 import com.apple.itunes.storekit.model.TransactionInfoResponse;
 import com.apple.itunes.storekit.model.UpdateAppAccountTokenRequest;
+import com.apple.itunes.storekit.model.UploadMessageRequestBody;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,10 +33,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -44,6 +50,7 @@ public abstract class BaseAppStoreServerAPIClient {
     private static final String LOCAL_TESTING_URL = "https://local-testing-base-url";
     private static final String USER_AGENT = "app-store-server-library/java/3.6.0";
     private static final String JSON = "application/json; charset=utf-8";
+    private static final String PNG = "image/png";
 
     private final BearerTokenAuthenticatorInterface bearerTokenAuthenticator;
     private final ObjectMapper objectMapper;
@@ -98,18 +105,21 @@ public abstract class BaseAppStoreServerAPIClient {
                                                          Map<String, List<String>> queryParameters,
                                                          Map<String, String> headers,
                                                          String contentType,
-                                                         String body) throws IOException;
+                                                         byte[] body) throws IOException;
 
-    protected <T> T makeHttpCall(String path, String method, Map<String, List<String>> queryParameters, Object body, Class<T> clazz) throws IOException, APIException {
+    protected <T> T makeHttpCall(String path, String method, Map<String, List<String>> queryParameters, Object body, Class<T> clazz, String contentType) throws IOException, APIException {
         Map<String, String> headers = Map.of("User-Agent", USER_AGENT,
                                              "Authorization", "Bearer " + bearerTokenAuthenticator.generateToken(),
                                              "Accept", "application/json");
-        String encodedBody = body != null ? objectMapper.writeValueAsString(body) : null;
-        String contentType = null;
-        if (encodedBody != null) {
-            contentType = JSON;
-        } else if (method.equals("POST")){
-            encodedBody = "";
+        byte[] encodedBody;
+        if (body instanceof byte[]) {
+            encodedBody = (byte[]) body;
+        } else if (body != null) {
+            encodedBody = objectMapper.writeValueAsString(body).getBytes(StandardCharsets.UTF_8);
+        } else if (method.equals("POST")) {
+            encodedBody = new byte[] {};
+        } else {
+            encodedBody = null;
         }
         try (var r = makeRequest(path, method, queryParameters, headers, contentType, encodedBody)) {
             if (r.statusCode() >= 200 && r.statusCode() < 300) {
@@ -160,7 +170,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/extend_subscription_renewal_dates_for_all_active_subscribers">Extend Subscription Renewal Dates for All Active Subscribers</a>
      */
     public MassExtendRenewalDateResponse extendRenewalDateForAllActiveSubscribers(MassExtendRenewalDateRequest massExtendRenewalDateRequest) throws APIException, IOException {
-        return makeHttpCall("/inApps/v1/subscriptions/extend/mass", "POST", Map.of(), massExtendRenewalDateRequest, MassExtendRenewalDateResponse.class);
+        return makeHttpCall("/inApps/v1/subscriptions/extend/mass", "POST", Map.of(), massExtendRenewalDateRequest, MassExtendRenewalDateResponse.class, JSON);
     }
 
     /**
@@ -174,7 +184,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/extend_a_subscription_renewal_date">Extend a Subscription Renewal Date</a>
      */
     public ExtendRenewalDateResponse extendSubscriptionRenewalDate(String originalTransactionId, ExtendRenewalDateRequest extendRenewalDateRequest) throws APIException, IOException {
-        return makeHttpCall("/inApps/v1/subscriptions/extend/" + originalTransactionId, "PUT", Map.of(), extendRenewalDateRequest, ExtendRenewalDateResponse.class);
+        return makeHttpCall("/inApps/v1/subscriptions/extend/" + originalTransactionId, "PUT", Map.of(), extendRenewalDateRequest, ExtendRenewalDateResponse.class, JSON);
     }
 
     /**
@@ -192,7 +202,7 @@ public abstract class BaseAppStoreServerAPIClient {
         if (status != null) {
             queryParameters.put("status", Arrays.stream(status).map(s -> s.getValue().toString()).collect(Collectors.toList()));
         }
-        return makeHttpCall("/inApps/v1/subscriptions/" + transactionId, "GET", queryParameters, null, StatusResponse.class);
+        return makeHttpCall("/inApps/v1/subscriptions/" + transactionId, "GET", queryParameters, null, StatusResponse.class, null);
     }
 
     /**
@@ -210,7 +220,7 @@ public abstract class BaseAppStoreServerAPIClient {
         if (revision != null) {
             queryParameters.put("revision", List.of(revision));
         }
-        return makeHttpCall("/inApps/v2/refund/lookup/" + transactionId, "GET", queryParameters, null, RefundHistoryResponse.class);
+        return makeHttpCall("/inApps/v2/refund/lookup/" + transactionId, "GET", queryParameters, null, RefundHistoryResponse.class, null);
     }
 
     /**
@@ -224,7 +234,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get_status_of_subscription_renewal_date_extensions">Get Status of Subscription Renewal Date Extensions</a>
      */
     public MassExtendRenewalDateStatusResponse getStatusOfSubscriptionRenewalDateExtensions(String requestIdentifier, String productId) throws APIException, IOException {
-        return makeHttpCall("/inApps/v1/subscriptions/extend/mass/" + productId + "/" + requestIdentifier, "GET", Map.of(), null, MassExtendRenewalDateStatusResponse.class);
+        return makeHttpCall("/inApps/v1/subscriptions/extend/mass/" + productId + "/" + requestIdentifier, "GET", Map.of(), null, MassExtendRenewalDateStatusResponse.class, null);
     }
 
     /**
@@ -237,7 +247,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get_test_notification_status">Get Test Notification Status</a>
      */
     public CheckTestNotificationResponse getTestNotificationStatus(String testNotificationToken) throws APIException, IOException {
-        return makeHttpCall("/inApps/v1/notifications/test/" + testNotificationToken, "GET", Map.of(), null, CheckTestNotificationResponse.class);
+        return makeHttpCall("/inApps/v1/notifications/test/" + testNotificationToken, "GET", Map.of(), null, CheckTestNotificationResponse.class, null);
     }
 
     /**
@@ -255,7 +265,7 @@ public abstract class BaseAppStoreServerAPIClient {
         if (paginationToken != null) {
             queryParameters.put("paginationToken", List.of(paginationToken));
         }
-        return makeHttpCall("/inApps/v1/notifications/history", "POST", queryParameters, notificationHistoryRequest, NotificationHistoryResponse.class);
+        return makeHttpCall("/inApps/v1/notifications/history", "POST", queryParameters, notificationHistoryRequest, NotificationHistoryResponse.class, JSON);
     }
 
     /**
@@ -306,7 +316,7 @@ public abstract class BaseAppStoreServerAPIClient {
         if (transactionHistoryRequest.getRevoked() != null) {
             queryParameters.put("revoked", List.of(transactionHistoryRequest.getRevoked().toString()));
         }
-        return makeHttpCall("/inApps/" + version.getUrlVersion() + "/history/" + transactionId, "GET", queryParameters, null, HistoryResponse.class);
+        return makeHttpCall("/inApps/" + version.getUrlVersion() + "/history/" + transactionId, "GET", queryParameters, null, HistoryResponse.class, null);
     }
 
     /**
@@ -319,7 +329,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get_transaction_info">Get Transaction Info</a>
      */
     public TransactionInfoResponse getTransactionInfo(String transactionId) throws APIException, IOException {
-        return makeHttpCall("/inApps/v1/transactions/" + transactionId, "GET", Map.of(), null, TransactionInfoResponse.class);
+        return makeHttpCall("/inApps/v1/transactions/" + transactionId, "GET", Map.of(), null, TransactionInfoResponse.class, null);
     }
 
     /**
@@ -332,7 +342,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/look_up_order_id">Look Up Order ID</a>
      */
     public OrderLookupResponse lookUpOrderId(String orderId) throws APIException, IOException {
-        return makeHttpCall("/inApps/v1/lookup/" + orderId, "GET", Map.of(), null, OrderLookupResponse.class);
+        return makeHttpCall("/inApps/v1/lookup/" + orderId, "GET", Map.of(), null, OrderLookupResponse.class, null);
     }
 
     /**
@@ -344,7 +354,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/request_a_test_notification">Request a Test Notification</a>
      */
     public SendTestNotificationResponse requestTestNotification() throws APIException, IOException {
-        return makeHttpCall("/inApps/v1/notifications/test", "POST", Map.of(), null, SendTestNotificationResponse.class);
+        return makeHttpCall("/inApps/v1/notifications/test", "POST", Map.of(), null, SendTestNotificationResponse.class, null);
     }
 
     /**
@@ -357,7 +367,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/send_consumption_information">Send Consumption Information</a>
      */
     public void sendConsumptionData(String transactionId, ConsumptionRequest consumptionRequest) throws APIException, IOException {
-        makeHttpCall("/inApps/v1/transactions/consumption/" + transactionId, "PUT", Map.of(), consumptionRequest, Void.class);
+        makeHttpCall("/inApps/v1/transactions/consumption/" + transactionId, "PUT", Map.of(), consumptionRequest, Void.class, JSON);
     }
 
 
@@ -371,7 +381,108 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/set-app-account-token">Set App Account Token</a>
      */
     public void setAppAccountToken(String originalTransactionId, UpdateAppAccountTokenRequest updateAppAccountTokenRequest) throws APIException, IOException {
-        makeHttpCall("/inApps/v1/transactions/" + originalTransactionId + "/appAccountToken", "PUT", Map.of(), updateAppAccountTokenRequest, Void.class);
+        makeHttpCall("/inApps/v1/transactions/" + originalTransactionId + "/appAccountToken", "PUT", Map.of(), updateAppAccountTokenRequest, Void.class, JSON);
+    }
+
+    /**
+     * Upload an image to use for retention messaging.
+     *
+     * @param imageIdentifier A UUID you provide to uniquely identify the image you upload.
+     * @param image The image file to upload.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/upload-image">Upload Image</a>
+     */
+    public void uploadImage(UUID imageIdentifier, byte[] image) throws APIException, IOException {
+        makeHttpCall("/inApps/v1/messaging/image/" + imageIdentifier, "PUT", Map.of(), image, Void.class, PNG);
+    }
+
+    /**
+     * Delete a previously uploaded image.
+     *
+     * @param imageIdentifier The identifier of the image to delete.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/delete-image">Delete Image</a>
+     */
+    public void deleteImage(UUID imageIdentifier) throws APIException, IOException {
+        makeHttpCall("/inApps/v1/messaging/image/" + imageIdentifier, "DELETE", Map.of(), null, Void.class, null);
+    }
+
+    /**
+     * Get the image identifier and state for all uploaded images.
+     *
+     * @return A response that contains status information for all images.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/get-image-list">Get Image List</a>
+     */
+    public GetImageListResponse getImageList() throws APIException, IOException {
+        return makeHttpCall("/inApps/v1/messaging/image/list", "GET", Map.of(), null, GetImageListResponse.class, null);
+    }
+
+    /**
+     * Upload a message to use for retention messaging.
+     *
+     * @param messageIdentifier A UUID you provide to uniquely identify the message you upload.
+     * @param uploadMessageRequestBody The message text to upload.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/upload-message">Upload Message</a>
+     */
+    public void uploadMessage(UUID messageIdentifier, UploadMessageRequestBody uploadMessageRequestBody) throws APIException, IOException {
+        makeHttpCall("/inApps/v1/messaging/message/" + messageIdentifier, "PUT", Map.of(), uploadMessageRequestBody, Void.class, JSON);
+    }
+
+    /**
+     * Delete a previously uploaded message.
+     *
+     * @param messageIdentifier The identifier of the message to delete.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/delete-message">Delete Message</a>
+     */
+    public void deleteMessage(UUID messageIdentifier) throws APIException, IOException {
+        makeHttpCall("/inApps/v1/messaging/message/" + messageIdentifier, "DELETE", Map.of(), null, Void.class, null);
+    }
+
+    /**
+     * Get the message identifier and state of all uploaded messages.
+     *
+     * @return A response that contains status information for all messages.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/get-message-list">Get Message List</a>
+     */
+    public GetMessageListResponse getMessageList() throws APIException, IOException {
+        return makeHttpCall("/inApps/v1/messaging/message/list", "GET", Map.of(), null, GetMessageListResponse.class, null);
+    }
+
+    /**
+     * Configure a default message for a specific product in a specific locale.
+     *
+     * @param productId The product identifier for the default configuration.
+     * @param locale The locale for the default configuration.
+     * @param defaultConfigurationRequest The request body that includes the message identifier to configure as the default message.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/configure-default-message">Configure Default Message</a>
+     */
+    public void configureDefaultMessage(String productId, String locale, DefaultConfigurationRequest defaultConfigurationRequest) throws APIException, IOException {
+        makeHttpCall("/inApps/v1/messaging/default/" + productId + "/" + locale, "PUT", Map.of(), defaultConfigurationRequest, Void.class, JSON);
+    }
+
+    /**
+     * Delete a default message for a product in a locale.
+     *
+     * @param productId The product ID of the default message configuration.
+     * @param locale The locale of the default message configuration.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/delete-default-message">Delete Default Message</a>
+     */
+    public void deleteDefaultMessage(String productId, String locale) throws APIException, IOException {
+        makeHttpCall("/inApps/v1/messaging/default/" + productId + "/" + locale, "DELETE", Map.of(), null, Void.class, null);
     }
 
     protected interface HttpResponseInterface extends Closeable {

@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -12,6 +13,7 @@ import java.util.UUID;
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/updateappaccounttokenrequest">UpdateAppAccountTokenRequest</a>
  **/
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UpdateAppAccountTokenRequest {
     private static final String SERIALIZED_NAME_APP_ACCOUNT_TOKEN = "appAccountToken";
     @JsonProperty(value = SERIALIZED_NAME_APP_ACCOUNT_TOKEN, required = true)

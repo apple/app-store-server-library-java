@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.Objects;
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/massextendrenewaldaterequest">MassExtendRenewalDateRequest</a>
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MassExtendRenewalDateRequest {
     private static final String SERIALIZED_NAME_EXTEND_BY_DAYS = "extendByDays";
     private static final String SERIALIZED_NAME_EXTEND_REASON_CODE = "extendReasonCode";

@@ -301,6 +301,41 @@ public enum APIError {
     APP_TRANSACTION_ID_NOT_SUPPORTED_ERROR(4000048L),
 
     /**
+     * An error that indicates the image that's uploading is invalid.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/invalidimageerror">InvalidImageError</a>
+     */
+    INVALID_IMAGE(4000161L),
+
+    /**
+     * An error that indicates the header text is too long.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/headertoolongerror">HeaderTooLongError</a>
+     */
+    HEADER_TOO_LONG(4000162L),
+
+    /**
+     * An error that indicates the body text is too long.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/bodytoolongerror">BodyTooLongError</a>
+     */
+    BODY_TOO_LONG(4000163L),
+
+    /**
+     * An error that indicates the locale is invalid.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/invalidlocaleerror">InvalidLocaleError</a>
+     */
+    INVALID_LOCALE(4000164L),
+
+    /**
+     * An error that indicates the alternative text for an image is too long.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/alttexttoolongerror">AltTextTooLongError</a>
+     */
+    ALT_TEXT_TOO_LONG(4000175L),
+
+    /**
      * An error that indicates the app account token value is not a valid UUID.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/invalidappaccounttokenuuiderror">InvalidAppAccountTokenUUIDError</a>
@@ -343,7 +378,42 @@ public enum APIError {
     FAMILY_SHARED_SUBSCRIPTION_EXTENSION_INELIGIBLE(4030007L),
 
     /**
-     * An error that indicates the App Store account wasn’t found.
+     * An error that indicates when you reach the maximum number of uploaded images.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/maximumnumberofimagesreachederror">MaximumNumberOfImagesReachedError</a>
+     */
+    MAXIMUM_NUMBER_OF_IMAGES_REACHED(4030014L),
+
+    /**
+     * An error that indicates when you reach the maximum number of uploaded messages.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/maximumnumberofmessagesreachederror">MaximumNumberOfMessagesReachedError</a>
+     */
+    MAXIMUM_NUMBER_OF_MESSAGES_REACHED(4030016L),
+
+    /**
+     * An error that indicates the message isn't in the approved state, so you can't configure it as a default message.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/messagenotapprovederror">MessageNotApprovedError</a>
+     */
+    MESSAGE_NOT_APPROVED(4030017L),
+
+    /**
+     * An error that indicates the image isn't in the approved state, so you can't configure it as part of a default message.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/imagenotapprovederror">ImageNotApprovedError</a>
+     */
+    IMAGE_NOT_APPROVED(4030018L),
+
+    /**
+     * An error that indicates the image is currently in use as part of a message, so you can't delete it.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/imageinuseerror">ImageInUseError</a>
+     */
+    IMAGE_IN_USE(4030019L),
+
+    /**
+     * An error that indicates the App Store account wasn't found.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/accountnotfounderror">AccountNotFoundError</a>
      */
@@ -411,6 +481,34 @@ public enum APIError {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/transactionidnotfounderror">TransactionIdNotFoundError</a>
      */
     TRANSACTION_ID_NOT_FOUND(4040010L),
+
+    /**
+     * An error that indicates the system can't find the image identifier.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/imagenotfounderror">ImageNotFoundError</a>
+     */
+    IMAGE_NOT_FOUND(4040014L),
+
+    /**
+     * An error that indicates the system can't find the message identifier.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/messagenotfounderror">MessageNotFoundError</a>
+     */
+    MESSAGE_NOT_FOUND(4040015L),
+
+    /**
+     * An error that indicates the image identifier already exists.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/imagealreadyexistserror">ImageAlreadyExistsError</a>
+     */
+    IMAGE_ALREADY_EXISTS(4090000L),
+
+    /**
+     * An error that indicates the message identifier already exists.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/messagealreadyexistserror">MessageAlreadyExistsError</a>
+     */
+    MESSAGE_ALREADY_EXISTS(4090001L),
 
     /**
      * An error that indicates that the request exceeded the rate limit.

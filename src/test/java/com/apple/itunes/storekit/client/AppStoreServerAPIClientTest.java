@@ -6,12 +6,16 @@ import com.apple.itunes.storekit.model.AccountTenure;
 import com.apple.itunes.storekit.model.CheckTestNotificationResponse;
 import com.apple.itunes.storekit.model.ConsumptionRequest;
 import com.apple.itunes.storekit.model.ConsumptionStatus;
+import com.apple.itunes.storekit.model.DefaultConfigurationRequest;
 import com.apple.itunes.storekit.model.DeliveryStatus;
 import com.apple.itunes.storekit.model.Environment;
 import com.apple.itunes.storekit.model.ExtendReasonCode;
 import com.apple.itunes.storekit.model.ExtendRenewalDateRequest;
 import com.apple.itunes.storekit.model.ExtendRenewalDateResponse;
+import com.apple.itunes.storekit.model.GetImageListResponse;
+import com.apple.itunes.storekit.model.GetMessageListResponse;
 import com.apple.itunes.storekit.model.HistoryResponse;
+import com.apple.itunes.storekit.model.ImageState;
 import com.apple.itunes.storekit.model.InAppOwnershipType;
 import com.apple.itunes.storekit.model.LastTransactionsItem;
 import com.apple.itunes.storekit.model.LifetimeDollarsPurchased;
@@ -19,6 +23,7 @@ import com.apple.itunes.storekit.model.LifetimeDollarsRefunded;
 import com.apple.itunes.storekit.model.MassExtendRenewalDateRequest;
 import com.apple.itunes.storekit.model.MassExtendRenewalDateResponse;
 import com.apple.itunes.storekit.model.MassExtendRenewalDateStatusResponse;
+import com.apple.itunes.storekit.model.MessageState;
 import com.apple.itunes.storekit.model.NotificationHistoryRequest;
 import com.apple.itunes.storekit.model.NotificationHistoryResponse;
 import com.apple.itunes.storekit.model.NotificationHistoryResponseItem;
@@ -39,6 +44,8 @@ import com.apple.itunes.storekit.model.Subtype;
 import com.apple.itunes.storekit.model.TransactionHistoryRequest;
 import com.apple.itunes.storekit.model.TransactionInfoResponse;
 import com.apple.itunes.storekit.model.UpdateAppAccountTokenRequest;
+import com.apple.itunes.storekit.model.UploadMessageImage;
+import com.apple.itunes.storekit.model.UploadMessageRequestBody;
 import com.apple.itunes.storekit.model.UserStatus;
 import com.apple.itunes.storekit.util.TestingUtility;
 import com.auth0.jwt.JWT;
@@ -538,6 +545,171 @@ public class AppStoreServerAPIClientTest {
                 .refundPreference(RefundPreference.NO_PREFERENCE);
 
         client.sendConsumptionData("49571273", consumptionRequest);
+    }
+
+    @Test
+    public void testUploadImage() throws IOException, APIException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {
+            Assertions.assertEquals("PUT", request.method());
+            Assertions.assertEquals("/inApps/v1/messaging/image/a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890", request.url().encodedPath());
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertEquals(MediaType.parse("image/png"), body.contentType());
+            Buffer buffer = new Buffer();
+            try {
+                body.writeTo(buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            byte[] bytes = buffer.readByteArray();
+            Assertions.assertArrayEquals(new byte[]{1, 2, 3}, bytes);
+        });
+
+        client.uploadImage(UUID.fromString("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890"), new byte[]{1, 2, 3});
+    }
+
+    @Test
+    public void testDeleteImage() throws IOException, APIException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {
+            Assertions.assertEquals("DELETE", request.method());
+            Assertions.assertEquals("/inApps/v1/messaging/image/a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890", request.url().encodedPath());
+        });
+
+        client.deleteImage(UUID.fromString("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890"));
+    }
+
+    @Test
+    public void testGetImageList() throws IOException, APIException {
+        AppStoreServerAPIClient client = getClientWithBody("models/getImageListResponse.json", request -> {
+            Assertions.assertEquals("GET", request.method());
+            Assertions.assertEquals("/inApps/v1/messaging/image/list", request.url().encodedPath());
+        });
+
+        GetImageListResponse response = client.getImageList();
+        Assertions.assertEquals(1, response.getImageIdentifiers().size());
+        Assertions.assertEquals(UUID.fromString("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890"), response.getImageIdentifiers().get(0).getImageIdentifier());
+        Assertions.assertEquals(ImageState.APPROVED, response.getImageIdentifiers().get(0).getImageState());
+    }
+
+    @Test
+    public void testUploadMessage() throws IOException, APIException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {
+            Assertions.assertEquals("PUT", request.method());
+            Assertions.assertEquals("/inApps/v1/messaging/message/a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890", request.url().encodedPath());
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertEquals(expectedMediaType, body.contentType());
+            Buffer buffer = new Buffer();
+            try {
+                body.writeTo(buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Map<String, Object> root;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            Assertions.assertEquals("Header text", root.get("header"));
+            Assertions.assertEquals("Body text", root.get("body"));
+        });
+
+        UploadMessageRequestBody uploadMessageRequestBody = new UploadMessageRequestBody("Header text", "Body text", null);
+        client.uploadMessage(UUID.fromString("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890"), uploadMessageRequestBody);
+    }
+
+    @Test
+    public void testUploadMessageWithImage() throws IOException, APIException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {
+            Assertions.assertEquals("PUT", request.method());
+            Assertions.assertEquals("/inApps/v1/messaging/message/a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890", request.url().encodedPath());
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertEquals(expectedMediaType, body.contentType());
+            Buffer buffer = new Buffer();
+            try {
+                body.writeTo(buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Map<String, Object> root;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            Assertions.assertEquals("Header text", root.get("header"));
+            Assertions.assertEquals("Body text", root.get("body"));
+            Map<String, Object> image = (Map<String, Object>) root.get("image");
+            Assertions.assertEquals("b2c3d4e5-f6a7-8901-b2c3-d4e5f6a78901", image.get("imageIdentifier"));
+            Assertions.assertEquals("Alt text", image.get("altText"));
+        });
+
+        UploadMessageImage image = new UploadMessageImage(UUID.fromString("b2c3d4e5-f6a7-8901-b2c3-d4e5f6a78901"), "Alt text");
+        UploadMessageRequestBody uploadMessageRequestBody = new UploadMessageRequestBody("Header text", "Body text", image);
+        client.uploadMessage(UUID.fromString("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890"), uploadMessageRequestBody);
+    }
+
+    @Test
+    public void testDeleteMessage() throws IOException, APIException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {
+            Assertions.assertEquals("DELETE", request.method());
+            Assertions.assertEquals("/inApps/v1/messaging/message/a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890", request.url().encodedPath());
+        });
+
+        client.deleteMessage(UUID.fromString("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890"));
+    }
+
+    @Test
+    public void testGetMessageList() throws IOException, APIException {
+        AppStoreServerAPIClient client = getClientWithBody("models/getMessageListResponse.json", request -> {
+            Assertions.assertEquals("GET", request.method());
+            Assertions.assertEquals("/inApps/v1/messaging/message/list", request.url().encodedPath());
+        });
+
+        GetMessageListResponse response = client.getMessageList();
+        Assertions.assertEquals(1, response.getMessageIdentifiers().size());
+        Assertions.assertEquals(UUID.fromString("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890"), response.getMessageIdentifiers().get(0).getMessageIdentifier());
+        Assertions.assertEquals(MessageState.APPROVED, response.getMessageIdentifiers().get(0).getMessageState());
+    }
+
+    @Test
+    public void testConfigureDefaultMessage() throws IOException, APIException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {
+            Assertions.assertEquals("PUT", request.method());
+            Assertions.assertEquals("/inApps/v1/messaging/default/com.example.product/en-US", request.url().encodedPath());
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertEquals(expectedMediaType, body.contentType());
+            Buffer buffer = new Buffer();
+            try {
+                body.writeTo(buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Map<String, Object> root;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            Assertions.assertEquals("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890", root.get("messageIdentifier"));
+        });
+
+        DefaultConfigurationRequest defaultConfigurationRequest = new DefaultConfigurationRequest()
+                .messageIdentifier(UUID.fromString("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890"));
+        client.configureDefaultMessage("com.example.product", "en-US", defaultConfigurationRequest);
+    }
+
+    @Test
+    public void testDeleteDefaultMessage() throws IOException, APIException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {
+            Assertions.assertEquals("DELETE", request.method());
+            Assertions.assertEquals("/inApps/v1/messaging/default/com.example.product/en-US", request.url().encodedPath());
+        });
+
+        client.deleteDefaultMessage("com.example.product", "en-US");
     }
 
     @Test
