@@ -497,6 +497,13 @@ public enum APIError {
     MESSAGE_NOT_FOUND(4040015L),
 
     /**
+     * An error response that indicates an app transaction doesn’t exist for the specified customer.
+     *
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/apptransactiondoesnotexisterror">AppTransactionDoesNotExistError</a>
+     */
+    APP_TRANSACTION_DOES_NOT_EXIST_ERROR(4040019L),
+
+    /**
      * An error that indicates the image identifier already exists.
      *
      * @see <a href="https://developer.apple.com/documentation/retentionmessaging/imagealreadyexistserror">ImageAlreadyExistsError</a>
