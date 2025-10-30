@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.client;
 
+import com.apple.itunes.storekit.model.AppTransactionInfoResponse;
 import com.apple.itunes.storekit.model.CheckTestNotificationResponse;
 import com.apple.itunes.storekit.model.ConsumptionRequest;
 import com.apple.itunes.storekit.model.DefaultConfigurationRequest;
@@ -484,6 +485,19 @@ public abstract class BaseAppStoreServerAPIClient {
     public void deleteDefaultMessage(String productId, String locale) throws APIException, IOException {
         makeHttpCall("/inApps/v1/messaging/default/" + productId + "/" + locale, "DELETE", Map.of(), null, Void.class, null);
     }
+
+    /**
+      * Get a customer’s app transaction information for your app.
+      *
+      * @param transactionId Any originalTransactionId, transactionId or appTransactionId that belongs to the customer for your app.
+      * @return A response that contains signed app transaction information for a customer.
+      * @throws APIException If a response was returned indicating the request could not be processed.
+      * @throws IOException  If an exception was thrown while making the request.
+      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get-app-transaction-info">Get App Transaction Info</a>
+      */
+     public AppTransactionInfoResponse getAppTransactionInfo(String transactionId) throws APIException, IOException {
+         return makeHttpCall("/inApps/v1/transactions/appTransactions/" + transactionId, "GET", Map.of(), null, AppTransactionInfoResponse.class, null);
+     }
 
     protected interface HttpResponseInterface extends Closeable {
         /**

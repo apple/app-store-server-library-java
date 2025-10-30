@@ -3,6 +3,7 @@
 package com.apple.itunes.storekit.client;
 
 import com.apple.itunes.storekit.model.AccountTenure;
+import com.apple.itunes.storekit.model.AppTransactionInfoResponse;
 import com.apple.itunes.storekit.model.CheckTestNotificationResponse;
 import com.apple.itunes.storekit.model.ConsumptionRequest;
 import com.apple.itunes.storekit.model.ConsumptionStatus;
@@ -912,6 +913,68 @@ public class AppStoreServerAPIClientTest {
         }
         Assertions.fail();
     }
+
+    @Test
+     public void testGetAppTransactionInfo() throws APIException, IOException {
+         AppStoreServerAPIClient client = getClientWithBody("models/appTransactionInfoResponse.json", request -> {
+             Assertions.assertEquals("GET", request.method());
+             Assertions.assertEquals("/inApps/v1/transactions/appTransactions/1234", request.url().encodedPath());
+             Assertions.assertNull(request.body());
+         });
+
+         AppTransactionInfoResponse appTransactionInfoResponse = client.getAppTransactionInfo("1234");
+
+         Assertions.assertNotNull(appTransactionInfoResponse);
+         Assertions.assertEquals("signed_app_transaction_info_value", appTransactionInfoResponse.getSignedAppTransactionInfo());
+     }
+
+     @Test
+     public void testGetAppTransactionInfoInvalidTransactionIdError() throws IOException {
+         String body = TestingUtility.readFile("models/invalidTransactionIdError.json");
+         AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 400);
+         try {
+             client.getAppTransactionInfo("invalid_transaction_id");
+         } catch (APIException e) {
+             Assertions.assertEquals(400, e.getHttpStatusCode());
+             Assertions.assertEquals(APIError.INVALID_TRANSACTION_ID, e.getApiError());
+             Assertions.assertEquals(4000006L, e.getRawApiError());
+             Assertions.assertEquals("Invalid transaction id.", e.getApiErrorMessage());
+             return;
+         }
+         Assertions.fail();
+     }
+
+     @Test
+     public void testGetAppTransactionInfoAppTransactionDoesNotExistError() throws IOException {
+         String body = TestingUtility.readFile("models/appTransactionDoesNotExistError.json");
+         AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 404);
+         try {
+             client.getAppTransactionInfo("nonexistent_transaction_id");
+         } catch (APIException e) {
+             Assertions.assertEquals(404, e.getHttpStatusCode());
+             Assertions.assertEquals(APIError.APP_TRANSACTION_DOES_NOT_EXIST_ERROR, e.getApiError());
+             Assertions.assertEquals(4040019L, e.getRawApiError());
+             Assertions.assertEquals("No AppTransaction exists for the customer.", e.getApiErrorMessage());
+             return;
+         }
+         Assertions.fail();
+     }
+
+     @Test
+     public void testGetAppTransactionInfoTransactionIdNotFoundError() throws IOException {
+         String body = TestingUtility.readFile("models/transactionIdNotFoundError.json");
+         AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 404);
+         try {
+             client.getAppTransactionInfo("not_found_transaction_id");
+         } catch (APIException e) {
+             Assertions.assertEquals(404, e.getHttpStatusCode());
+             Assertions.assertEquals(APIError.TRANSACTION_ID_NOT_FOUND, e.getApiError());
+             Assertions.assertEquals(4040010L, e.getRawApiError());
+             Assertions.assertEquals("Transaction id not found.", e.getApiErrorMessage());
+             return;
+         }
+         Assertions.fail();
+     }
 
     public AppStoreServerAPIClient getClientWithBody(String path, Consumer<Request> requestVerifier) throws IOException {
         String body = TestingUtility.readFile(path);
