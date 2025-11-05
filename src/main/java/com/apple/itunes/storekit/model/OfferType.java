@@ -5,7 +5,7 @@ package com.apple.itunes.storekit.model;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * The type of subscription offer.
+ * The type of offer.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/offertype">offerType</a>
  */
@@ -13,7 +13,7 @@ public enum OfferType {
 
     INTRODUCTORY_OFFER(1),
     PROMOTIONAL_OFFER(2),
-    SUBSCRIPTION_OFFER_CODE(3),
+    OFFER_CODE(3),
     WIN_BACK_OFFER(4);
 
     private final Integer value;
