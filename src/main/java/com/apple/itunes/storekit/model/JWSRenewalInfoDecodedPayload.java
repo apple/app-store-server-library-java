@@ -283,7 +283,7 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
     }
 
     /**
-     * The type of the subscription offer.
+     * The type of subscription offer.
      *
      * @return offerType
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/offertype">offerType</a>
@@ -313,7 +313,7 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
     }
 
     /**
-     * The identifier that contains the promo code or the promotional offer identifier.
+     * The offer code or the promotional offer identifier.
      *
      * @return offerIdentifier
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/offeridentifier">offerIdentifier</a>
@@ -457,7 +457,7 @@ public class JWSRenewalInfoDecodedPayload implements DecodedSignedData {
     }
 
     /**
-     * The payment mode of the discount offer.
+     * The payment mode you configure for the offer.
      *
      * @return offerDiscountType
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/offerdiscounttype">offerDiscountType</a>
