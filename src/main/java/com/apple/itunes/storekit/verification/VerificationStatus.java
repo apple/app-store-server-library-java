@@ -5,6 +5,7 @@ package com.apple.itunes.storekit.verification;
 public enum VerificationStatus {
     OK,
     VERIFICATION_FAILURE,
+    RETRYABLE_VERIFICATION_FAILURE,
     INVALID_APP_IDENTIFIER,
     INVALID_ENVIRONMENT,
     INVALID_CERTIFICATE,

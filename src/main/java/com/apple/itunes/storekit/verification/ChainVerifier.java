@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.security.PublicKey;
 import java.security.cert.CertPath;
 import java.security.cert.CertPathValidator;
+import java.security.cert.CertPathValidatorException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.PKIXCertPathValidatorResult;
@@ -113,6 +114,10 @@ public class ChainVerifier {
             PKIXCertPathValidatorResult certPathValidatorResult = (PKIXCertPathValidatorResult) certPathValidator.validate(certPath, parameters);
             return certPathValidatorResult.getPublicKey();
         } catch (Exception e) {
+            // This indicates an OCSP network failure
+            if (e instanceof CertPathValidatorException && ((CertPathValidatorException) e).getReason() == CertPathValidatorException.BasicReason.UNDETERMINED_REVOCATION_STATUS) {
+                throw new VerificationException(VerificationStatus.RETRYABLE_VERIFICATION_FAILURE);
+            }
             throw new VerificationException(VerificationStatus.INVALID_CHAIN, e);
         }
     }
