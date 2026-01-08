@@ -120,6 +120,10 @@ public class SignedDataVerifier {
             } else {
                 notificationEnv = Environment.PRODUCTION;
             }
+        } else if (notification.getAppData() != null) {
+            bundleId = notification.getAppData().getBundleId();
+            appAppleId = notification.getAppData().getAppAppleId();
+            notificationEnv = notification.getAppData().getEnvironment();
         } else {
             bundleId = null;
             appAppleId = null;

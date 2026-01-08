@@ -1,30 +1,29 @@
-// Copyright (c) 2023 Apple Inc. Licensed under MIT License.
+// Copyright (c) 2025 Apple Inc. Licensed under MIT License.
 
 package com.apple.itunes.storekit.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * A value that indicates whether the app successfully delivered an in-app purchase that works properly.
+ * A value that indicates whether the app successfully delivered an In-App Purchase that works properly.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/deliverystatus">deliveryStatus</a>
  */
 public enum DeliveryStatus {
 
-    DELIVERED_AND_WORKING_PROPERLY(0),
-    DID_NOT_DELIVER_DUE_TO_QUALITY_ISSUE(1),
-    DELIVERED_WRONG_ITEM(2),
-    DID_NOT_DELIVER_DUE_TO_SERVER_OUTAGE(3),
-    DID_NOT_DELIVER_DUE_TO_IN_GAME_CURRENCY_CHANGE(4),
-    DID_NOT_DELIVER_FOR_OTHER_REASON(5);
+    DELIVERED("DELIVERED"),
+    UNDELIVERED_QUALITY_ISSUE("UNDELIVERED_QUALITY_ISSUE"),
+    UNDELIVERED_WRONG_ITEM("UNDELIVERED_WRONG_ITEM"),
+    UNDELIVERED_SERVER_OUTAGE("UNDELIVERED_SERVER_OUTAGE"),
+    UNDELIVERED_OTHER("UNDELIVERED_OTHER");
 
-    private final Integer value;
+    private final String value;
 
-    DeliveryStatus(Integer value) {
+    DeliveryStatus(String value) {
         this.value = value;
     }
 
-    public static DeliveryStatus fromValue(Integer value) {
+    public static DeliveryStatus fromValue(String value) {
         for (DeliveryStatus b : DeliveryStatus.values()) {
             if (b.value.equals(value)) {
                 return b;
@@ -34,7 +33,7 @@ public enum DeliveryStatus {
     }
 
     @JsonValue
-    public Integer getValue() {
+    public String getValue() {
         return value;
     }
 
@@ -43,4 +42,3 @@ public enum DeliveryStatus {
         return String.valueOf(value);
     }
 }
-

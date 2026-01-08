@@ -6,9 +6,11 @@ import com.apple.itunes.storekit.model.AccountTenure;
 import com.apple.itunes.storekit.model.AppTransactionInfoResponse;
 import com.apple.itunes.storekit.model.CheckTestNotificationResponse;
 import com.apple.itunes.storekit.model.ConsumptionRequest;
+import com.apple.itunes.storekit.model.ConsumptionRequestV1;
 import com.apple.itunes.storekit.model.ConsumptionStatus;
 import com.apple.itunes.storekit.model.DefaultConfigurationRequest;
 import com.apple.itunes.storekit.model.DeliveryStatus;
+import com.apple.itunes.storekit.model.DeliveryStatusV1;
 import com.apple.itunes.storekit.model.Environment;
 import com.apple.itunes.storekit.model.ExtendReasonCode;
 import com.apple.itunes.storekit.model.ExtendRenewalDateRequest;
@@ -35,6 +37,7 @@ import com.apple.itunes.storekit.model.Platform;
 import com.apple.itunes.storekit.model.PlayTime;
 import com.apple.itunes.storekit.model.RefundHistoryResponse;
 import com.apple.itunes.storekit.model.RefundPreference;
+import com.apple.itunes.storekit.model.RefundPreferenceV1;
 import com.apple.itunes.storekit.model.SendAttemptItem;
 import com.apple.itunes.storekit.model.SendAttemptResult;
 import com.apple.itunes.storekit.model.SendTestNotificationResponse;
@@ -481,19 +484,19 @@ public class AppStoreServerAPIClientTest {
             Assertions.assertEquals(3, ((Number) root.get("refundPreference")).intValue());
         });
 
-        ConsumptionRequest consumptionRequest = new ConsumptionRequest()
+        ConsumptionRequestV1 consumptionRequest = new ConsumptionRequestV1()
                 .customerConsented(true)
                 .consumptionStatus(ConsumptionStatus.NOT_CONSUMED)
                 .platform(Platform.NON_APPLE)
                 .sampleContentProvided(false)
-                .deliveryStatus(DeliveryStatus.DID_NOT_DELIVER_DUE_TO_SERVER_OUTAGE)
+                .deliveryStatus(DeliveryStatusV1.DID_NOT_DELIVER_DUE_TO_SERVER_OUTAGE)
                 .appAccountToken(UUID.fromString("7389a31a-fb6d-4569-a2a6-db7d85d84813"))
                 .accountTenure(AccountTenure.THIRTY_DAYS_TO_NINETY_DAYS)
                 .playTime(PlayTime.ONE_DAY_TO_FOUR_DAYS)
                 .lifetimeDollarsRefunded(LifetimeDollarsRefunded.ONE_THOUSAND_DOLLARS_TO_ONE_THOUSAND_NINE_HUNDRED_NINETY_NINE_DOLLARS_AND_NINETY_NINE_CENTS)
                 .lifetimeDollarsPurchased(LifetimeDollarsPurchased.TWO_THOUSAND_DOLLARS_OR_GREATER)
                 .userStatus(UserStatus.LIMITED_ACCESS)
-                .refundPreference(RefundPreference.NO_PREFERENCE);
+                .refundPreference(RefundPreferenceV1.NO_PREFERENCE);
 
         client.sendConsumptionData("49571273", consumptionRequest);
     }
@@ -532,18 +535,18 @@ public class AppStoreServerAPIClientTest {
             Assertions.assertEquals(3, ((Number) root.get("refundPreference")).intValue());
         });
 
-        ConsumptionRequest consumptionRequest = new ConsumptionRequest()
+        ConsumptionRequestV1 consumptionRequest = new ConsumptionRequestV1()
                 .customerConsented(true)
                 .consumptionStatus(ConsumptionStatus.NOT_CONSUMED)
                 .platform(Platform.NON_APPLE)
                 .sampleContentProvided(false)
-                .deliveryStatus(DeliveryStatus.DID_NOT_DELIVER_DUE_TO_SERVER_OUTAGE)
+                .deliveryStatus(DeliveryStatusV1.DID_NOT_DELIVER_DUE_TO_SERVER_OUTAGE)
                 .accountTenure(AccountTenure.THIRTY_DAYS_TO_NINETY_DAYS)
                 .playTime(PlayTime.ONE_DAY_TO_FOUR_DAYS)
                 .lifetimeDollarsRefunded(LifetimeDollarsRefunded.ONE_THOUSAND_DOLLARS_TO_ONE_THOUSAND_NINE_HUNDRED_NINETY_NINE_DOLLARS_AND_NINETY_NINE_CENTS)
                 .lifetimeDollarsPurchased(LifetimeDollarsPurchased.TWO_THOUSAND_DOLLARS_OR_GREATER)
                 .userStatus(UserStatus.LIMITED_ACCESS)
-                .refundPreference(RefundPreference.NO_PREFERENCE);
+                .refundPreference(RefundPreferenceV1.NO_PREFERENCE);
 
         client.sendConsumptionData("49571273", consumptionRequest);
     }
@@ -976,7 +979,74 @@ public class AppStoreServerAPIClientTest {
          Assertions.fail();
      }
 
-    public AppStoreServerAPIClient getClientWithBody(String path, Consumer<Request> requestVerifier) throws IOException {
+    @Test
+    public void testSendConsumptionInformation() throws APIException, IOException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {
+            Assertions.assertEquals("PUT", request.method());
+            Assertions.assertEquals("/inApps/v2/transactions/consumption/49571273", request.url().encodedPath());
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertEquals(expectedMediaType, body.contentType());
+            Buffer buffer = new Buffer();
+            try {
+                body.writeTo(buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Map<String, Object> root;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            Assertions.assertTrue((Boolean) root.get("customerConsented"));
+            Assertions.assertEquals(50000, ((Number) root.get("consumptionPercentage")).intValue());
+            Assertions.assertEquals("DELIVERED", root.get("deliveryStatus"));
+            Assertions.assertEquals("GRANT_FULL", root.get("refundPreference"));
+            Assertions.assertFalse((Boolean) root.get("sampleContentProvided"));
+        });
+
+        ConsumptionRequest consumptionRequest = new ConsumptionRequest(true, DeliveryStatus.DELIVERED, false)
+                .consumptionPercentage(50000)  // 50% in milliunits
+                .refundPreference(RefundPreference.GRANT_FULL);
+
+        client.sendConsumptionInformation("49571273", consumptionRequest);
+    }
+
+    @Test
+    public void testSendConsumptionInformationWithoutOptionalFields() throws APIException, IOException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {
+            Assertions.assertEquals("PUT", request.method());
+            Assertions.assertEquals("/inApps/v2/transactions/consumption/49571273", request.url().encodedPath());
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertEquals(expectedMediaType, body.contentType());
+            Buffer buffer = new Buffer();
+            try {
+                body.writeTo(buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Map<String, Object> root;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            Assertions.assertTrue((Boolean) root.get("customerConsented"));
+            Assertions.assertEquals("UNDELIVERED_QUALITY_ISSUE", root.get("deliveryStatus"));
+            Assertions.assertTrue((Boolean) root.get("sampleContentProvided"));
+            // consumptionPercentage and refundPreference should be null/absent
+            Assertions.assertNull(root.get("consumptionPercentage"));
+            Assertions.assertNull(root.get("refundPreference"));
+        });
+
+        ConsumptionRequest consumptionRequest = new ConsumptionRequest(true, DeliveryStatus.UNDELIVERED_QUALITY_ISSUE, true);
+
+        client.sendConsumptionInformation("49571273", consumptionRequest);
+    }
+
+   public AppStoreServerAPIClient getClientWithBody(String path, Consumer<Request> requestVerifier) throws IOException {
         String body = TestingUtility.readFile(path);
         return getAppStoreServerAPIClient(body, requestVerifier);
     }

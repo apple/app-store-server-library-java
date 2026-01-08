@@ -5,24 +5,24 @@ package com.apple.itunes.storekit.model;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * A value that indicates your preferred outcome for the refund request.
+ * The type of the refund or revocation that applies to the transaction.
  *
- * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/refundpreference">refundPreference</a>
+ * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/revocationtype">revocationType</a>
  */
-public enum RefundPreference {
+public enum RevocationType {
 
-    DECLINE("DECLINE"),
-    GRANT_FULL("GRANT_FULL"),
-    GRANT_PRORATED("GRANT_PRORATED");
+    REFUND_FULL("REFUND_FULL"),
+    REFUND_PRORATED("REFUND_PRORATED"),
+    FAMILY_REVOKE("FAMILY_REVOKE");
 
     private final String value;
 
-    RefundPreference(String value) {
+    RevocationType(String value) {
         this.value = value;
     }
 
-    public static RefundPreference fromValue(String value) {
-        for (RefundPreference b : RefundPreference.values()) {
+    public static RevocationType fromValue(String value) {
+        for (RevocationType b : RevocationType.values()) {
             if (b.value.equals(value)) {
                 return b;
             }

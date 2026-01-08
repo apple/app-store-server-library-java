@@ -22,6 +22,7 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
     private static final String SERIALIZED_NAME_SIGNED_DATE = "signedDate";
     private static final String SERIALIZED_NAME_SUMMARY = "summary";
     private static final String SERIALIZED_NAME_EXTERNAL_PURCHASE_TOKEN = "externalPurchaseToken";
+    private static final String SERIALIZED_NAME_APP_DATA = "appData";
     @JsonProperty(SERIALIZED_NAME_NOTIFICATION_TYPE)
     private String notificationType;
     @JsonProperty(SERIALIZED_NAME_SUBTYPE)
@@ -38,6 +39,8 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
     private Summary summary;
     @JsonProperty(SERIALIZED_NAME_EXTERNAL_PURCHASE_TOKEN)
     private ExternalPurchaseToken externalPurchaseToken;
+    @JsonProperty(SERIALIZED_NAME_APP_DATA)
+    private AppData appData;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
@@ -222,6 +225,25 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
         this.externalPurchaseToken = externalPurchaseToken;
     }
 
+    public ResponseBodyV2DecodedPayload appData(AppData appData) {
+        this.appData = appData;
+        return this;
+    }
+
+    /**
+     * The object that contains the app metadata and signed app transaction information. This field appears when the notificationType is RESCIND_CONSENT.
+     *
+     * @return appData
+     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/appdata">appData</a>
+     **/
+    public AppData getAppData() {
+        return appData;
+    }
+
+    public void setAppData(AppData appData) {
+        this.appData = appData;
+    }
+
     public ResponseBodyV2DecodedPayload unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
         return this;
@@ -257,12 +279,13 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
                 Objects.equals(this.signedDate, responseBodyV2DecodedPayload.signedDate) &&
                 Objects.equals(this.summary, responseBodyV2DecodedPayload.summary) &&
                 Objects.equals(this.externalPurchaseToken, responseBodyV2DecodedPayload.externalPurchaseToken) &&
+                Objects.equals(this.appData, responseBodyV2DecodedPayload.appData) &&
                 Objects.equals(this.unknownFields, responseBodyV2DecodedPayload.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(notificationType, subtype, notificationUUID, data, version, signedDate, summary, externalPurchaseToken, unknownFields);
+        return Objects.hash(notificationType, subtype, notificationUUID, data, version, signedDate, summary, externalPurchaseToken, appData, unknownFields);
     }
 
     @Override
@@ -276,6 +299,7 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
                 ", signedDate=" + signedDate +
                 ", summary=" + summary +
                 ", externalPurchaseToken=" + externalPurchaseToken +
+                ", appData=" + appData +
                 ", unknownFields=" + unknownFields +
                 '}';
     }

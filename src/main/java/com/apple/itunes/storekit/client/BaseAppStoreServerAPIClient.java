@@ -5,6 +5,7 @@ package com.apple.itunes.storekit.client;
 import com.apple.itunes.storekit.model.AppTransactionInfoResponse;
 import com.apple.itunes.storekit.model.CheckTestNotificationResponse;
 import com.apple.itunes.storekit.model.ConsumptionRequest;
+import com.apple.itunes.storekit.model.ConsumptionRequestV1;
 import com.apple.itunes.storekit.model.DefaultConfigurationRequest;
 import com.apple.itunes.storekit.model.Environment;
 import com.apple.itunes.storekit.model.ErrorPayload;
@@ -365,10 +366,25 @@ public abstract class BaseAppStoreServerAPIClient {
      * @param consumptionRequest    The request body containing consumption information.
      * @throws APIException If a response was returned indicating the request could not be processed
      * @throws IOException  If an exception was thrown while making the request
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/send_consumption_information">Send Consumption Information</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/send-consumption-information-v1">Send Consumption Information V1</a>
+     * @deprecated Use {@link #sendConsumptionInformation(String, ConsumptionRequest)} instead
      */
-    public void sendConsumptionData(String transactionId, ConsumptionRequest consumptionRequest) throws APIException, IOException {
+    @Deprecated
+    public void sendConsumptionData(String transactionId, ConsumptionRequestV1 consumptionRequest) throws APIException, IOException {
         makeHttpCall("/inApps/v1/transactions/consumption/" + transactionId, "PUT", Map.of(), consumptionRequest, Void.class, JSON);
+    }
+
+    /**
+     * Send consumption information about an In-App Purchase to the App Store after your server receives a consumption request notification.
+     *
+     * @param transactionId The transaction identifier for which you’re providing consumption information. You receive this identifier in the CONSUMPTION_REQUEST notification the App Store sends to your server’s App Store Server Notifications V2 endpoint.
+     * @param consumptionRequest    The request body containing consumption information.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/send-consumption-information">Send Consumption Information</a>
+     */
+    public void sendConsumptionInformation(String transactionId, ConsumptionRequest consumptionRequest) throws APIException, IOException {
+        makeHttpCall("/inApps/v2/transactions/consumption/" + transactionId, "PUT", Map.of(), consumptionRequest, Void.class, JSON);
     }
 
 

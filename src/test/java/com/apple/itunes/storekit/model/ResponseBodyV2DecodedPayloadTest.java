@@ -163,4 +163,28 @@ public class ResponseBodyV2DecodedPayloadTest {
         Assertions.assertEquals(55555L, notification.getExternalPurchaseToken().getAppAppleId());
         Assertions.assertEquals("com.example", notification.getExternalPurchaseToken().getBundleId());
     }
+
+    @Test
+    public void testRescindConsentNotificationDecoding() throws IOException, NoSuchAlgorithmException, VerificationException {
+        String signedNotification = SignedDataCreator.createSignedDataFromJson("models/signedRescindConsentNotification.json");
+
+        ResponseBodyV2DecodedPayload notification = TestingUtility.getSignedPayloadVerifier().verifyAndDecodeNotification(signedNotification);
+
+        Assertions.assertEquals(NotificationTypeV2.RESCIND_CONSENT, notification.getNotificationType());
+        Assertions.assertEquals("RESCIND_CONSENT", notification.getRawNotificationType());
+        Assertions.assertNull(notification.getSubtype());
+        Assertions.assertNull(notification.getRawSubtype());
+        Assertions.assertEquals("002e14d5-51f5-4503-b5a8-c3a1af68eb20", notification.getNotificationUUID());
+        Assertions.assertEquals("2.0", notification.getVersion());
+        Assertions.assertEquals(1698148900000L, notification.getSignedDate());
+        Assertions.assertNull(notification.getData());
+        Assertions.assertNull(notification.getSummary());
+        Assertions.assertNull(notification.getExternalPurchaseToken());
+        Assertions.assertNotNull(notification.getAppData());
+        Assertions.assertEquals(Environment.LOCAL_TESTING, notification.getAppData().getEnvironment());
+        Assertions.assertEquals("LocalTesting", notification.getAppData().getRawEnvironment());
+        Assertions.assertEquals(41234L, notification.getAppData().getAppAppleId());
+        Assertions.assertEquals("com.example", notification.getAppData().getBundleId());
+        Assertions.assertEquals("signed_app_transaction_info_value", notification.getAppData().getSignedAppTransactionInfo());
+    }
 }
