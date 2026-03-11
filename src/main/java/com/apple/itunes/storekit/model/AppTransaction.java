@@ -9,9 +9,10 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- Information that represents the customer’s purchase of the app, cryptographically signed by the App Store.
+ A decoded payload that contains app transaction information.
 
  @see <a href="https://developer.apple.com/documentation/storekit/apptransaction">AppTransaction</a>
+ @see <a href="https://developer.apple.com/documentation/appstoreserverapi/jwsapptransactiondecodedpayload">JWSAppTransactionDecodedPayload</a>
  */
 public class AppTransaction implements DecodedSignedData {
 
@@ -62,9 +63,9 @@ public class AppTransaction implements DecodedSignedData {
     private Map<String, Object> unknownFields;
 
     /**
-     The server environment that signs the app transaction.
+     The date that the App Store signed the JWS app transaction.
 
-     @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/3963901-environment">environment</a>
+     @see <a href="https://developer.apple.com/documentation/appstoreserverapi/environment">environment</a>
      */
     public Environment getReceiptType() {
         return this.receiptType != null ? Environment.fromValue(this.receiptType) : null;
@@ -93,7 +94,7 @@ public class AppTransaction implements DecodedSignedData {
     /**
      The unique identifier the App Store uses to identify the app.
 
-     @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/3954436-appid">appId</a>
+     @see <a href="https://developer.apple.com/documentation/appstoreserverapi/appappleid">appId</a>
      */
     public Long getAppAppleId() {
         return this.appAppleId;
@@ -111,7 +112,7 @@ public class AppTransaction implements DecodedSignedData {
     /**
      The bundle identifier that the app transaction applies to.
 
-     @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/3954439-bundleid">bundleId</a>
+     @see <a href="https://developer.apple.com/documentation/appstoreserverapi/bundleid">bundleId</a>
      */
     public String getBundleId() {
         return this.bundleId;
@@ -129,7 +130,7 @@ public class AppTransaction implements DecodedSignedData {
     /**
      The app version that the app transaction applies to.
 
-     @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/3954437-appversion">appVersion</a>
+     @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/appversion">appVersion</a>
      */
     public String getApplicationVersion() {
         return this.applicationVersion;
@@ -147,7 +148,7 @@ public class AppTransaction implements DecodedSignedData {
     /**
      The version external identifier of the app
 
-     @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/3954438-appversionid">appVersionID</a>
+     @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/appversionid">appVersionID</a>
      */
     public Long getVersionExternalIdentifier() {
         return this.versionExternalIdentifier;
@@ -165,7 +166,7 @@ public class AppTransaction implements DecodedSignedData {
     /**
      The date that the App Store signed the JWS app transaction.
 
-     @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/3954449-signeddate">signedDate</a>
+     @see <a href="https://developer.apple.com/documentation/appstoreserverapi/receiptcreationdate">receiptCreationDate</a>
      */
     public Long getReceiptCreationDate() {
         return this.receiptCreationDate;
@@ -181,9 +182,9 @@ public class AppTransaction implements DecodedSignedData {
     }
 
     /**
-     The date the user originally purchased the app from the App Store.
+     The date the customer originally purchased the app from the App Store.
 
-     @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/3954448-originalpurchasedate">originalPurchaseDate</a>
+     @see <a href="https://developer.apple.com/documentation/appstoreserverapi/originalpurchasedate">originalPurchaseDate</a>
      */
     public Long getOriginalPurchaseDate() {
         return this.originalPurchaseDate;
@@ -201,7 +202,7 @@ public class AppTransaction implements DecodedSignedData {
     /**
      The app version that the user originally purchased from the App Store.
 
-     @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/3954447-originalappversion">originalAppVersion</a>
+     @see <a href="https://developer.apple.com/documentation/appstoreserverapi/originalapplicationversion">originalAppVersion</a>
      */
     public String getOriginalApplicationVersion() {
         return this.originalApplicationVersion;
@@ -219,7 +220,7 @@ public class AppTransaction implements DecodedSignedData {
     /**
      The Base64 device verification value to use to verify whether the app transaction belongs to the device.
 
-     @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/3954441-deviceverification">deviceVerification</a>
+     @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/deviceverification">deviceVerification</a>
      */
     public String getDeviceVerification() {
         return this.deviceVerification;
@@ -237,7 +238,7 @@ public class AppTransaction implements DecodedSignedData {
     /**
      The UUID used to compute the device verification value.
 
-     @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/3954442-deviceverificationnonce">deviceVerificationNonce</a>
+     @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/deviceverificationnonce">deviceVerificationNonce</a>
      */
     public UUID getDeviceVerificationNonce() {
         return deviceVerificationNonce;
@@ -256,7 +257,7 @@ public class AppTransaction implements DecodedSignedData {
     /**
      The date the customer placed an order for the app before it’s available in the App Store.
 
-     @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/4013175-preorderdate">preorderDate</a>
+     @see <a href="https://developer.apple.com/documentation/appstoreserverapi/preorderdate">preorderDate</a>
      */
     public Long getPreorderDate() {
         return preorderDate;
@@ -275,7 +276,7 @@ public class AppTransaction implements DecodedSignedData {
      * The unique identifier of the app download transaction.
      *
      * @return appTransactionId
-     * @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/apptransactionid">appTransactionId</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/apptransactionid">appTransactionId</a>
      **/
     public String getAppTransactionId() {
         return this.appTransactionId;
@@ -299,7 +300,7 @@ public class AppTransaction implements DecodedSignedData {
      * The platform on which the customer originally purchased the app.
      *
      * @return originalPlatform
-     * @see <a href="https://developer.apple.com/documentation/storekit/apptransaction/originalplatform-4mogz">originalPlatform</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/originalplatform">originalPlatform</a>
      **/
     public PurchasePlatform getOriginalPlatform() {
         return originalPlatform != null ? PurchasePlatform.fromValue(originalPlatform) : null;
