@@ -49,7 +49,7 @@ public abstract class BaseAppStoreServerAPIClient {
     private static final String PRODUCTION_URL = "https://api.storekit.itunes.apple.com";
     private static final String SANDBOX_URL = "https://api.storekit-sandbox.itunes.apple.com";
     private static final String LOCAL_TESTING_URL = "https://local-testing-base-url";
-    private static final String USER_AGENT = "app-store-server-library/java/4.0.0";
+    private static final String USER_AGENT = "app-store-server-library/java/5.0.0";
     private static final String JSON = "application/json; charset=utf-8";
     private static final String PNG = "image/png";
 

@@ -15,7 +15,7 @@ The Java server library for the [App Store Server API](https://developer.apple.c
 
 ### Gradle
 ```groovy
-implementation 'com.apple.itunes.storekit:app-store-server-library:4.0.0'
+implementation 'com.apple.itunes.storekit:app-store-server-library:5.0.0'
 
 ```
 
@@ -24,7 +24,7 @@ implementation 'com.apple.itunes.storekit:app-store-server-library:4.0.0'
 <dependency>
     <groupId>com.apple.itunes.storekit</groupId>
     <artifactId>app-store-server-library</artifactId>
-    <version>4.0.0</version>
+    <version>5.0.0</version>
 </dependency>
 ```
 

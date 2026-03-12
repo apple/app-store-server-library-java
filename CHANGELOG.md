@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 5.0.0
+- Incorporate changes for App Store Server API v1.19 [https://github.com/apple/app-store-server-library-java/pull/219] from @riyazpanjwani
+  - This changes ConsumptionRequest and several dependent types to the V2 variant, while the V1 version was created as a new type, to align with documentation, which is a breaking change
+
 ## Version 4.0.0
 - Support Retention Messaging API [https://github.com/apple/app-store-server-library-java/pull/198]
   - This changes internal details of BaseAppStoreServerAPIClient, which is a breaking change for subclassing clients
