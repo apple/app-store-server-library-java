@@ -52,6 +52,45 @@ public class AppStoreServerAPIClient extends BaseAppStoreServerAPIClient {
         this.urlBase = HttpUrl.parse(this.url);
     }
 
+    /**
+     * Create an App Store Server API client with a custom HTTP proxy
+     * @param bearerTokenAuthenticator An implementation of {@link BearerTokenAuthenticatorInterface} that provides tokens
+     * @param environment The environment to target
+     * @param proxy Optional HTTP proxy (can be null for direct connection)
+     */
+    public AppStoreServerAPIClient(BearerTokenAuthenticatorInterface bearerTokenAuthenticator,
+                                   Environment environment,
+                                   java.net.Proxy proxy) {
+        super(bearerTokenAuthenticator, environment);
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        if (proxy != null) {
+            builder.proxy(proxy);
+        }
+        // Use system authenticator for proxy credentials if needed
+        builder.proxyAuthenticator(Authenticator.JAVA_NET_AUTHENTICATOR);
+        this.httpClient = builder.build();
+        this.urlBase = HttpUrl.parse(this.url);
+    }
+    
+    /**
+     * Create an App Store Server API client with proxy and signing credentials
+     * @param signingKey Your private key downloaded from App Store Connect
+     * @param keyId Your private key ID from App Store Connect
+     * @param issuerId Your issuer ID from the Keys page in App Store Connect
+     * @param bundleId Your app’s bundle ID
+     * @param environment The environment to target
+     * @param proxy Optional HTTP proxy (can be null for direct connection)
+     */
+    public AppStoreServerAPIClient(String signingKey,
+                                   String keyId,
+                                   String issuerId,
+                                   String bundleId,
+                                   Environment environment,
+                                   java.net.Proxy proxy) {
+        this(new BearerTokenAuthenticator(signingKey, keyId, issuerId, bundleId), environment, proxy);
+    }
+
+
     @Override
     protected HttpResponseInterface makeRequest(String path,
                                                 String method,
