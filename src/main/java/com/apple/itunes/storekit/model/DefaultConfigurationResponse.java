@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Apple Inc. Licensed under MIT License.
+// Copyright (c) 2026 Apple Inc. Licensed under MIT License.
 
 package com.apple.itunes.storekit.model;
 
@@ -9,34 +9,30 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * The request body that contains the default configuration information.
+ * The response body that contains the default configuration information.
  *
- * @see <a href="https://developer.apple.com/documentation/retentionmessaging/defaultconfigurationrequest">DefaultConfigurationRequest</a>
+ * @see <a href="https://developer.apple.com/documentation/retentionmessaging/defaultconfigurationresponse">DefaultConfigurationResponse</a>
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DefaultConfigurationRequest {
+public class DefaultConfigurationResponse {
     private static final String SERIALIZED_NAME_MESSAGE_IDENTIFIER = "messageIdentifier";
-    @JsonProperty(SERIALIZED_NAME_MESSAGE_IDENTIFIER)
+    @JsonProperty(value = SERIALIZED_NAME_MESSAGE_IDENTIFIER, required = true)
     private UUID messageIdentifier;
 
-    /**
-     * @deprecated Use {@link #DefaultConfigurationRequest(UUID)} instead.
-     */
-    @Deprecated
-    public DefaultConfigurationRequest() {
+    private DefaultConfigurationResponse() {
     }
 
-    public DefaultConfigurationRequest(UUID messageIdentifier) {
+    public DefaultConfigurationResponse(UUID messageIdentifier) {
         this.messageIdentifier = Objects.requireNonNull(messageIdentifier);
     }
 
-    public DefaultConfigurationRequest messageIdentifier(UUID messageIdentifier) {
-        this.messageIdentifier = messageIdentifier;
+    public DefaultConfigurationResponse messageIdentifier(UUID messageIdentifier) {
+        this.messageIdentifier = Objects.requireNonNull(messageIdentifier);
         return this;
     }
 
     /**
-     * The message identifier of the message to configure as a default message.
+     * The message identifier of the retention message you configured as a default.
      *
      * @return messageIdentifier
      * @see <a href="https://developer.apple.com/documentation/retentionmessaging/messageidentifier">messageIdentifier</a>
@@ -46,7 +42,7 @@ public class DefaultConfigurationRequest {
     }
 
     public void setMessageIdentifier(UUID messageIdentifier) {
-        this.messageIdentifier = messageIdentifier;
+        this.messageIdentifier = Objects.requireNonNull(messageIdentifier);
     }
 
     @Override
@@ -57,8 +53,8 @@ public class DefaultConfigurationRequest {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        DefaultConfigurationRequest defaultConfigurationRequest = (DefaultConfigurationRequest) o;
-        return Objects.equals(this.messageIdentifier, defaultConfigurationRequest.messageIdentifier);
+        DefaultConfigurationResponse defaultConfigurationResponse = (DefaultConfigurationResponse) o;
+        return Objects.equals(this.messageIdentifier, defaultConfigurationResponse.messageIdentifier);
     }
 
     @Override
@@ -68,7 +64,7 @@ public class DefaultConfigurationRequest {
 
     @Override
     public String toString() {
-        return "DefaultConfigurationRequest{" +
+        return "DefaultConfigurationResponse{" +
                 "messageIdentifier=" + messageIdentifier +
                 '}';
     }

@@ -5,6 +5,7 @@ package com.apple.itunes.storekit.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -17,25 +18,41 @@ public class UploadMessageRequestBody {
     private static final String SERIALIZED_NAME_HEADER = "header";
     private static final String SERIALIZED_NAME_BODY = "body";
     private static final String SERIALIZED_NAME_IMAGE = "image";
+    private static final String SERIALIZED_NAME_HEADER_POSITION = "headerPosition";
+    private static final String SERIALIZED_NAME_BULLET_POINTS = "bulletPoints";
     @JsonProperty(value = SERIALIZED_NAME_HEADER, required = true)
     private String header;
     @JsonProperty(value = SERIALIZED_NAME_BODY, required = true)
     private String body;
     @JsonProperty(value = SERIALIZED_NAME_IMAGE)
     private UploadMessageImage image;
+    @JsonProperty(value = SERIALIZED_NAME_HEADER_POSITION)
+    private String headerPosition;
+    @JsonProperty(value = SERIALIZED_NAME_BULLET_POINTS)
+    private List<BulletPoint> bulletPoints;
 
     private static final int MAXIMUM_HEADER_LENGTH = 66;
     private static final int MAXIMUM_BODY_LENGTH = 144;
+    private static final int MAXIMUM_BULLET_POINTS_COUNT = 5;
 
     private UploadMessageRequestBody() {
     }
 
+    /**
+     * @deprecated Use {@link #UploadMessageRequestBody(String, String)} instead.
+     */
+    @Deprecated
     public UploadMessageRequestBody(String header,
                                     String body,
                                     UploadMessageImage image) {
         this.header = validateHeader(header);
         this.body = validateBody(body);
         this.image = image;
+    }
+
+    public UploadMessageRequestBody(String header,
+                                    String body) {
+        this(header, body, null);
     }
 
     public UploadMessageRequestBody header(String header) {
@@ -111,6 +128,62 @@ public class UploadMessageRequestBody {
         this.image = image;
     }
 
+    public UploadMessageRequestBody headerPosition(HeaderPosition headerPosition) {
+        this.headerPosition = headerPosition != null ? headerPosition.getValue() : null;
+        return this;
+    }
+
+    /**
+     * The position of header text, which defaults to placing header text above the body.
+     *
+     * @return headerPosition
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/headerposition">headerPosition</a>
+     **/
+    public HeaderPosition getHeaderPosition() {
+        return headerPosition != null ? HeaderPosition.fromValue(headerPosition) : null;
+    }
+
+    /**
+     * @see #getHeaderPosition()
+     */
+    public String getRawHeaderPosition() {
+        return headerPosition;
+    }
+
+    public void setHeaderPosition(HeaderPosition headerPosition) {
+        this.headerPosition = headerPosition != null ? headerPosition.getValue() : null;
+    }
+
+    public void setRawHeaderPosition(String rawHeaderPosition) {
+        this.headerPosition = rawHeaderPosition;
+    }
+
+    public UploadMessageRequestBody bulletPoints(List<BulletPoint> bulletPoints) {
+        this.bulletPoints = validateBulletPoints(bulletPoints);
+        return this;
+    }
+
+    /**
+     * An optional array of bullet points.
+     *
+     * @return bulletPoints
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/bulletpoint">BulletPoint</a>
+     **/
+    public List<BulletPoint> getBulletPoints() {
+        return bulletPoints;
+    }
+
+    public void setBulletPoints(List<BulletPoint> bulletPoints) {
+        this.bulletPoints = validateBulletPoints(bulletPoints);
+    }
+
+    private List<BulletPoint> validateBulletPoints(List<BulletPoint> bulletPoints) {
+        if (bulletPoints != null && bulletPoints.size() > MAXIMUM_BULLET_POINTS_COUNT) {
+            throw new IllegalArgumentException("bulletPoints count exceeds the maximum allowed");
+        }
+        return bulletPoints;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -122,12 +195,14 @@ public class UploadMessageRequestBody {
         UploadMessageRequestBody uploadMessageRequestBody = (UploadMessageRequestBody) o;
         return Objects.equals(this.header, uploadMessageRequestBody.header) &&
                 Objects.equals(this.body, uploadMessageRequestBody.body) &&
-                Objects.equals(this.image, uploadMessageRequestBody.image);
+                Objects.equals(this.image, uploadMessageRequestBody.image) &&
+                Objects.equals(this.headerPosition, uploadMessageRequestBody.headerPosition) &&
+                Objects.equals(this.bulletPoints, uploadMessageRequestBody.bulletPoints);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(header, body, image);
+        return Objects.hash(header, body, image, headerPosition, bulletPoints);
     }
 
     @Override
@@ -136,6 +211,8 @@ public class UploadMessageRequestBody {
                 "header='" + header + '\'' +
                 ", body='" + body + '\'' +
                 ", image=" + image +
+                ", headerPosition='" + headerPosition + '\'' +
+                ", bulletPoints=" + bulletPoints +
                 '}';
     }
 }
