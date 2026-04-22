@@ -17,10 +17,13 @@ import java.util.UUID;
 public class GetImageListResponseItem {
     private static final String SERIALIZED_NAME_IMAGE_IDENTIFIER = "imageIdentifier";
     private static final String SERIALIZED_NAME_IMAGE_STATE = "imageState";
+    private static final String SERIALIZED_NAME_IMAGE_SIZE = "imageSize";
     @JsonProperty(SERIALIZED_NAME_IMAGE_IDENTIFIER)
     private UUID imageIdentifier;
     @JsonProperty(SERIALIZED_NAME_IMAGE_STATE)
     private String imageState;
+    @JsonProperty(SERIALIZED_NAME_IMAGE_SIZE)
+    private String imageSize;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
@@ -76,6 +79,36 @@ public class GetImageListResponseItem {
         this.imageState = rawImageState;
     }
 
+    public GetImageListResponseItem imageSize(ImageSize imageSize) {
+        this.imageSize = imageSize != null ? imageSize.getValue() : null;
+        return this;
+    }
+
+    /**
+     * The size of the image.
+     *
+     * @return imageSize
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/imagesize">imageSize</a>
+     **/
+    public ImageSize getImageSize() {
+        return imageSize != null ? ImageSize.fromValue(imageSize) : null;
+    }
+
+    /**
+     * @see #getImageSize()
+     */
+    public String getRawImageSize() {
+        return imageSize;
+    }
+
+    public void setImageSize(ImageSize imageSize) {
+        this.imageSize = imageSize != null ? imageSize.getValue() : null;
+    }
+
+    public void setRawImageSize(String rawImageSize) {
+        this.imageSize = rawImageSize;
+    }
+
 
     public GetImageListResponseItem unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
@@ -106,12 +139,13 @@ public class GetImageListResponseItem {
         GetImageListResponseItem getImageListResponseItem = (GetImageListResponseItem) o;
         return Objects.equals(this.imageIdentifier, getImageListResponseItem.imageIdentifier) &&
                 Objects.equals(this.imageState, getImageListResponseItem.imageState) &&
+                Objects.equals(this.imageSize, getImageListResponseItem.imageSize) &&
                 Objects.equals(this.unknownFields, getImageListResponseItem.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(imageIdentifier, imageState, unknownFields);
+        return Objects.hash(imageIdentifier, imageState, imageSize, unknownFields);
     }
 
     @Override
@@ -119,6 +153,7 @@ public class GetImageListResponseItem {
         return "GetImageListResponseItem{" +
                 "imageIdentifier=" + imageIdentifier +
                 ", imageState='" + imageState + '\'' +
+                ", imageSize='" + imageSize + '\'' +
                 ", unknownFields=" + unknownFields +
                 '}';
     }

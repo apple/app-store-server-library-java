@@ -4,11 +4,13 @@ package com.apple.itunes.storekit.client;
 
 import com.apple.itunes.storekit.model.AccountTenure;
 import com.apple.itunes.storekit.model.AppTransactionInfoResponse;
+import com.apple.itunes.storekit.model.BulletPoint;
 import com.apple.itunes.storekit.model.CheckTestNotificationResponse;
 import com.apple.itunes.storekit.model.ConsumptionRequest;
 import com.apple.itunes.storekit.model.ConsumptionRequestV1;
 import com.apple.itunes.storekit.model.ConsumptionStatus;
 import com.apple.itunes.storekit.model.DefaultConfigurationRequest;
+import com.apple.itunes.storekit.model.DefaultConfigurationResponse;
 import com.apple.itunes.storekit.model.DeliveryStatus;
 import com.apple.itunes.storekit.model.DeliveryStatusV1;
 import com.apple.itunes.storekit.model.Environment;
@@ -17,7 +19,9 @@ import com.apple.itunes.storekit.model.ExtendRenewalDateRequest;
 import com.apple.itunes.storekit.model.ExtendRenewalDateResponse;
 import com.apple.itunes.storekit.model.GetImageListResponse;
 import com.apple.itunes.storekit.model.GetMessageListResponse;
+import com.apple.itunes.storekit.model.HeaderPosition;
 import com.apple.itunes.storekit.model.HistoryResponse;
+import com.apple.itunes.storekit.model.ImageSize;
 import com.apple.itunes.storekit.model.ImageState;
 import com.apple.itunes.storekit.model.InAppOwnershipType;
 import com.apple.itunes.storekit.model.LastTransactionsItem;
@@ -33,8 +37,16 @@ import com.apple.itunes.storekit.model.NotificationHistoryResponseItem;
 import com.apple.itunes.storekit.model.NotificationTypeV2;
 import com.apple.itunes.storekit.model.OrderLookupResponse;
 import com.apple.itunes.storekit.model.OrderLookupStatus;
+import com.apple.itunes.storekit.model.PerformanceTestConfig;
+import com.apple.itunes.storekit.model.PerformanceTestRequest;
+import com.apple.itunes.storekit.model.PerformanceTestResponse;
+import com.apple.itunes.storekit.model.PerformanceTestResponseTimes;
+import com.apple.itunes.storekit.model.PerformanceTestResultResponse;
+import com.apple.itunes.storekit.model.PerformanceTestStatus;
 import com.apple.itunes.storekit.model.Platform;
 import com.apple.itunes.storekit.model.PlayTime;
+import com.apple.itunes.storekit.model.RealtimeUrlRequest;
+import com.apple.itunes.storekit.model.RealtimeUrlResponse;
 import com.apple.itunes.storekit.model.RefundHistoryResponse;
 import com.apple.itunes.storekit.model.RefundPreference;
 import com.apple.itunes.storekit.model.RefundPreferenceV1;
@@ -593,6 +605,7 @@ public class AppStoreServerAPIClientTest {
         Assertions.assertEquals(1, response.getImageIdentifiers().size());
         Assertions.assertEquals(UUID.fromString("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890"), response.getImageIdentifiers().get(0).getImageIdentifier());
         Assertions.assertEquals(ImageState.APPROVED, response.getImageIdentifiers().get(0).getImageState());
+        Assertions.assertEquals(ImageSize.FULL_SIZE, response.getImageIdentifiers().get(0).getImageSize());
     }
 
     @Test
@@ -619,7 +632,7 @@ public class AppStoreServerAPIClientTest {
             Assertions.assertEquals("Body text", root.get("body"));
         });
 
-        UploadMessageRequestBody uploadMessageRequestBody = new UploadMessageRequestBody("Header text", "Body text", null);
+        UploadMessageRequestBody uploadMessageRequestBody = new UploadMessageRequestBody("Header text", "Body text");
         client.uploadMessage(UUID.fromString("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890"), uploadMessageRequestBody);
     }
 
@@ -651,7 +664,8 @@ public class AppStoreServerAPIClientTest {
         });
 
         UploadMessageImage image = new UploadMessageImage(UUID.fromString("b2c3d4e5-f6a7-8901-b2c3-d4e5f6a78901"), "Alt text");
-        UploadMessageRequestBody uploadMessageRequestBody = new UploadMessageRequestBody("Header text", "Body text", image);
+        UploadMessageRequestBody uploadMessageRequestBody = new UploadMessageRequestBody("Header text", "Body text")
+                .image(image);
         client.uploadMessage(UUID.fromString("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890"), uploadMessageRequestBody);
     }
 
@@ -714,6 +728,135 @@ public class AppStoreServerAPIClientTest {
         });
 
         client.deleteDefaultMessage("com.example.product", "en-US");
+    }
+
+    @Test
+    public void testGetDefaultMessage() throws IOException, APIException {
+        AppStoreServerAPIClient client = getClientWithBody("models/getDefaultMessageResponse.json", request -> {
+            Assertions.assertEquals("GET", request.method());
+            Assertions.assertEquals("/inApps/v1/messaging/default/com.example.product/en-US", request.url().encodedPath());
+        });
+
+        DefaultConfigurationResponse response = client.getDefaultMessage("com.example.product", "en-US");
+        Assertions.assertEquals(UUID.fromString("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890"), response.getMessageIdentifier());
+    }
+
+    @Test
+    public void testUploadImageWithImageSize() throws IOException, APIException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {
+            Assertions.assertEquals("PUT", request.method());
+            Assertions.assertEquals("/inApps/v1/messaging/image/a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890", request.url().encodedPath());
+            Assertions.assertEquals("FULL_SIZE", request.url().queryParameter("imageSize"));
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertEquals(MediaType.parse("image/png"), body.contentType());
+            Buffer buffer = new Buffer();
+            try {
+                body.writeTo(buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            byte[] bytes = buffer.readByteArray();
+            Assertions.assertArrayEquals(new byte[]{1, 2, 3}, bytes);
+        });
+
+        client.uploadImage(UUID.fromString("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890"), new byte[]{1, 2, 3}, ImageSize.FULL_SIZE);
+    }
+
+    @Test
+    public void testConfigureRealtimeURL() throws IOException, APIException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {
+            Assertions.assertEquals("PUT", request.method());
+            Assertions.assertEquals("/inApps/v1/messaging/realtime/url", request.url().encodedPath());
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertEquals(expectedMediaType, body.contentType());
+            Buffer buffer = new Buffer();
+            try {
+                body.writeTo(buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Map<String, Object> root;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            Assertions.assertEquals("https://example.com/realtime", root.get("realtimeURL"));
+        });
+
+        RealtimeUrlRequest realtimeUrlRequest = new RealtimeUrlRequest("https://example.com/realtime");
+        client.configureRealtimeURL(realtimeUrlRequest);
+    }
+
+    @Test
+    public void testDeleteRealtimeURL() throws IOException, APIException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {
+            Assertions.assertEquals("DELETE", request.method());
+            Assertions.assertEquals("/inApps/v1/messaging/realtime/url", request.url().encodedPath());
+        });
+
+        client.deleteRealtimeURL();
+    }
+
+    @Test
+    public void testGetRealtimeURL() throws IOException, APIException {
+        AppStoreServerAPIClient client = getClientWithBody("models/getRealtimeUrlResponse.json", request -> {
+            Assertions.assertEquals("GET", request.method());
+            Assertions.assertEquals("/inApps/v1/messaging/realtime/url", request.url().encodedPath());
+        });
+
+        RealtimeUrlResponse response = client.getRealtimeURL();
+        Assertions.assertEquals("https://example.com/realtime", response.getRealtimeURL());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testUploadMessageWithBulletPoints() throws IOException, APIException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {
+            Assertions.assertEquals("PUT", request.method());
+            Assertions.assertEquals("/inApps/v1/messaging/message/a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890", request.url().encodedPath());
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertEquals(expectedMediaType, body.contentType());
+            Buffer buffer = new Buffer();
+            try {
+                body.writeTo(buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Map<String, Object> root;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            Assertions.assertEquals("Header text", root.get("header"));
+            Assertions.assertEquals("Body text", root.get("body"));
+            Assertions.assertEquals("ABOVE_IMAGE", root.get("headerPosition"));
+            Map<String, Object> image = (Map<String, Object>) root.get("image");
+            Assertions.assertEquals("b2c3d4e5-f6a7-8901-b2c3-d4e5f6a78901", image.get("imageIdentifier"));
+            Assertions.assertEquals("Image alt text", image.get("altText"));
+            List<Map<String, Object>> bulletPoints = (List<Map<String, Object>>) root.get("bulletPoints");
+            Assertions.assertEquals(2, bulletPoints.size());
+            Assertions.assertEquals("Point 1", bulletPoints.get(0).get("text"));
+            Assertions.assertEquals("c3d4e5f6-a7b8-9012-c3d4-e5f6a7b89012", bulletPoints.get(0).get("imageIdentifier"));
+            Assertions.assertEquals("Alt 1", bulletPoints.get(0).get("altText"));
+            Assertions.assertEquals("Point 2", bulletPoints.get(1).get("text"));
+            Assertions.assertEquals("d4e5f6a7-b8c9-0123-d4e5-f6a7b8c90123", bulletPoints.get(1).get("imageIdentifier"));
+            Assertions.assertEquals("Alt 2", bulletPoints.get(1).get("altText"));
+        });
+
+        UploadMessageImage image = new UploadMessageImage(UUID.fromString("b2c3d4e5-f6a7-8901-b2c3-d4e5f6a78901"), "Image alt text");
+        UploadMessageRequestBody uploadMessageRequestBody = new UploadMessageRequestBody("Header text", "Body text")
+                .image(image)
+                .headerPosition(HeaderPosition.ABOVE_IMAGE)
+                .bulletPoints(List.of(
+                        new BulletPoint("Point 1", UUID.fromString("c3d4e5f6-a7b8-9012-c3d4-e5f6a7b89012"), "Alt 1"),
+                        new BulletPoint("Point 2", UUID.fromString("d4e5f6a7-b8c9-0123-d4e5-f6a7b8c90123"), "Alt 2")
+                ));
+        client.uploadMessage(UUID.fromString("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890"), uploadMessageRequestBody);
     }
 
     @Test
@@ -1044,6 +1187,78 @@ public class AppStoreServerAPIClientTest {
         ConsumptionRequest consumptionRequest = new ConsumptionRequest(true, DeliveryStatus.UNDELIVERED_QUALITY_ISSUE, true);
 
         client.sendConsumptionInformation("49571273", consumptionRequest);
+    }
+
+    @Test
+    public void testInitiatePerformanceTest() throws IOException, APIException {
+        AppStoreServerAPIClient client = getClientWithBody("models/performanceTestResponse.json", request -> {
+            Assertions.assertEquals("POST", request.method());
+            Assertions.assertEquals("/inApps/v1/messaging/performanceTest", request.url().encodedPath());
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertEquals(expectedMediaType, body.contentType());
+            Buffer buffer = new Buffer();
+            try {
+                body.writeTo(buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Map<String, Object> root;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            Assertions.assertEquals("70000500092808", root.get("originalTransactionId"));
+        });
+
+        PerformanceTestRequest performanceTestRequest = new PerformanceTestRequest("70000500092808");
+
+        PerformanceTestResponse response = client.initiatePerformanceTest(performanceTestRequest);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals("c4b87a1d-2e3f-4a5b-9c6d-7e8f9a0b1c2d", response.getRequestId());
+        PerformanceTestConfig config = response.getConfig();
+        Assertions.assertNotNull(config);
+        Assertions.assertEquals(10L, config.getMaxConcurrentRequests());
+        Assertions.assertEquals(100L, config.getTotalRequests());
+        Assertions.assertEquals(60000L, config.getTotalDuration());
+        Assertions.assertEquals(500L, config.getResponseTimeThreshold());
+        Assertions.assertEquals(95, config.getSuccessRateThreshold());
+    }
+
+    @Test
+    public void testGetPerformanceTestResults() throws IOException, APIException {
+        AppStoreServerAPIClient client = getClientWithBody("models/performanceTestResultResponse.json", request -> {
+            Assertions.assertEquals("GET", request.method());
+            Assertions.assertEquals("/inApps/v1/messaging/performanceTest/result/c4b87a1d-2e3f-4a5b-9c6d-7e8f9a0b1c2d", request.url().encodedPath());
+            Assertions.assertNull(request.body());
+        });
+
+        PerformanceTestResultResponse response = client.getPerformanceTestResults("c4b87a1d-2e3f-4a5b-9c6d-7e8f9a0b1c2d");
+
+        Assertions.assertNotNull(response);
+        PerformanceTestConfig config = response.getConfig();
+        Assertions.assertNotNull(config);
+        Assertions.assertEquals(10L, config.getMaxConcurrentRequests());
+        Assertions.assertEquals(100L, config.getTotalRequests());
+        Assertions.assertEquals(60000L, config.getTotalDuration());
+        Assertions.assertEquals(500L, config.getResponseTimeThreshold());
+        Assertions.assertEquals(95, config.getSuccessRateThreshold());
+        Assertions.assertEquals("https://example.com/retention", response.getTarget());
+        Assertions.assertEquals(PerformanceTestStatus.PASS, response.getResult());
+        Assertions.assertEquals("PASS", response.getRawResult());
+        Assertions.assertEquals(98, response.getSuccessRate());
+        Assertions.assertEquals(0, response.getNumPending());
+        PerformanceTestResponseTimes responseTimes = response.getResponseTimes();
+        Assertions.assertNotNull(responseTimes);
+        Assertions.assertEquals(120L, responseTimes.getAverage());
+        Assertions.assertEquals(100L, responseTimes.getP50());
+        Assertions.assertEquals(200L, responseTimes.getP90());
+        Assertions.assertEquals(250L, responseTimes.getP95());
+        Assertions.assertEquals(400L, responseTimes.getP99());
+        Assertions.assertEquals(Map.of(SendAttemptResult.TIMED_OUT, 1, SendAttemptResult.NO_RESPONSE, 1), response.getFailures());
+        Assertions.assertEquals(Map.of("TIMED_OUT", 1, "NO_RESPONSE", 1), response.getRawFailures());
     }
 
    public AppStoreServerAPIClient getClientWithBody(String path, Consumer<Request> requestVerifier) throws IOException {

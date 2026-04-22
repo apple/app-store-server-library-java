@@ -7,6 +7,7 @@ import com.apple.itunes.storekit.model.CheckTestNotificationResponse;
 import com.apple.itunes.storekit.model.ConsumptionRequest;
 import com.apple.itunes.storekit.model.ConsumptionRequestV1;
 import com.apple.itunes.storekit.model.DefaultConfigurationRequest;
+import com.apple.itunes.storekit.model.DefaultConfigurationResponse;
 import com.apple.itunes.storekit.model.Environment;
 import com.apple.itunes.storekit.model.ErrorPayload;
 import com.apple.itunes.storekit.model.ExtendRenewalDateRequest;
@@ -14,12 +15,18 @@ import com.apple.itunes.storekit.model.ExtendRenewalDateResponse;
 import com.apple.itunes.storekit.model.GetImageListResponse;
 import com.apple.itunes.storekit.model.GetMessageListResponse;
 import com.apple.itunes.storekit.model.HistoryResponse;
+import com.apple.itunes.storekit.model.ImageSize;
 import com.apple.itunes.storekit.model.MassExtendRenewalDateRequest;
 import com.apple.itunes.storekit.model.MassExtendRenewalDateResponse;
 import com.apple.itunes.storekit.model.MassExtendRenewalDateStatusResponse;
 import com.apple.itunes.storekit.model.NotificationHistoryRequest;
 import com.apple.itunes.storekit.model.NotificationHistoryResponse;
 import com.apple.itunes.storekit.model.OrderLookupResponse;
+import com.apple.itunes.storekit.model.PerformanceTestRequest;
+import com.apple.itunes.storekit.model.PerformanceTestResponse;
+import com.apple.itunes.storekit.model.PerformanceTestResultResponse;
+import com.apple.itunes.storekit.model.RealtimeUrlRequest;
+import com.apple.itunes.storekit.model.RealtimeUrlResponse;
 import com.apple.itunes.storekit.model.RefundHistoryResponse;
 import com.apple.itunes.storekit.model.SendTestNotificationResponse;
 import com.apple.itunes.storekit.model.Status;
@@ -282,7 +289,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * Get a customer’s in-app purchase transaction history for your app.
      *
      * @param transactionId The identifier of a transaction that belongs to the customer, and which may be an original transaction identifier.
-     * @param revision              A token you provide to get the next set of up to 20 transactions. All responses include a revision token. Note: For requests that use the revision token, include the same query parameters from the initial request. Use the revision token from the previous HistoryResponse.
+     * @param revision A token you provide to get the next set of up to 20 transactions. All responses include a revision token. Note: For requests that use the revision token, include the same query parameters from the initial request. Use the revision token from the previous HistoryResponse.
      * @param version The version of the Get Transaction History endpoint to use. V2 is recommended.
      * @return A response that contains the customer’s transaction history for an app.
      * @throws APIException If a response was returned indicating the request could not be processed
@@ -402,16 +409,29 @@ public abstract class BaseAppStoreServerAPIClient {
     }
 
     /**
-     * Upload an image to use for retention messaging.
+     * @see #uploadImage(UUID, byte[], ImageSize)
+     */
+    @Deprecated(since = "5.1.0")
+    public void uploadImage(UUID imageIdentifier, byte[] image) throws APIException, IOException {
+        uploadImage(imageIdentifier, image, null);
+    }
+
+    /**
+     * Uploads an image to use for retention messaging.
      *
      * @param imageIdentifier A UUID you provide to uniquely identify the image you upload.
      * @param image The image file to upload.
+     * @param imageSize The size of the image you upload.
      * @throws APIException If a response was returned indicating the request could not be processed
      * @throws IOException  If an exception was thrown while making the request
      * @see <a href="https://developer.apple.com/documentation/retentionmessaging/upload-image">Upload Image</a>
      */
-    public void uploadImage(UUID imageIdentifier, byte[] image) throws APIException, IOException {
-        makeHttpCall("/inApps/v1/messaging/image/" + imageIdentifier, "PUT", Map.of(), image, Void.class, PNG);
+    public void uploadImage(UUID imageIdentifier, byte[] image, ImageSize imageSize) throws APIException, IOException {
+        HashMap<String, List<String>> queryParameters = new HashMap<>();
+        if (imageSize != null) {
+            queryParameters.put("imageSize", List.of(imageSize.name()));
+        }
+        makeHttpCall("/inApps/v1/messaging/image/" + imageIdentifier, "PUT", queryParameters, image, Void.class, PNG);
     }
 
     /**
@@ -500,6 +520,81 @@ public abstract class BaseAppStoreServerAPIClient {
      */
     public void deleteDefaultMessage(String productId, String locale) throws APIException, IOException {
         makeHttpCall("/inApps/v1/messaging/default/" + productId + "/" + locale, "DELETE", Map.of(), null, Void.class, null);
+    }
+
+    /**
+     * Gets the default message for a specific product in a specific locale, if it’s configured.
+     *
+     * @param productId The product identifier of the message.
+     * @param locale The locale of the message.
+     * @return The response body that contains the default configuration information.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/get-default-message">Get Default Message</a>
+     */
+    public DefaultConfigurationResponse getDefaultMessage(String productId, String locale) throws APIException, IOException {
+        return makeHttpCall("/inApps/v1/messaging/default/" + productId + "/" + locale, "GET", Map.of(), null, DefaultConfigurationResponse.class, null);
+    }
+
+    /**
+     * Configures the URL for your Get Retention Message endpoint in the sandbox and production environments.
+     *
+     * @param realtimeUrlRequest The request body that includes your endpoint’s URL.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/configure-realtime-url">Configure Realtime URL</a>
+     */
+    public void configureRealtimeURL(RealtimeUrlRequest realtimeUrlRequest) throws APIException, IOException {
+        makeHttpCall("/inApps/v1/messaging/realtime/url", "PUT", Map.of(), realtimeUrlRequest, Void.class, JSON);
+    }
+
+    /**
+     * Deletes the URL for your Get Retention Message endpoint, in the sandbox or production environments.
+     *
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/delete-realtime-url">Delete Realtime URL</a>
+     */
+    public void deleteRealtimeURL() throws APIException, IOException {
+        makeHttpCall("/inApps/v1/messaging/realtime/url", "DELETE", Map.of(), null, Void.class, null);
+    }
+
+    /**
+     * Gets the URL for real-time messages that points to your Get Retention Message endpoint, which you previously configured.
+     *
+     * @return The response body that contains the URL for your Get Retention Message endpoint.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/get-realtime-url">Get Realtime URL</a>
+     */
+    public RealtimeUrlResponse getRealtimeURL() throws APIException, IOException {
+        return makeHttpCall("/inApps/v1/messaging/realtime/url", "GET", Map.of(), null, RealtimeUrlResponse.class, null);
+    }
+
+    /**
+     * Initiates a performance test of your Get Retention Message endpoint in the sandbox environment.
+     *
+     * @param performanceTestRequest The request body which specifies a transaction identifier of an In-App Purchase to use for this test.
+     * @return The performance test response object.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/initiate-performance-test">Initiate Performance Test</a>
+     */
+    public PerformanceTestResponse initiatePerformanceTest(PerformanceTestRequest performanceTestRequest) throws APIException, IOException {
+        return makeHttpCall("/inApps/v1/messaging/performanceTest", "POST", Map.of(), performanceTestRequest, PerformanceTestResponse.class, JSON);
+    }
+
+    /**
+     * Gets the results of the performance test for the specified identifier.
+     *
+     * @param requestId The ID of the performance test to return, which you receive in the PerformanceTestResponse when you call Initiate Performance Test.
+     * @return An object the API returns that describes the performance test results.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/get-performance-test-results">Get Performance Test Results</a>
+     */
+    public PerformanceTestResultResponse getPerformanceTestResults(String requestId) throws APIException, IOException {
+        return makeHttpCall("/inApps/v1/messaging/performanceTest/result/" + requestId, "GET", Map.of(), null, PerformanceTestResultResponse.class, null);
     }
 
     /**

@@ -357,6 +357,62 @@ public enum APIError {
     TRANSACTION_ID_IS_NOT_ORIGINAL_TRANSACTION_ID_ERROR(4000187L),
 
     /**
+     * An error the API returns that indicates the performance test request is invalid.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/invalidperformancetestrequesterror">InvalidPerformanceTestRequestError</a>
+     */
+    INVALID_PERFORMANCE_TEST_REQUEST(4000211L),
+
+    /**
+     * An error that indicates the request ID is invalid.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/invalidrequestiderror">InvalidRequestIdError</a>
+     */
+    INVALID_REQUEST_ID(4000212L),
+
+    /**
+     * An error that indicates an error with an existing test.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/existingperformancetestrunerror">ExistingPerformanceTestRunError</a>
+     */
+    EXISTING_PERFORMANCE_TEST_RUN(4000213L),
+
+    /**
+     * An error that indicates the URL is invalid.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/badrequestrealtimeurlerror">BadRequestRealtimeUrlError</a>
+     */
+    BAD_REQUEST_REALTIME_URL(4000215L),
+
+    /**
+     * An error that indicates the image size provided is invalid.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/badrequestimagesizeerror">BadRequestImageSizeError</a>
+     */
+    BAD_REQUEST_IMAGE_SIZE(4000216L),
+
+    /**
+     * An error that indicates there are too many bullet points.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/badrequesttoomanybulletpointserror">BadRequestTooManyBulletPointsError</a>
+     */
+    BAD_REQUEST_TOO_MANY_BULLET_POINTS(4000218L),
+
+    /**
+     * An error that indicates the text for a bullet point is too long.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/badrequestbulletpointtexttoolongerror">BadRequestBulletPointTextTooLongError</a>
+     */
+    BAD_REQUEST_BULLET_POINT_TEXT_TOO_LONG(4000219L),
+
+    /**
+     * An error that indicates that no image object is included, but the request indicates that the header should be placed above the image.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/badrequestaboveimagerequiresanimageerror">BadRequestAboveImageRequiresAnImageError</a>
+     */
+    BAD_REQUEST_ABOVE_IMAGE_REQUIRES_AN_IMAGE(4000224L),
+
+    /**
      * An error that indicates the subscription doesn't qualify for a renewal-date extension due to its subscription state.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/subscriptionextensionineligibleerror">SubscriptionExtensionIneligibleError</a>
@@ -411,6 +467,13 @@ public enum APIError {
      * @see <a href="https://developer.apple.com/documentation/retentionmessaging/imageinuseerror">ImageInUseError</a>
      */
     IMAGE_IN_USE(4030019L),
+
+    /**
+     * An error that indicates that passing a performance test is required before you can set a URL for the production environment.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/forbiddennopassingtesterror">ForbiddenNoPassingTestError</a>
+     */
+    FORBIDDEN_NO_PASSING_TEST(4030026L),
 
     /**
      * An error that indicates the App Store account wasn't found.
@@ -497,11 +560,32 @@ public enum APIError {
     MESSAGE_NOT_FOUND(4040015L),
 
     /**
+     * An error the API returns if the service can’t find the specified test run.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/performancetestrunnotfounderror">PerformanceTestRunNotFoundError</a>
+     */
+    PERFORMANCE_TEST_RUN_NOT_FOUND(4040018L),
+
+    /**
      * An error response that indicates an app transaction doesn’t exist for the specified customer.
      *
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/apptransactiondoesnotexisterror">AppTransactionDoesNotExistError</a>
      */
     APP_TRANSACTION_DOES_NOT_EXIST_ERROR(4040019L),
+
+    /**
+     * An error that indicates a default message isn’t configured.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/defaultmessagenotfounderror">DefaultMessageNotFoundError</a>
+     */
+    DEFAULT_MESSAGE_NOT_FOUND(4040020L),
+
+    /**
+     * An error that indicates that the URL for your endpoint isn’t configured.
+     *
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/realtimeurlnotfounderror">RealtimeUrlNotFoundError</a>
+     */
+    REALTIME_URL_NOT_FOUND(4040021L),
 
     /**
      * An error that indicates the image identifier already exists.
