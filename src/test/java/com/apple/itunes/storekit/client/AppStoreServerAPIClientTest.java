@@ -1123,6 +1123,24 @@ public class AppStoreServerAPIClientTest {
      }
 
     @Test
+    public void testFinishTransaction() throws APIException, IOException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {
+            Assertions.assertEquals("POST", request.method());
+            Assertions.assertEquals("/inApps/v1/transactions/1234/finish", request.url().encodedPath());
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertNull(body.contentType());
+            try {
+                Assertions.assertEquals(0, body.contentLength());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        client.finishTransaction("1234");
+    }
+
+    @Test
     public void testSendConsumptionInformation() throws APIException, IOException {
         AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {
             Assertions.assertEquals("PUT", request.method());
