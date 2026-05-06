@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 5.1.0
+- Incorporate changes for Advanced Commerce API, Retention Messaging API 1.5 and App Store Server API v1.21 [https://github.com/apple/app-store-server-library-java/pull/245] [https://github.com/apple/app-store-server-library-java/pull/246] from @riyazpanjwani
+- Incorporate changes for App Store Server API v1.20 [https://github.com/apple/app-store-server-library-java/pull/248] from @riyazpanjwani
+- Incorporate changes for Retention Messaging API v1.3 and 1.4 [https://github.com/apple/app-store-server-library-java/pull/242]
+
 ## Version 5.0.0
 - Incorporate changes for App Store Server API v1.19 [https://github.com/apple/app-store-server-library-java/pull/219] from @riyazpanjwani
   - This changes ConsumptionRequest and several dependent types to the V2 variant, while the V1 version was created as a new type, to align with documentation, which is a breaking change
