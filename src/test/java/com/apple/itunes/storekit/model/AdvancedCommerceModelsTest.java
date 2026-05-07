@@ -3,6 +3,7 @@
 package com.apple.itunes.storekit.model;
 
 import com.apple.itunes.storekit.util.TestingUtility;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -720,5 +721,53 @@ public class AdvancedCommerceModelsTest {
 
         Assertions.assertEquals("signed_renewal_info_value", response.getSignedRenewalInfo());
         Assertions.assertEquals("signed_transaction_info_value", response.getSignedTransactionInfo());
+    }
+
+    @Test
+    public void testOneTimeChargeCreateRequestDeserializationSetsOperationAndVersion() throws Exception {
+        String json = TestingUtility.readFile("models/advancedCommerceOneTimeChargeCreateRequest.json");
+
+        AdvancedCommerceOneTimeChargeCreateRequest request =
+            objectMapper.readValue(json, AdvancedCommerceOneTimeChargeCreateRequest.class);
+
+        JsonNode node = objectMapper.valueToTree(request);
+        Assertions.assertEquals("CREATE_ONE_TIME_CHARGE", node.get("operation").asText());
+        Assertions.assertEquals("1", node.get("version").asText());
+    }
+
+    @Test
+    public void testSubscriptionCreateRequestDeserializationSetsOperationAndVersion() throws Exception {
+        String json = TestingUtility.readFile("models/advancedCommerceSubscriptionCreateRequest.json");
+
+        AdvancedCommerceSubscriptionCreateRequest request =
+            objectMapper.readValue(json, AdvancedCommerceSubscriptionCreateRequest.class);
+
+        JsonNode node = objectMapper.valueToTree(request);
+        Assertions.assertEquals("CREATE_SUBSCRIPTION", node.get("operation").asText());
+        Assertions.assertEquals("1", node.get("version").asText());
+    }
+
+    @Test
+    public void testSubscriptionModifyInAppRequestDeserializationSetsOperationAndVersion() throws Exception {
+        String json = TestingUtility.readFile("models/advancedCommerceSubscriptionModifyInAppRequest.json");
+
+        AdvancedCommerceSubscriptionModifyInAppRequest request =
+            objectMapper.readValue(json, AdvancedCommerceSubscriptionModifyInAppRequest.class);
+
+        JsonNode node = objectMapper.valueToTree(request);
+        Assertions.assertEquals("MODIFY_SUBSCRIPTION", node.get("operation").asText());
+        Assertions.assertEquals("1", node.get("version").asText());
+    }
+
+    @Test
+    public void testSubscriptionReactivateInAppRequestDeserializationSetsOperationAndVersion() throws Exception {
+        String json = TestingUtility.readFile("models/advancedCommerceSubscriptionReactivateInAppRequest.json");
+
+        AdvancedCommerceSubscriptionReactivateInAppRequest request =
+            objectMapper.readValue(json, AdvancedCommerceSubscriptionReactivateInAppRequest.class);
+
+        JsonNode node = objectMapper.valueToTree(request);
+        Assertions.assertEquals("REACTIVATE_SUBSCRIPTION", node.get("operation").asText());
+        Assertions.assertEquals("1", node.get("version").asText());
     }
 }

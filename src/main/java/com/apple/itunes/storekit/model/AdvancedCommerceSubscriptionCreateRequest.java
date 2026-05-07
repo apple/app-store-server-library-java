@@ -39,7 +39,9 @@ public class AdvancedCommerceSubscriptionCreateRequest extends AbstractAdvancedC
     @JsonProperty(value = SERIALIZED_NAME_TAX_CODE, required = true)
     private String taxCode;
 
-    private AdvancedCommerceSubscriptionCreateRequest() {}
+    private AdvancedCommerceSubscriptionCreateRequest() {
+        super(OPERATION, VERSION);
+    }
 
     public AdvancedCommerceSubscriptionCreateRequest(
             String currency,

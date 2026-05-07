@@ -16,9 +16,9 @@ public abstract class AbstractAdvancedCommerceInAppRequest<T extends AbstractAdv
     @JsonProperty(value = SERIALIZED_NAME_VERSION, required = true)
     private final String version;
 
-    protected AbstractAdvancedCommerceInAppRequest() {
-        this.operation = null;
-        this.version = null;
+    protected AbstractAdvancedCommerceInAppRequest(String operation, String version) {
+        this.operation = Objects.requireNonNull(operation);
+        this.version = Objects.requireNonNull(version);
     }
 
     protected AbstractAdvancedCommerceInAppRequest(String operation, String version, AdvancedCommerceRequestInfo requestInfo) {
