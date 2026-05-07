@@ -36,7 +36,9 @@ public class AdvancedCommerceOneTimeChargeCreateRequest extends AbstractAdvanced
     @JsonProperty(value = SERIALIZED_NAME_TAX_CODE, required = true)
     private String taxCode;
 
-    private AdvancedCommerceOneTimeChargeCreateRequest() {}
+    private AdvancedCommerceOneTimeChargeCreateRequest() {
+        super(OPERATION, VERSION);
+    }
 
     public AdvancedCommerceOneTimeChargeCreateRequest(
             String currency,
