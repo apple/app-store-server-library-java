@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 5.1.1
+- Fix inclusion of static fields in new Advanced Commerce API types [https://github.com/apple/app-store-server-library-java/pull/253]
+
 ## Version 5.1.0
 - Incorporate changes for Advanced Commerce API, Retention Messaging API 1.5 and App Store Server API v1.21 [https://github.com/apple/app-store-server-library-java/pull/245] [https://github.com/apple/app-store-server-library-java/pull/246] from @riyazpanjwani
 - Incorporate changes for App Store Server API v1.20 [https://github.com/apple/app-store-server-library-java/pull/248] from @riyazpanjwani
