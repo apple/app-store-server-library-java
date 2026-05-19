@@ -17,7 +17,7 @@ public class AdvancedCommerceSubscriptionCancelRequest extends AdvancedCommerceR
     @JsonProperty(SERIALIZED_NAME_STOREFRONT)
     private String storefront;
 
-    private AdvancedCommerceSubscriptionCancelRequest() {
+    protected AdvancedCommerceSubscriptionCancelRequest() {
         super();
     }
 

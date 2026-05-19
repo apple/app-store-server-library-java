@@ -28,7 +28,7 @@ public class BulletPoint {
     private static final int MAXIMUM_TEXT_LENGTH = 66;
     private static final int MAXIMUM_ALT_TEXT_LENGTH = 150;
 
-    private BulletPoint() {
+    protected BulletPoint() {
     }
 
     public BulletPoint(String text,

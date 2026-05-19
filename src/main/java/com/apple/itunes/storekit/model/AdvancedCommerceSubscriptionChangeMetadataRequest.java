@@ -28,7 +28,7 @@ public class AdvancedCommerceSubscriptionChangeMetadataRequest extends AdvancedC
     @JsonProperty(SERIALIZED_NAME_TAX_CODE)
     private String taxCode;
 
-    private AdvancedCommerceSubscriptionChangeMetadataRequest() {}
+    protected AdvancedCommerceSubscriptionChangeMetadataRequest() {}
 
     public AdvancedCommerceSubscriptionChangeMetadataRequest(AdvancedCommerceRequestInfo requestInfo) {
         super(requestInfo);

@@ -35,7 +35,7 @@ public class AdvancedCommerceSubscriptionMigrateRequest extends AdvancedCommerce
     private String taxCode;
 
 
-    private AdvancedCommerceSubscriptionMigrateRequest() {
+    protected AdvancedCommerceSubscriptionMigrateRequest() {
         super();
     }
 

@@ -20,7 +20,7 @@ public class AdvancedCommerceSubscriptionCreateItem extends AbstractAdvancedComm
     @JsonProperty(value = SERIALIZED_NAME_PRICE, required = true)
     private Long price;
 
-    private AdvancedCommerceSubscriptionCreateItem() {
+    protected AdvancedCommerceSubscriptionCreateItem() {
         super();
     }
 

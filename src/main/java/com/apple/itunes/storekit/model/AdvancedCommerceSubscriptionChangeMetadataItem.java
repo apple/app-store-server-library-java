@@ -29,7 +29,7 @@ public class AdvancedCommerceSubscriptionChangeMetadataItem {
     @JsonProperty(SERIALIZED_NAME_SKU)
     private String sku;
 
-    private AdvancedCommerceSubscriptionChangeMetadataItem() {}
+    protected AdvancedCommerceSubscriptionChangeMetadataItem() {}
 
     public AdvancedCommerceSubscriptionChangeMetadataItem(String currentSKU, AdvancedCommerceEffective effective) {
         this.currentSku = HelperValidationUtils.validateSku(currentSKU);

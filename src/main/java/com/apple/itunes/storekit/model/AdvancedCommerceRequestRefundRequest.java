@@ -27,7 +27,7 @@ public class AdvancedCommerceRequestRefundRequest extends AdvancedCommerceReques
     @JsonProperty(SERIALIZED_NAME_STOREFRONT)
     private String storefront;
 
-    private AdvancedCommerceRequestRefundRequest() {
+    protected AdvancedCommerceRequestRefundRequest() {
         super();
     }
 

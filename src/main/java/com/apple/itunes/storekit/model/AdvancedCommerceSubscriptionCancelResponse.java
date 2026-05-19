@@ -10,7 +10,7 @@ import java.util.Objects;
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptioncancelresponse">SubscriptionCancelResponse</a>
  */
 public class AdvancedCommerceSubscriptionCancelResponse extends AbstractAdvancedCommerceResponse {
-    private AdvancedCommerceSubscriptionCancelResponse() {
+    protected AdvancedCommerceSubscriptionCancelResponse() {
         super();
     }
 

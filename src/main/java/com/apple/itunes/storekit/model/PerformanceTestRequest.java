@@ -18,7 +18,7 @@ public class PerformanceTestRequest {
     @JsonProperty(value = SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID, required = true)
     private String originalTransactionId;
 
-    private PerformanceTestRequest() {
+    protected PerformanceTestRequest() {
     }
 
     public PerformanceTestRequest(String originalTransactionId) {

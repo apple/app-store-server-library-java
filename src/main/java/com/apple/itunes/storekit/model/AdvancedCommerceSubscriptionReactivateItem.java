@@ -9,7 +9,7 @@ package com.apple.itunes.storekit.model;
  */
 public class AdvancedCommerceSubscriptionReactivateItem extends AbstractAdvancedCommerceBaseItem {
 
-    private AdvancedCommerceSubscriptionReactivateItem() {
+    protected AdvancedCommerceSubscriptionReactivateItem() {
         super();
     }
 

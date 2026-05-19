@@ -35,7 +35,7 @@ public class UploadMessageRequestBody {
     private static final int MAXIMUM_BODY_LENGTH = 144;
     private static final int MAXIMUM_BULLET_POINTS_COUNT = 5;
 
-    private UploadMessageRequestBody() {
+    protected UploadMessageRequestBody() {
     }
 
     /**

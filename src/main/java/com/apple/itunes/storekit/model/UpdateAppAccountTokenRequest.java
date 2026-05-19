@@ -19,7 +19,7 @@ public class UpdateAppAccountTokenRequest {
     @JsonProperty(value = SERIALIZED_NAME_APP_ACCOUNT_TOKEN, required = true)
     private UUID appAccountToken;
 
-    private UpdateAppAccountTokenRequest() {
+    protected UpdateAppAccountTokenRequest() {
     }
 
     public UpdateAppAccountTokenRequest(UUID appAccountToken) {

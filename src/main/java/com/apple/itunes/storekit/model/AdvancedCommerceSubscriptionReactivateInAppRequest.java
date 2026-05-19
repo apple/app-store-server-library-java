@@ -28,7 +28,7 @@ public class AdvancedCommerceSubscriptionReactivateInAppRequest extends Abstract
     @JsonProperty(value = SERIALIZED_NAME_TRANSACTION_ID, required = true)
     private String transactionId;
 
-    private AdvancedCommerceSubscriptionReactivateInAppRequest() {
+    protected AdvancedCommerceSubscriptionReactivateInAppRequest() {
         super(OPERATION, VERSION);
     }
 

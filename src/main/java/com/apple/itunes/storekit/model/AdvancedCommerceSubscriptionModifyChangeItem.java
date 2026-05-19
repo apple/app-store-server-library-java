@@ -32,7 +32,7 @@ public class AdvancedCommerceSubscriptionModifyChangeItem extends AbstractAdvanc
     @JsonProperty(value = SERIALIZED_NAME_REASON, required = true)
     private AdvancedCommerceReason reason;
 
-    private AdvancedCommerceSubscriptionModifyChangeItem() {}
+    protected AdvancedCommerceSubscriptionModifyChangeItem() {}
 
     @Override
     protected AdvancedCommerceSubscriptionModifyChangeItem self() {

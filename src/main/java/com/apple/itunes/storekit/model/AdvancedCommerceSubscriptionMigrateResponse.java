@@ -10,7 +10,7 @@ import java.util.Objects;
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionmigrateresponse">SubscriptionMigrateResponse</a>
  */
 public class AdvancedCommerceSubscriptionMigrateResponse extends AbstractAdvancedCommerceResponse {
-    private AdvancedCommerceSubscriptionMigrateResponse() {
+    protected AdvancedCommerceSubscriptionMigrateResponse() {
         super();
     }
 

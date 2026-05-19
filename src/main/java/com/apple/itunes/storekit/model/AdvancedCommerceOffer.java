@@ -31,7 +31,7 @@ public class AdvancedCommerceOffer {
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
-    private AdvancedCommerceOffer() {}
+    protected AdvancedCommerceOffer() {}
 
     public AdvancedCommerceOffer(String rawPeriod, Integer periodCount, Long price, String rawReason) {
         this.period = Objects.requireNonNull(rawPeriod);

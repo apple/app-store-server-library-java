@@ -26,7 +26,7 @@ public class AdvancedCommerceRequestRefundItem extends AbstractAdvancedCommerceB
     @JsonProperty(value = SERIALIZED_NAME_REVOKE, required = true)
     private Boolean revoke;
 
-    private AdvancedCommerceRequestRefundItem() {
+    protected AdvancedCommerceRequestRefundItem() {
         super();
     }
 

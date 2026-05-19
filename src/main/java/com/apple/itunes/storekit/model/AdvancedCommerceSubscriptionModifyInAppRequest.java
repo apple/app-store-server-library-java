@@ -49,7 +49,7 @@ public class AdvancedCommerceSubscriptionModifyInAppRequest extends AbstractAdva
     @JsonProperty(value = SERIALIZED_NAME_TRANSACTION_ID, required = true)
     private String transactionId;
 
-    private AdvancedCommerceSubscriptionModifyInAppRequest() {
+    protected AdvancedCommerceSubscriptionModifyInAppRequest() {
         super(OPERATION, VERSION);
     }
 

@@ -24,7 +24,7 @@ public class UploadMessageImage {
 
     private static final int MAXIMUM_ALT_TEXT_LENGTH = 150;
 
-    private UploadMessageImage() {
+    protected UploadMessageImage() {
     }
 
     public UploadMessageImage(UUID imageIdentifier,

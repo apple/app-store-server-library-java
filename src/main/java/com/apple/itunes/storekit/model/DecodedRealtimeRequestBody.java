@@ -40,7 +40,7 @@ public class DecodedRealtimeRequestBody implements DecodedSignedData {
     private Map<String, Object> unknownFields;
 
 
-    private DecodedRealtimeRequestBody() {
+    protected DecodedRealtimeRequestBody() {
     }
 
     public DecodedRealtimeRequestBody(String originalTransactionId,

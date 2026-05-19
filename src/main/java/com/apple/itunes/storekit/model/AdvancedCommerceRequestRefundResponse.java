@@ -10,7 +10,7 @@ import java.util.Objects;
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/requestrefundresponse">RequestRefundResponse</a>
  */
 public class AdvancedCommerceRequestRefundResponse extends AbstractAdvancedCommerceResponse {
-    private AdvancedCommerceRequestRefundResponse() {
+    protected AdvancedCommerceRequestRefundResponse() {
         super();
     }
 
