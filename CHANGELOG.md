@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 5.2.0
+- Move the default for model constructors from private to protected [https://github.com/apple/app-store-server-library-java/pull/255]
+
 ## Version 5.1.1
 - Fix inclusion of static fields in new Advanced Commerce API types [https://github.com/apple/app-store-server-library-java/pull/253]
 
