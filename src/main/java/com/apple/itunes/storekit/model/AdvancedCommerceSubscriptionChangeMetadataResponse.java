@@ -10,7 +10,7 @@ import java.util.Objects;
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionchangemetadataresponse">SubscriptionChangeMetadataResponse</a>
  */
 public class AdvancedCommerceSubscriptionChangeMetadataResponse extends AbstractAdvancedCommerceResponse {
-    private AdvancedCommerceSubscriptionChangeMetadataResponse() {
+    protected AdvancedCommerceSubscriptionChangeMetadataResponse() {
         super();
     }
 

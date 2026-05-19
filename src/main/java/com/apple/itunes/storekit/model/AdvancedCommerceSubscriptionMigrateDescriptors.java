@@ -8,7 +8,7 @@ package com.apple.itunes.storekit.model;
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionmigratedescriptors">SubscriptionMigrateDescriptors</a>
  */
 public class AdvancedCommerceSubscriptionMigrateDescriptors extends AdvancedCommerceDescriptors {
-    private AdvancedCommerceSubscriptionMigrateDescriptors() {
+    protected AdvancedCommerceSubscriptionMigrateDescriptors() {
         super();
     }
 

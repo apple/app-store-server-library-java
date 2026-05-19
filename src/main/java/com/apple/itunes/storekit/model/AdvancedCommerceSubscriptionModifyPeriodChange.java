@@ -20,7 +20,7 @@ public class AdvancedCommerceSubscriptionModifyPeriodChange {
     @JsonProperty(value = SERIALIZED_NAME_PERIOD, required = true)
     private AdvancedCommercePeriod period;
 
-    private AdvancedCommerceSubscriptionModifyPeriodChange() {}
+    protected AdvancedCommerceSubscriptionModifyPeriodChange() {}
 
     public AdvancedCommerceSubscriptionModifyPeriodChange(
             AdvancedCommerceEffective effective,

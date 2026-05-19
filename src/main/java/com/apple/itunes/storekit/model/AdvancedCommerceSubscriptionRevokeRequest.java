@@ -26,7 +26,7 @@ public class AdvancedCommerceSubscriptionRevokeRequest extends AdvancedCommerceR
     @JsonProperty(SERIALIZED_NAME_STOREFRONT)
     private String storefront;
 
-    private AdvancedCommerceSubscriptionRevokeRequest() {
+    protected AdvancedCommerceSubscriptionRevokeRequest() {
         super();
     }
 

@@ -24,7 +24,7 @@ public class AdvancedCommerceRequestInfo {
     @JsonProperty(value = SERIALIZED_NAME_REQUEST_REFERENCE_ID, required = true)
     private UUID requestReferenceId;
 
-    private AdvancedCommerceRequestInfo() {}
+    protected AdvancedCommerceRequestInfo() {}
 
     public AdvancedCommerceRequestInfo(UUID requestReferenceId) {
         this.requestReferenceId = Objects.requireNonNull(requestReferenceId);

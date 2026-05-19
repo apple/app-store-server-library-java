@@ -31,7 +31,7 @@ public class ConsumptionRequest {
     @JsonProperty(value = SERIALIZED_NAME_SAMPLE_CONTENT_PROVIDED, required = true)
     private boolean sampleContentProvided;
 
-    private ConsumptionRequest() {
+    protected ConsumptionRequest() {
     }
 
     public ConsumptionRequest(boolean customerConsented, DeliveryStatus deliveryStatus, boolean sampleContentProvided) {

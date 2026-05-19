@@ -17,7 +17,7 @@ public class AdvancedCommerceOneTimeChargeItem extends AbstractAdvancedCommerceI
     @JsonProperty(value = SERIALIZED_NAME_PRICE, required = true)
     private Long price;
     
-    private AdvancedCommerceOneTimeChargeItem() {
+    protected AdvancedCommerceOneTimeChargeItem() {
         super();
     }
 

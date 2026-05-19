@@ -23,7 +23,7 @@ public class AdvancedCommerceSubscriptionChangeMetadataDescriptors {
     @JsonProperty(SERIALIZED_NAME_DISPLAY_NAME)
     private String displayName;
 
-    private AdvancedCommerceSubscriptionChangeMetadataDescriptors() {}
+    protected AdvancedCommerceSubscriptionChangeMetadataDescriptors() {}
 
     public AdvancedCommerceSubscriptionChangeMetadataDescriptors(AdvancedCommerceEffective effective) {
         this.effective = Objects.requireNonNull(effective);

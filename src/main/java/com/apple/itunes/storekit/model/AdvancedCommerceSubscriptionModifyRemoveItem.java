@@ -8,7 +8,7 @@ package com.apple.itunes.storekit.model;
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionmodifyremoveitem">SubscriptionModifyRemoveItem</a>
  */
 public class AdvancedCommerceSubscriptionModifyRemoveItem extends AbstractAdvancedCommerceBaseItem {
-    private AdvancedCommerceSubscriptionModifyRemoveItem() {
+    protected AdvancedCommerceSubscriptionModifyRemoveItem() {
         super();
     }
 

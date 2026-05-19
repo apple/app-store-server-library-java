@@ -22,7 +22,7 @@ public class AdvancedCommerceSubscriptionPriceChangeItem extends AbstractAdvance
     @JsonProperty(SERIALIZED_DEPENDENT_SKUS)
     private List<String> dependentSKUs;
 
-    private AdvancedCommerceSubscriptionPriceChangeItem() {
+    protected AdvancedCommerceSubscriptionPriceChangeItem() {
         super();
     }
 

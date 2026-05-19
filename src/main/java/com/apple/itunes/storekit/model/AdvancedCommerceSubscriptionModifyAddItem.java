@@ -23,7 +23,7 @@ public class AdvancedCommerceSubscriptionModifyAddItem extends AbstractAdvancedC
     @JsonProperty(SERIALIZED_NAME_PRORATED_PRICE)
     private Long proratedPrice;
 
-    private AdvancedCommerceSubscriptionModifyAddItem() {
+    protected AdvancedCommerceSubscriptionModifyAddItem() {
         super();
     }
 

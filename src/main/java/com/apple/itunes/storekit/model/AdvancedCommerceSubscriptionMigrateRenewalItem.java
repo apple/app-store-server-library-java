@@ -8,7 +8,7 @@ package com.apple.itunes.storekit.model;
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionmigraterenewalitem">SubscriptionMigrateRenewalItem</a>
  */
 public class AdvancedCommerceSubscriptionMigrateRenewalItem extends AbstractAdvancedCommerceItem {
-    private AdvancedCommerceSubscriptionMigrateRenewalItem() {
+    protected AdvancedCommerceSubscriptionMigrateRenewalItem() {
         super();
     }
 

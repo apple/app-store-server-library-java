@@ -19,7 +19,7 @@ public class DefaultConfigurationResponse {
     @JsonProperty(value = SERIALIZED_NAME_MESSAGE_IDENTIFIER, required = true)
     private UUID messageIdentifier;
 
-    private DefaultConfigurationResponse() {
+    protected DefaultConfigurationResponse() {
     }
 
     public DefaultConfigurationResponse(UUID messageIdentifier) {

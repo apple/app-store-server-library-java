@@ -20,7 +20,7 @@ public class RealtimeUrlRequest {
 
     private static final int MAXIMUM_REALTIME_URL_LENGTH = 256;
 
-    private RealtimeUrlRequest() {
+    protected RealtimeUrlRequest() {
     }
 
     public RealtimeUrlRequest(String realtimeURL) {
