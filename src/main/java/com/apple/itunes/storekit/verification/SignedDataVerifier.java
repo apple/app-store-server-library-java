@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
 import java.security.interfaces.ECPublicKey;
 import java.util.Base64;
@@ -218,7 +219,7 @@ public class SignedDataVerifier {
     }
 
     protected <T extends DecodedSignedData> T parseJWTPayload(Class<T> clazz, DecodedJWT jwt) throws VerificationException {
-        String payload = new String(Base64.getUrlDecoder().decode(jwt.getPayload()));
+        String payload = new String(Base64.getUrlDecoder().decode(jwt.getPayload()), StandardCharsets.UTF_8);
         try {
             return objectMapper.readValue(payload, clazz);
         } catch (JsonProcessingException e) {
