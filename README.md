@@ -162,6 +162,44 @@ public class ExampleMigration {
 }
 ```
 
+### App Receipt Verification Usage
+
+```java
+import com.apple.itunes.storekit.model.AppReceipt;
+import com.apple.itunes.storekit.model.Environment;
+import com.apple.itunes.storekit.verification.AppReceiptVerifier;
+import com.apple.itunes.storekit.verification.VerificationException;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Set;
+
+public class ExampleAppReceiptVerification {
+    public static void main(String[] args) {
+        String bundleId = "com.example";
+        Environment environment = Environment.SANDBOX;
+        Set<InputStream> rootCAs = Set.of(
+                new FileInputStream("/path/to/rootCA1"),
+                new FileInputStream("/path/to/rootCA2")
+        );
+
+        AppReceiptVerifier appReceiptVerifier = new AppReceiptVerifier(rootCAs, bundleId, environment, true);
+
+        String appReceipt = "MI...";
+
+        try {
+            AppReceipt receipt = appReceiptVerifier.verifyAndDecodeAppReceipt(appReceipt);
+            System.out.println(receipt);
+
+            String transactionId = appReceiptVerifier.verifyAndExtractTransactionId(appReceipt);
+            System.out.println(transactionId);
+        } catch (VerificationException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
 ### Promotional Offer Signature Creation
 
 ```java
