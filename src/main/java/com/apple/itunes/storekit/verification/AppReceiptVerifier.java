@@ -31,7 +31,6 @@ import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -107,6 +106,8 @@ public class AppReceiptVerifier {
     public AppReceipt verifyAndDecodeAppReceipt(String encodedReceipt) throws VerificationException {
         byte[] receiptDer;
         try {
+            // The MIME decoder tolerates the line breaks base64 receipts
+            // commonly pick up in transit.
             receiptDer = Base64.getMimeDecoder().decode(encodedReceipt);
         } catch (IllegalArgumentException | NullPointerException e) {
             throw new VerificationException(VerificationStatus.VERIFICATION_FAILURE, "Receipt is not valid base64");
@@ -175,13 +176,13 @@ public class AppReceiptVerifier {
         JcaX509CertificateConverter converter = new JcaX509CertificateConverter();
         try {
             List<X509Certificate> embedded = new ArrayList<>();
-            for (X509CertificateHolder holder : signedData.getCertificates().getMatches(null)) {
-                embedded.add(converter.getCertificate(holder));
-            }
             X509Certificate leaf = null;
-            Collection<X509CertificateHolder> signerMatches = signedData.getCertificates().getMatches(signer.getSID());
-            if (!signerMatches.isEmpty()) {
-                leaf = converter.getCertificate(signerMatches.iterator().next());
+            for (X509CertificateHolder holder : signedData.getCertificates().getMatches(null)) {
+                X509Certificate certificate = converter.getCertificate(holder);
+                embedded.add(certificate);
+                if (leaf == null && signer.getSID().match(holder)) {
+                    leaf = certificate;
+                }
             }
             if (leaf == null) {
                 throw new VerificationException(VerificationStatus.INVALID_CHAIN, "Signer certificate is not embedded in the receipt");
@@ -243,7 +244,7 @@ public class AppReceiptVerifier {
     }
 
     protected void validateBundleId(String bundleId) throws VerificationException {
-        if (this.bundleId == null || !this.bundleId.equals(bundleId)) {
+        if (!this.bundleId.equals(bundleId)) {
             throw new VerificationException(VerificationStatus.INVALID_APP_IDENTIFIER);
         }
     }
@@ -279,7 +280,6 @@ public class AppReceiptVerifier {
         }
     }
 
-    // --- ASN.1 payload parsing -------------------------------------------
 
     private static AppReceipt parseReceiptPayload(byte[] payload) throws VerificationException {
         AppReceipt receipt = new AppReceipt();
