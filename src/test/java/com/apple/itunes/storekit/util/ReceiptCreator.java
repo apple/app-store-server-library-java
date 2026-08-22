@@ -41,6 +41,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -132,15 +133,45 @@ public class ReceiptCreator {
         return signReceipt(payload, chain.size(), signingTime);
     }
 
+    /**
+     * @param signatureAlgorithm The algorithm the signer signs with and names in
+     *                           the signer info, e.g. a digest Apple does not use
+     */
+    public byte[] signReceipt(byte[] payload, String signatureAlgorithm) throws Exception {
+        return signReceipt(payload, chain, new Date(), signatureAlgorithm);
+    }
+
+    /**
+     * A receipt embedding unrelated certificates on top of the chain, as one
+     * bloated to make chain assembly expensive carries.
+     */
+    public byte[] signReceiptWithPadding(byte[] payload, int paddingCertificates) throws Exception {
+        List<X509Certificate> embedded = new ArrayList<>(chain);
+        for (int i = 0; i < paddingCertificates; i++) {
+            KeyPair keyPair = rsaKeyPair();
+            embedded.add(certificate("CN=Padding " + i, keyPair.getPublic(), "CN=Test WWDR CA", keyPair.getPrivate(), false, null, tenYearsAgo(), inOneYear()));
+        }
+        return signReceipt(payload, embedded, new Date(), SIGNATURE_ALGORITHM);
+    }
+
+    /** A receipt signed by the leaf but embedding only the certificates above it. */
+    public byte[] signReceiptWithoutSignerCertificate(byte[] payload) throws Exception {
+        return signReceipt(payload, chain.subList(1, chain.size()), new Date(), SIGNATURE_ALGORITHM);
+    }
+
     private byte[] signReceipt(byte[] payload, int embeddedCertificates, Date signingTime) throws Exception {
+        return signReceipt(payload, chain.subList(0, embeddedCertificates), signingTime, SIGNATURE_ALGORITHM);
+    }
+
+    private byte[] signReceipt(byte[] payload, List<X509Certificate> embedded, Date signingTime, String signatureAlgorithm) throws Exception {
         ASN1EncodableVector signedAttributes = new ASN1EncodableVector();
         signedAttributes.add(new Attribute(CMSAttributes.signingTime, new DERSet(new Time(signingTime))));
         CMSSignedDataGenerator generator = new CMSSignedDataGenerator();
-        ContentSigner contentSigner = new JcaContentSignerBuilder(SIGNATURE_ALGORITHM).build(signingKey);
+        ContentSigner contentSigner = new JcaContentSignerBuilder(signatureAlgorithm).build(signingKey);
         generator.addSignerInfoGenerator(new JcaSignerInfoGeneratorBuilder(new JcaDigestCalculatorProviderBuilder().setProvider(BOUNCY_CASTLE_PROVIDER).build())
                 .setSignedAttributeGenerator(new DefaultSignedAttributeTableGenerator(new AttributeTable(signedAttributes)))
                 .build(contentSigner, chain.get(0)));
-        generator.addCertificates(new JcaCertStore(chain.subList(0, embeddedCertificates)));
+        generator.addCertificates(new JcaCertStore(embedded));
         return generator.generate(new CMSProcessableByteArray(payload), true).getEncoded();
     }
 

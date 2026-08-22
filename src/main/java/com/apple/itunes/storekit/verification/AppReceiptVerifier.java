@@ -31,6 +31,7 @@ import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -48,6 +49,12 @@ import java.util.Set;
  * caller-supplied Apple root certificates, and evaluated at the receipt's
  * creation date so old receipts survive certificate rotations unless online
  * checks are enabled.</p>
+ *
+ * <p>Verification establishes that the App Store issued the receipt for this
+ * app, not that the presenter is the device the receipt was issued to. Binding
+ * a receipt to a device requires the device identifier, which a server does not
+ * have; {@link AppReceipt#getOpaqueValue()} and {@link AppReceipt#getSha1Hash()}
+ * are decoded so a caller in a position to do that check can.</p>
  */
 public class AppReceiptVerifier {
 
@@ -75,6 +82,8 @@ public class AppReceiptVerifier {
 
     private static final String SHA1_OID = "1.3.14.3.2.26";
     private static final String SHA256_OID = "2.16.840.1.101.3.4.2.1";
+
+    private static final int MAXIMUM_EMBEDDED_CERTIFICATES = 10;
 
     private final String bundleId;
     private final Environment environment;
@@ -104,6 +113,19 @@ public class AppReceiptVerifier {
      * @throws VerificationException Thrown if the receipt could not be verified
      */
     public AppReceipt verifyAndDecodeAppReceipt(String encodedReceipt) throws VerificationException {
+        try {
+            return verifyAndDecode(encodedReceipt);
+        } catch (VerificationException e) {
+            throw e;
+        } catch (Exception e) {
+            // As in SignedDataVerifier, anything hostile input can provoke
+            // surfaces as a verification failure rather than escaping the
+            // declared contract as a runtime exception.
+            throw new VerificationException(VerificationStatus.VERIFICATION_FAILURE, e);
+        }
+    }
+
+    private AppReceipt verifyAndDecode(String encodedReceipt) throws VerificationException {
         byte[] receiptDer;
         try {
             // The MIME decoder tolerates the line breaks base64 receipts
@@ -130,8 +152,11 @@ public class AppReceiptVerifier {
         AppReceipt receipt = parseReceiptPayload((byte[]) signedData.getSignedContent().getContent());
         if (!Environment.XCODE.equals(this.environment) && !Environment.LOCAL_TESTING.equals(this.environment)) {
             Date effectiveDate = this.enableOnlineChecks || receipt.getReceiptCreationDate() == null ? new Date() : new Date(receipt.getReceiptCreationDate());
-            X509Certificate signerCertificate = verifyChain(signedData, effectiveDate);
-            verifySignature(signedData, signerCertificate);
+            // Resolved once, so that the certificate the chain is built for is
+            // by construction the certificate the signature is verified with.
+            SignerInformation signer = firstSigner(signedData);
+            X509Certificate signerCertificate = verifyChain(signedData, signer, effectiveDate);
+            verifySignature(signer, signerCertificate);
         }
         // In the Xcode and LocalTesting environments the data is not signed by
         // the App Store and signature verification is skipped, but the bundle
@@ -171,13 +196,20 @@ public class AppReceiptVerifier {
      * chain length, the WWDR intermediate OID and the receipt-signing leaf
      * OID, and validates to the caller-supplied Apple roots.
      */
-    private X509Certificate verifyChain(CMSSignedData signedData, Date effectiveDate) throws VerificationException {
-        SignerInformation signer = firstSigner(signedData);
+    private X509Certificate verifyChain(CMSSignedData signedData, SignerInformation signer, Date effectiveDate) throws VerificationException {
         JcaX509CertificateConverter converter = new JcaX509CertificateConverter();
         try {
+            Collection<X509CertificateHolder> holders = signedData.getCertificates().getMatches(null);
+            // A receipt embeds the leaf, the WWDR intermediate and the root.
+            // Bounding the count keeps a receipt carrying thousands of
+            // certificates from making chain assembly expensive, all of which
+            // would happen before anything about it has been verified.
+            if (holders.size() > MAXIMUM_EMBEDDED_CERTIFICATES) {
+                throw new VerificationException(VerificationStatus.INVALID_CHAIN_LENGTH);
+            }
             List<X509Certificate> embedded = new ArrayList<>();
             X509Certificate leaf = null;
-            for (X509CertificateHolder holder : signedData.getCertificates().getMatches(null)) {
+            for (X509CertificateHolder holder : holders) {
                 X509Certificate certificate = converter.getCertificate(holder);
                 embedded.add(certificate);
                 if (leaf == null && signer.getSID().match(holder)) {
@@ -218,11 +250,10 @@ public class AppReceiptVerifier {
         return null;
     }
 
-    private void verifySignature(CMSSignedData signedData, X509Certificate signerCertificate) throws VerificationException {
+    private void verifySignature(SignerInformation signer, X509Certificate signerCertificate) throws VerificationException {
         if (!(signerCertificate.getPublicKey() instanceof RSAPublicKey)) {
             throw new VerificationException(VerificationStatus.VERIFICATION_FAILURE, "Receipt signer key is not RSA");
         }
-        SignerInformation signer = firstSigner(signedData);
         String digestOid = signer.getDigestAlgOID();
         if (!SHA1_OID.equals(digestOid) && !SHA256_OID.equals(digestOid)) {
             throw new VerificationException(VerificationStatus.VERIFICATION_FAILURE, "Unrecognized receipt digest algorithm " + digestOid);

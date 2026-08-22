@@ -183,16 +183,19 @@ public class ExampleAppReceiptVerification {
                 new FileInputStream("/path/to/rootCA2")
         );
 
-        AppReceiptVerifier appReceiptVerifier = new AppReceiptVerifier(rootCAs, bundleId, environment, true);
+        // Online checks move chain validation to the current date. App receipts
+        // outlive the certificate that signed them, so leaving them off is what
+        // lets an old receipt still verify.
+        boolean enableOnlineChecks = false;
+
+        AppReceiptVerifier appReceiptVerifier = new AppReceiptVerifier(rootCAs, bundleId, environment, enableOnlineChecks);
 
         String appReceipt = "MI...";
 
         try {
             AppReceipt receipt = appReceiptVerifier.verifyAndDecodeAppReceipt(appReceipt);
             System.out.println(receipt);
-
-            String transactionId = appReceiptVerifier.verifyAndExtractTransactionId(appReceipt);
-            System.out.println(transactionId);
+            System.out.println(receipt.getInAppPurchases());
         } catch (VerificationException e) {
             e.printStackTrace();
         }

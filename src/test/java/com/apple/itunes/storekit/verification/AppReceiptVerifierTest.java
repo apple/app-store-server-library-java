@@ -306,6 +306,84 @@ public class AppReceiptVerifierTest {
         Assertions.assertEquals(VerificationStatus.INVALID_ENVIRONMENT, exception.getStatus());
     }
 
+    /**
+     * The signer certificate is what the chain is built for, so a receipt whose
+     * signer is not among the embedded certificates has no chain to verify.
+     */
+    @Test
+    public void testReceiptWithoutTheSignerCertificateEmbedded() throws Exception {
+        byte[] receipt = receiptCreator.signReceiptWithoutSignerCertificate(receiptPayload("ProductionSandbox", BUNDLE_ID, RECEIPT_CREATION_DATE));
+
+        AppReceiptVerifier verifier = getReceiptVerifier(receiptCreator, Environment.SANDBOX, BUNDLE_ID, false);
+        VerificationException exception = Assertions.assertThrows(VerificationException.class, () -> verifier.verifyAndDecodeAppReceipt(encode(receipt)));
+        Assertions.assertEquals(VerificationStatus.INVALID_CHAIN, exception.getStatus());
+    }
+
+    /**
+     * The embedded certificates are attacker-supplied and are ordered into a
+     * chain before anything about the receipt has been verified, so a receipt
+     * carrying more of them than a chain can hold is rejected rather than
+     * assembled.
+     */
+    @Test
+    public void testReceiptWithTooManyEmbeddedCertificates() throws Exception {
+        byte[] receipt = receiptCreator.signReceiptWithPadding(receiptPayload("ProductionSandbox", BUNDLE_ID, RECEIPT_CREATION_DATE), 30);
+
+        AppReceiptVerifier verifier = getReceiptVerifier(receiptCreator, Environment.SANDBOX, BUNDLE_ID, false);
+        VerificationException exception = Assertions.assertThrows(VerificationException.class, () -> verifier.verifyAndDecodeAppReceipt(encode(receipt)));
+        Assertions.assertEquals(VerificationStatus.INVALID_CHAIN_LENGTH, exception.getStatus());
+    }
+
+    /**
+     * A correctly signed receipt still fails when the signer names a digest
+     * outside the allowlist, so the accepted algorithms never widen to whatever
+     * a signer proposes.
+     */
+    @Test
+    public void testReceiptWithADigestAppleDoesNotUse() throws Exception {
+        byte[] receipt = receiptCreator.signReceipt(receiptPayload("ProductionSandbox", BUNDLE_ID, RECEIPT_CREATION_DATE), "SHA512withRSA");
+
+        AppReceiptVerifier verifier = getReceiptVerifier(receiptCreator, Environment.SANDBOX, BUNDLE_ID, false);
+        VerificationException exception = Assertions.assertThrows(VerificationException.class, () -> verifier.verifyAndDecodeAppReceipt(encode(receipt)));
+        Assertions.assertEquals(VerificationStatus.VERIFICATION_FAILURE, exception.getStatus());
+    }
+
+    /**
+     * The payload is parsed before it has been verified, so a date it can carry
+     * but no instant can represent must surface as a verification failure rather
+     * than as a runtime exception escaping the declared contract.
+     */
+    @Test
+    public void testReceiptWithADateOutsideTheRepresentableRange() throws Exception {
+        byte[] receipt = receiptCreator.signReceipt(receiptPayload("ProductionSandbox", BUNDLE_ID, "+1000000000-01-01T00:00:00Z"));
+
+        AppReceiptVerifier verifier = getReceiptVerifier(receiptCreator, Environment.SANDBOX, BUNDLE_ID, false);
+        VerificationException exception = Assertions.assertThrows(VerificationException.class, () -> verifier.verifyAndDecodeAppReceipt(encode(receipt)));
+        Assertions.assertEquals(VerificationStatus.VERIFICATION_FAILURE, exception.getStatus());
+    }
+
+    /** As with an Xcode receipt, LocalTesting data is not signed by the App Store. */
+    @Test
+    public void testLocalTestingReceiptDecoding() throws Exception {
+        ReceiptCreator localTestingCreator = ReceiptCreator.createSelfSignedReceiptCreator();
+        byte[] receipt = localTestingCreator.signReceipt(receiptPayload("LocalTesting", BUNDLE_ID, RECEIPT_CREATION_DATE));
+
+        AppReceipt decoded = getReceiptVerifier(localTestingCreator, Environment.LOCAL_TESTING, BUNDLE_ID, false).verifyAndDecodeAppReceipt(encode(receipt));
+        Assertions.assertEquals("LocalTesting", decoded.getReceiptType());
+        Assertions.assertEquals(BUNDLE_ID, decoded.getBundleId());
+    }
+
+    /** Skipping the signature checks must not skip the app identity check. */
+    @Test
+    public void testLocalTestingReceiptWithWrongBundleId() throws Exception {
+        ReceiptCreator localTestingCreator = ReceiptCreator.createSelfSignedReceiptCreator();
+        byte[] receipt = localTestingCreator.signReceipt(receiptPayload("LocalTesting", BUNDLE_ID, RECEIPT_CREATION_DATE));
+
+        AppReceiptVerifier verifier = getReceiptVerifier(localTestingCreator, Environment.LOCAL_TESTING, "com.example.other", false);
+        VerificationException exception = Assertions.assertThrows(VerificationException.class, () -> verifier.verifyAndDecodeAppReceipt(encode(receipt)));
+        Assertions.assertEquals(VerificationStatus.INVALID_APP_IDENTIFIER, exception.getStatus());
+    }
+
     @Test
     public void testVerifyAndExtractTransactionId() throws Exception {
         String transactionId = getReceiptVerifier(receiptCreator, Environment.SANDBOX, BUNDLE_ID, false).verifyAndExtractTransactionId(encode(sandboxReceipt));
