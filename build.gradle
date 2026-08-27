@@ -24,8 +24,13 @@ java {
     withJavadocJar()
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
 javadoc {
     source = sourceSets.main.allJava
+    options.encoding = 'UTF-8'
 }
 
 signing {
