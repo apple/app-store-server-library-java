@@ -131,6 +131,7 @@ public abstract class BaseAppStoreServerAPIClient {
             encodedBody = null;
         }
         try (var r = makeRequest(path, method, queryParameters, headers, contentType, encodedBody)) {
+            var responseHeaders = r.headers();
             if (r.statusCode() >= 200 && r.statusCode() < 300) {
                 if (clazz.equals(Void.class)) {
                     return null;
@@ -143,7 +144,7 @@ public abstract class BaseAppStoreServerAPIClient {
                 try {
                     return objectMapper.readValue(responseBody, clazz);
                 } catch (JsonProcessingException e) {
-                    throw new APIException(r.statusCode(), e);
+                    throw new APIException(r.statusCode(), e, responseHeaders);
                 }
             } else {
                 // Best effort to decode the body
@@ -155,16 +156,16 @@ public abstract class BaseAppStoreServerAPIClient {
                             errorPayload = objectMapper.readValue(responseBody, ErrorPayload.class);
                         } catch (JsonProcessingException ignored) {
                             // If we cannot parse the body, then simply return the status code
-                            throw new APIException(r.statusCode());
+                            throw new APIException(r.statusCode(), responseHeaders);
                         }
-                        throw new APIException(r.statusCode(), errorPayload.getErrorCode(), errorPayload.getErrorMessage());
+                        throw new APIException(r.statusCode(), errorPayload.getErrorCode(), errorPayload.getErrorMessage(), responseHeaders);
                     }
                 } catch (APIException e) {
                     throw e;
                 } catch (Exception e) {
-                    throw new APIException(r.statusCode(), e);
+                    throw new APIException(r.statusCode(), e, responseHeaders);
                 }
-                throw new APIException(r.statusCode());
+                throw new APIException(r.statusCode(), responseHeaders);
             }
         }
     }
@@ -632,5 +633,9 @@ public abstract class BaseAppStoreServerAPIClient {
          * @return The response body, if it exists
          */
         Reader body();
+        /**
+         * @return The headers of the response, keyed by lowercased header name
+         */
+        Map<String, List<String>> headers();
     }
 }

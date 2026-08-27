@@ -904,9 +904,43 @@ public class AppStoreServerAPIClientTest {
             Assertions.assertEquals(APIError.RATE_LIMIT_EXCEEDED, e.getApiError());
             Assertions.assertEquals(4290000L, e.getRawApiError());
             Assertions.assertEquals("Rate limit exceeded.", e.getApiErrorMessage());
+            Assertions.assertNull(e.getRetryAfter());
             return;
         }
         Assertions.fail();
+    }
+
+    @Test
+    public void testAPITooManyRequestsWithRetryAfter() throws IOException {
+        String body = TestingUtility.readFile("models/apiTooManyRequestsException.json");
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 429, Map.of("Retry-After", "1698148900000"));
+        try {
+            client.getTransactionInfo("1234");
+        } catch (APIException e) {
+            Assertions.assertEquals(429, e.getHttpStatusCode());
+            Assertions.assertEquals(APIError.RATE_LIMIT_EXCEEDED, e.getApiError());
+            Assertions.assertEquals(1698148900000L, e.getRetryAfter());
+            Assertions.assertEquals(List.of("1698148900000"), e.getHeaders().get("retry-after"));
+            return;
+        }
+        Assertions.fail();
+    }
+
+    @Test
+    public void testAPITooManyRequestsWithMalformedRetryAfter() throws IOException {
+        String body = TestingUtility.readFile("models/apiTooManyRequestsException.json");
+        List<String> rawRetryAfterValues = List.of("", " ", "not-a-number", "1698148900000.0", "+1698148900000",
+                "-1698148900000", "1698148900000abc", "99999999999999999999", "Wed, 21 Oct 2015 07:28:00 GMT");
+        for (String rawRetryAfter : rawRetryAfterValues) {
+            AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 429, Map.of("Retry-After", rawRetryAfter));
+            try {
+                client.getTransactionInfo("1234");
+                Assertions.fail();
+            } catch (APIException e) {
+                Assertions.assertEquals(429, e.getHttpStatusCode());
+                Assertions.assertNull(e.getRetryAfter(), "Expected no retryAfter for raw value \"" + rawRetryAfter + "\"");
+            }
+        }
     }
 
     @Test
@@ -1289,18 +1323,24 @@ public class AppStoreServerAPIClientTest {
     }
 
     private AppStoreServerAPIClient getAppStoreServerAPIClient(String body, Consumer<Request> requestVerifier, int statusCode) throws IOException {
+        return getAppStoreServerAPIClient(body, requestVerifier, statusCode, Map.of());
+    }
+
+    private AppStoreServerAPIClient getAppStoreServerAPIClient(String body, Consumer<Request> requestVerifier, int statusCode, Map<String, String> responseHeaders) throws IOException {
         try (InputStream key = this.getClass().getClassLoader().getResourceAsStream("certs/testSigningKey.p8")) {
             Assertions.assertNotNull(key);
             return new AppStoreServerAPIClient(new String(key.readAllBytes()), "keyId", "issuerId", "com.example", Environment.LOCAL_TESTING) {
                 @Override
                 protected Response getResponse(Request request) {
                     requestVerifier.accept(request);
-                    return new Response.Builder()
+                    Response.Builder responseBuilder = new Response.Builder()
                             .body(ResponseBody.create(body, MediaType.parse("application/json")))
                             .code(statusCode)
                             .request(request)
                             .protocol(Protocol.HTTP_1_1)
-                            .message("")
+                            .message("");
+                    responseHeaders.forEach(responseBuilder::addHeader);
+                    return responseBuilder
                             .build();
                 }
             };
