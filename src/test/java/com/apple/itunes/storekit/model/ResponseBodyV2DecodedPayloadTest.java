@@ -131,6 +131,9 @@ public class ResponseBodyV2DecodedPayloadTest {
         Assertions.assertEquals(1698148950000L, notification.getExternalPurchaseToken().getTokenCreationDate());
         Assertions.assertEquals(55555L, notification.getExternalPurchaseToken().getAppAppleId());
         Assertions.assertEquals("com.example", notification.getExternalPurchaseToken().getBundleId());
+        Assertions.assertEquals(TokenType.ACQUISITION, notification.getExternalPurchaseToken().getTokenType());
+        Assertions.assertEquals("ACQUISITION", notification.getExternalPurchaseToken().getRawTokenType());
+        Assertions.assertEquals(1698149000000L, notification.getExternalPurchaseToken().getTokenExpirationDate());
     }
 
     @Test
@@ -162,6 +165,9 @@ public class ResponseBodyV2DecodedPayloadTest {
         Assertions.assertEquals(1698148950000L, notification.getExternalPurchaseToken().getTokenCreationDate());
         Assertions.assertEquals(55555L, notification.getExternalPurchaseToken().getAppAppleId());
         Assertions.assertEquals("com.example", notification.getExternalPurchaseToken().getBundleId());
+        Assertions.assertEquals(TokenType.ACQUISITION, notification.getExternalPurchaseToken().getTokenType());
+        Assertions.assertEquals("ACQUISITION", notification.getExternalPurchaseToken().getRawTokenType());
+        Assertions.assertEquals(1698149000000L, notification.getExternalPurchaseToken().getTokenExpirationDate());
     }
 
     @Test

@@ -18,6 +18,8 @@ public class ExternalPurchaseToken {
     private static final String SERIALIZED_NAME_TOKEN_CREATION_DATE = "tokenCreationDate";
     private static final String SERIALIZED_NAME_APP_APPLE_ID = "appAppleId";
     private static final String SERIALIZED_NAME_BUNDLE_ID = "bundleId";
+    private static final String SERIALIZED_NAME_TOKEN_TYPE = "tokenType";
+    private static final String SERIALIZED_NAME_TOKEN_EXPIRATION_DATE = "tokenExpirationDate";
     @JsonProperty(SERIALIZED_NAME_EXTERNAL_PURCHASE_ID)
     private String externalPurchaseId;
     @JsonProperty(SERIALIZED_NAME_TOKEN_CREATION_DATE)
@@ -26,6 +28,10 @@ public class ExternalPurchaseToken {
     private Long appAppleId;
     @JsonProperty(SERIALIZED_NAME_BUNDLE_ID)
     private String bundleId;
+    @JsonProperty(SERIALIZED_NAME_TOKEN_TYPE)
+    private String tokenType;
+    @JsonProperty(SERIALIZED_NAME_TOKEN_EXPIRATION_DATE)
+    private Long tokenExpirationDate;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
@@ -108,6 +114,55 @@ public class ExternalPurchaseToken {
         this.bundleId = bundleId;
     }
 
+    public ExternalPurchaseToken tokenType(TokenType tokenType) {
+        this.tokenType = tokenType != null ? tokenType.getValue() : null;
+        return this;
+    }
+
+    /**
+     * The type of an external purchase custom link token.
+     *
+     * @return tokenType
+     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/tokentype">tokenType</a>
+     **/
+    public TokenType getTokenType() {
+        return tokenType != null ? TokenType.fromValue(tokenType) : null;
+    }
+
+    /**
+     * @see #getTokenType()
+     */
+    public String getRawTokenType() {
+        return tokenType;
+    }
+
+    public void setTokenType(TokenType tokenType) {
+        this.tokenType = tokenType != null ? tokenType.getValue() : null;
+    }
+
+    public void setRawTokenType(String rawTokenType) {
+        this.tokenType = rawTokenType;
+    }
+
+    public ExternalPurchaseToken tokenExpirationDate(Long tokenExpirationDate) {
+        this.tokenExpirationDate = tokenExpirationDate;
+        return this;
+    }
+
+    /**
+     * The field of a custom link token that contains the UNIX date, in milliseconds, when the token expires.
+     *
+     * @return tokenExpirationDate
+     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/tokenexpirationdate">tokenExpirationDate</a>
+     **/
+    public Long getTokenExpirationDate() {
+        return tokenExpirationDate;
+    }
+
+    public void setTokenExpirationDate(Long tokenExpirationDate) {
+        this.tokenExpirationDate = tokenExpirationDate;
+    }
+
     public ExternalPurchaseToken unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
         return this;
@@ -139,12 +194,14 @@ public class ExternalPurchaseToken {
                 Objects.equals(this.tokenCreationDate, externalPurchaseToken.tokenCreationDate) &&
                 Objects.equals(this.appAppleId, externalPurchaseToken.appAppleId) &&
                 Objects.equals(this.bundleId, externalPurchaseToken.bundleId) &&
+                Objects.equals(this.tokenType, externalPurchaseToken.tokenType) &&
+                Objects.equals(this.tokenExpirationDate, externalPurchaseToken.tokenExpirationDate) &&
                 Objects.equals(this.unknownFields, externalPurchaseToken.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(externalPurchaseId, tokenCreationDate, appAppleId, bundleId, unknownFields);
+        return Objects.hash(externalPurchaseId, tokenCreationDate, appAppleId, bundleId, tokenType, tokenExpirationDate, unknownFields);
     }
 
     @Override
@@ -154,6 +211,8 @@ public class ExternalPurchaseToken {
                 ", tokenCreationDate=" + tokenCreationDate +
                 ", appAppleId=" + appAppleId +
                 ", bundleId='" + bundleId + '\'' +
+                ", tokenType='" + tokenType + '\'' +
+                ", tokenExpirationDate=" + tokenExpirationDate +
                 ", unknownFields=" + unknownFields +
                 '}';
     }
