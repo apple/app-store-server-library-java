@@ -17,11 +17,14 @@ import okhttp3.ResponseBody;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public class AppStoreServerAPIClient extends BaseAppStoreServerAPIClient {
+
+    private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(30);
 
     private final OkHttpClient httpClient;
     private final HttpUrl urlBase;
@@ -48,6 +51,7 @@ public class AppStoreServerAPIClient extends BaseAppStoreServerAPIClient {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         // If a proxy is configured via java.net.ProxySelector.setDefault, this will allow java.net.Authenticator.setDefault to serve as its auth source
         builder.proxyAuthenticator(Authenticator.JAVA_NET_AUTHENTICATOR);
+        builder.callTimeout(REQUEST_TIMEOUT);
         this.httpClient = builder.build();
         this.urlBase = HttpUrl.parse(this.url);
     }
