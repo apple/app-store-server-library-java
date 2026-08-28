@@ -101,6 +101,11 @@ public class AppStoreServerAPIClient extends BaseAppStoreServerAPIClient {
         }
 
         @Override
+        public Map<String, List<String>> headers() {
+            return response.headers().toMultimap();
+        }
+
+        @Override
         public void close() {
             response.close();
         }
