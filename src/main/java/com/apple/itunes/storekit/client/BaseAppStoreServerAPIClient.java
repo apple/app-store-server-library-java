@@ -125,7 +125,7 @@ public abstract class BaseAppStoreServerAPIClient {
             encodedBody = (byte[]) body;
         } else if (body != null) {
             encodedBody = objectMapper.writeValueAsString(body).getBytes(StandardCharsets.UTF_8);
-        } else if (method.equals("POST")) {
+        } else if (method.equals("POST") || method.equals("PUT")) {
             encodedBody = new byte[] {};
         } else {
             encodedBody = null;

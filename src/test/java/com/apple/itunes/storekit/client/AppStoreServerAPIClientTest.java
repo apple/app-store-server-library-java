@@ -791,6 +791,24 @@ public class AppStoreServerAPIClientTest {
     }
 
     @Test
+    public void testConfigureRealtimeURLWithNullBody() throws IOException, APIException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {
+            Assertions.assertEquals("PUT", request.method());
+            Assertions.assertEquals("/inApps/v1/messaging/realtime/url", request.url().encodedPath());
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertEquals(expectedMediaType, body.contentType());
+            try {
+                Assertions.assertEquals(0, body.contentLength());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        client.configureRealtimeURL(null);
+    }
+
+    @Test
     public void testDeleteRealtimeURL() throws IOException, APIException {
         AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {
             Assertions.assertEquals("DELETE", request.method());
