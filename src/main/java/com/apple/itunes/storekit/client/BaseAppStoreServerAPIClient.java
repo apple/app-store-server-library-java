@@ -2,6 +2,18 @@
 
 package com.apple.itunes.storekit.client;
 
+import com.apple.itunes.storekit.model.AdvancedCommerceRequestRefundRequest;
+import com.apple.itunes.storekit.model.AdvancedCommerceRequestRefundResponse;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionCancelRequest;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionCancelResponse;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionChangeMetadataRequest;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionChangeMetadataResponse;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionMigrateRequest;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionMigrateResponse;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionPriceChangeRequest;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionPriceChangeResponse;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionRevokeRequest;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionRevokeResponse;
 import com.apple.itunes.storekit.model.AppTransactionInfoResponse;
 import com.apple.itunes.storekit.model.CheckTestNotificationResponse;
 import com.apple.itunes.storekit.model.ConsumptionRequest;
@@ -621,6 +633,90 @@ public abstract class BaseAppStoreServerAPIClient {
      */
     public void finishTransaction(String transactionId) throws APIException, IOException {
         makeHttpCall("/inApps/v1/transactions/" + transactionId + "/finish", "POST", Map.of(), null, Void.class, null);
+    }
+
+    /**
+     * Increase or decrease the price of an auto-renewable subscription, a bundle, or individual items within a subscription at the next renewal.
+     *
+     * @param transactionId A transaction identifier of the auto-renewable subscription that is subject to the price change.
+     * @param subscriptionPriceChangeRequest The request body that contains the details of the price change.
+     * @return A response that contains signed JWS renewal and JWS transaction information after a subscription price change request.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/change-subscription-price">Change Subscription Price</a>
+     */
+    public AdvancedCommerceSubscriptionPriceChangeResponse changeSubscriptionPrice(String transactionId, AdvancedCommerceSubscriptionPriceChangeRequest subscriptionPriceChangeRequest) throws APIException, IOException {
+        return makeHttpCall("/advancedCommerce/v1/subscription/changePrice/" + transactionId, "POST", Map.of(), subscriptionPriceChangeRequest, AdvancedCommerceSubscriptionPriceChangeResponse.class, JSON);
+    }
+
+    /**
+     * Turn off automatic renewal to cancel a customer’s auto-renewable subscription.
+     *
+     * @param transactionId The transaction identifier of the auto-renewable subscription to cancel.
+     * @param subscriptionCancelRequest The request body that includes information about the subscription to cancel.
+     * @return The response body for a successful subscription cancellation.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/cancel-a-subscription">Cancel a Subscription</a>
+     */
+    public AdvancedCommerceSubscriptionCancelResponse cancelSubscription(String transactionId, AdvancedCommerceSubscriptionCancelRequest subscriptionCancelRequest) throws APIException, IOException {
+        return makeHttpCall("/advancedCommerce/v1/subscription/cancel/" + transactionId, "POST", Map.of(), subscriptionCancelRequest, AdvancedCommerceSubscriptionCancelResponse.class, JSON);
+    }
+
+    /**
+     * Immediately cancel a customer’s subscription and all the items that are included in the subscription, and request a full or prorated refund.
+     *
+     * @param transactionId The transaction identifier of the auto-renewable subscription to revoke.
+     * @param subscriptionRevokeRequest The request body you provide to terminate a subscription and all its items immediately.
+     * @return The response body for a successful revoke-subscription request.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/revoke-subscription">Revoke Subscription</a>
+     */
+    public AdvancedCommerceSubscriptionRevokeResponse revokeSubscription(String transactionId, AdvancedCommerceSubscriptionRevokeRequest subscriptionRevokeRequest) throws APIException, IOException {
+        return makeHttpCall("/advancedCommerce/v1/subscription/revoke/" + transactionId, "POST", Map.of(), subscriptionRevokeRequest, AdvancedCommerceSubscriptionRevokeResponse.class, JSON);
+    }
+
+    /**
+     * Request a refund for a one-time charge or subscription transaction.
+     *
+     * @param transactionId The transaction identifier for which you request a refund.
+     * @param requestRefundRequest The request body for requesting a refund for a transaction.
+     * @return The response body for a transaction refund request.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/request-transaction-refund">Request Transaction Refund</a>
+     */
+    public AdvancedCommerceRequestRefundResponse requestTransactionRefund(String transactionId, AdvancedCommerceRequestRefundRequest requestRefundRequest) throws APIException, IOException {
+        return makeHttpCall("/advancedCommerce/v1/transaction/requestRefund/" + transactionId, "POST", Map.of(), requestRefundRequest, AdvancedCommerceRequestRefundResponse.class, JSON);
+    }
+
+    /**
+     * Update the SKU, display name, and description associated with a subscription, without affecting the subscription’s billing or its service.
+     *
+     * @param transactionId The transaction identifier of the auto-renewable subscription to get changes to its metadata.
+     * @param subscriptionChangeMetadataRequest The request body that contains the metadata changes.
+     * @return The response body for a successful subscription metadata change.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/change-subscription-metadata">Change Subscription Metadata</a>
+     */
+    public AdvancedCommerceSubscriptionChangeMetadataResponse changeSubscriptionMetadata(String transactionId, AdvancedCommerceSubscriptionChangeMetadataRequest subscriptionChangeMetadataRequest) throws APIException, IOException {
+        return makeHttpCall("/advancedCommerce/v1/subscription/changeMetadata/" + transactionId, "POST", Map.of(), subscriptionChangeMetadataRequest, AdvancedCommerceSubscriptionChangeMetadataResponse.class, JSON);
+    }
+
+    /**
+     * Migrate a subscription that a customer purchased through Apple In-App Purchase to a subscription you manage using the Advanced Commerce API.
+     *
+     * @param transactionId The transaction identifier of the auto-renewable subscription to migrate.
+     * @param subscriptionMigrateRequest The request body that contains the details for the migration.
+     * @return A response that contains signed renewal and transaction information after a subscription successfully migrates to the Advanced Commerce API.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/migrate-subscription-to-advanced-commerce-api">Migrate a Subscription to Advanced Commerce API</a>
+     */
+    public AdvancedCommerceSubscriptionMigrateResponse migrateSubscriptionToAdvancedCommerceAPI(String transactionId, AdvancedCommerceSubscriptionMigrateRequest subscriptionMigrateRequest) throws APIException, IOException {
+        return makeHttpCall("/advancedCommerce/v1/subscription/migrate/" + transactionId, "POST", Map.of(), subscriptionMigrateRequest, AdvancedCommerceSubscriptionMigrateResponse.class, JSON);
     }
 
     protected interface HttpResponseInterface extends Closeable {

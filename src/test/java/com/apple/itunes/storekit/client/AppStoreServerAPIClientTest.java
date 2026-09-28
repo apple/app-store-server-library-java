@@ -3,6 +3,28 @@
 package com.apple.itunes.storekit.client;
 
 import com.apple.itunes.storekit.model.AccountTenure;
+import com.apple.itunes.storekit.model.AdvancedCommerceEffective;
+import com.apple.itunes.storekit.model.AdvancedCommerceRefundReason;
+import com.apple.itunes.storekit.model.AdvancedCommerceRefundType;
+import com.apple.itunes.storekit.model.AdvancedCommerceRequestInfo;
+import com.apple.itunes.storekit.model.AdvancedCommerceRequestRefundItem;
+import com.apple.itunes.storekit.model.AdvancedCommerceRequestRefundRequest;
+import com.apple.itunes.storekit.model.AdvancedCommerceRequestRefundResponse;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionCancelRequest;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionCancelResponse;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionChangeMetadataDescriptors;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionChangeMetadataItem;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionChangeMetadataRequest;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionChangeMetadataResponse;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionMigrateDescriptors;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionMigrateItem;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionMigrateRequest;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionMigrateResponse;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionPriceChangeItem;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionPriceChangeRequest;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionPriceChangeResponse;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionRevokeRequest;
+import com.apple.itunes.storekit.model.AdvancedCommerceSubscriptionRevokeResponse;
 import com.apple.itunes.storekit.model.AppTransactionInfoResponse;
 import com.apple.itunes.storekit.model.BulletPoint;
 import com.apple.itunes.storekit.model.CheckTestNotificationResponse;
@@ -1311,6 +1333,267 @@ public class AppStoreServerAPIClientTest {
         Assertions.assertEquals(400L, responseTimes.getP99());
         Assertions.assertEquals(Map.of(SendAttemptResult.TIMED_OUT, 1, SendAttemptResult.NO_RESPONSE, 1), response.getFailures());
         Assertions.assertEquals(Map.of("TIMED_OUT", 1, "NO_RESPONSE", 1), response.getRawFailures());
+    }
+
+    @Test
+    public void testChangeSubscriptionPrice() throws IOException, APIException {
+        AppStoreServerAPIClient client = getClientWithBody("models/advancedCommerceSubscriptionPriceChangeResponse.json", request -> {
+            Assertions.assertEquals("POST", request.method());
+            Assertions.assertEquals("/advancedCommerce/v1/subscription/changePrice/4124214", request.url().encodedPath());
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertEquals(expectedMediaType, body.contentType());
+            Buffer buffer = new Buffer();
+            try {
+                body.writeTo(buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Map<String, Object> root;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            Assertions.assertEquals("7c80bb86-f892-4b21-a919-1357811d6c4f", ((Map<?, ?>) root.get("requestInfo")).get("requestReferenceId"));
+            Assertions.assertEquals("USD", root.get("currency"));
+            Assertions.assertEquals("USA", root.get("storefront"));
+            Map<?, ?> item = (Map<?, ?>) ((List<?>) root.get("items")).get(0);
+            Assertions.assertEquals("AD_FREE_1M", item.get("SKU"));
+            Assertions.assertEquals(12990, ((Number) item.get("price")).intValue());
+            Assertions.assertEquals(List.of("ADVANCED_FEATURES_1M"), item.get("dependentSKUs"));
+        });
+
+        AdvancedCommerceSubscriptionPriceChangeRequest priceChangeRequest = new AdvancedCommerceSubscriptionPriceChangeRequest(
+                new AdvancedCommerceRequestInfo(UUID.fromString("7c80bb86-f892-4b21-a919-1357811d6c4f")),
+                List.of(new AdvancedCommerceSubscriptionPriceChangeItem("AD_FREE_1M", 12990L)
+                        .dependentSKUs(List.of("ADVANCED_FEATURES_1M"))))
+                .currency("USD")
+                .storefront("USA");
+
+        AdvancedCommerceSubscriptionPriceChangeResponse response = client.changeSubscriptionPrice("4124214", priceChangeRequest);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals("signed_renewal_info", response.getSignedRenewalInfo());
+        Assertions.assertEquals("signed_transaction_info", response.getSignedTransactionInfo());
+    }
+
+    @Test
+    public void testCancelSubscription() throws IOException, APIException {
+        AppStoreServerAPIClient client = getClientWithBody("models/advancedCommerceSubscriptionCancelResponse.json", request -> {
+            Assertions.assertEquals("POST", request.method());
+            Assertions.assertEquals("/advancedCommerce/v1/subscription/cancel/4124214", request.url().encodedPath());
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertEquals(expectedMediaType, body.contentType());
+            Buffer buffer = new Buffer();
+            try {
+                body.writeTo(buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Map<String, Object> root;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            Assertions.assertEquals("932c6903-0ab8-4469-9f21-015f6fab013c", ((Map<?, ?>) root.get("requestInfo")).get("requestReferenceId"));
+            Assertions.assertEquals("USA", root.get("storefront"));
+        });
+
+        AdvancedCommerceSubscriptionCancelRequest cancelRequest = new AdvancedCommerceSubscriptionCancelRequest(
+                new AdvancedCommerceRequestInfo(UUID.fromString("932c6903-0ab8-4469-9f21-015f6fab013c")))
+                .storefront("USA");
+
+        AdvancedCommerceSubscriptionCancelResponse response = client.cancelSubscription("4124214", cancelRequest);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals("signed_renewal_info", response.getSignedRenewalInfo());
+        Assertions.assertEquals("signed_transaction_info", response.getSignedTransactionInfo());
+    }
+
+    @Test
+    public void testRevokeSubscription() throws IOException, APIException {
+        AppStoreServerAPIClient client = getClientWithBody("models/advancedCommerceSubscriptionRevokeResponse.json", request -> {
+            Assertions.assertEquals("POST", request.method());
+            Assertions.assertEquals("/advancedCommerce/v1/subscription/revoke/4124214", request.url().encodedPath());
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertEquals(expectedMediaType, body.contentType());
+            Buffer buffer = new Buffer();
+            try {
+                body.writeTo(buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Map<String, Object> root;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            Assertions.assertEquals("932c6903-0ab8-4469-9f21-015f6fab013c", ((Map<?, ?>) root.get("requestInfo")).get("requestReferenceId"));
+            Assertions.assertEquals("UNINTENDED_PURCHASE", root.get("refundReason"));
+            Assertions.assertEquals("PRORATED", root.get("refundType"));
+            Assertions.assertTrue((Boolean) root.get("refundRiskingPreference"));
+            Assertions.assertEquals("USA", root.get("storefront"));
+        });
+
+        AdvancedCommerceSubscriptionRevokeRequest revokeRequest = new AdvancedCommerceSubscriptionRevokeRequest(
+                new AdvancedCommerceRequestInfo(UUID.fromString("932c6903-0ab8-4469-9f21-015f6fab013c")),
+                true,
+                AdvancedCommerceRefundReason.UNINTENDED_PURCHASE,
+                AdvancedCommerceRefundType.PRORATED.getValue())
+                .storefront("USA");
+
+        AdvancedCommerceSubscriptionRevokeResponse response = client.revokeSubscription("4124214", revokeRequest);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals("signed_renewal_info", response.getSignedRenewalInfo());
+        Assertions.assertEquals("signed_transaction_info", response.getSignedTransactionInfo());
+    }
+
+    @Test
+    public void testRequestTransactionRefund() throws IOException, APIException {
+        AppStoreServerAPIClient client = getClientWithBody("models/advancedCommerceRequestRefundResponse.json", request -> {
+            Assertions.assertEquals("POST", request.method());
+            Assertions.assertEquals("/advancedCommerce/v1/transaction/requestRefund/4124214", request.url().encodedPath());
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertEquals(expectedMediaType, body.contentType());
+            Buffer buffer = new Buffer();
+            try {
+                body.writeTo(buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Map<String, Object> root;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            Assertions.assertEquals("932c6903-0ab8-4469-9f21-015f6fab013c", ((Map<?, ?>) root.get("requestInfo")).get("requestReferenceId"));
+            Assertions.assertEquals("USD", root.get("currency"));
+            Assertions.assertEquals("USA", root.get("storefront"));
+            Assertions.assertTrue((Boolean) root.get("refundRiskingPreference"));
+            Map<?, ?> item = (Map<?, ?>) ((List<?>) root.get("items")).get(0);
+            Assertions.assertEquals("AD_FREE_1M", item.get("SKU"));
+            Assertions.assertEquals("UNSATISFIED_WITH_PURCHASE", item.get("refundReason"));
+            Assertions.assertEquals("FULL", item.get("refundType"));
+            Assertions.assertTrue((Boolean) item.get("revoke"));
+        });
+
+        AdvancedCommerceRequestRefundRequest requestRefundRequest = new AdvancedCommerceRequestRefundRequest(
+                List.of(new AdvancedCommerceRequestRefundItem("AD_FREE_1M", AdvancedCommerceRefundReason.UNSATISFIED_WITH_PURCHASE, AdvancedCommerceRefundType.FULL, true)),
+                true,
+                new AdvancedCommerceRequestInfo(UUID.fromString("932c6903-0ab8-4469-9f21-015f6fab013c")))
+                .currency("USD")
+                .storefront("USA");
+
+        AdvancedCommerceRequestRefundResponse response = client.requestTransactionRefund("4124214", requestRefundRequest);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals("signed_transaction_info_value", response.getSignedTransactionInfo());
+    }
+
+    @Test
+    public void testChangeSubscriptionMetadata() throws IOException, APIException {
+        AppStoreServerAPIClient client = getClientWithBody("models/advancedCommerceSubscriptionChangeMetadataResponse.json", request -> {
+            Assertions.assertEquals("POST", request.method());
+            Assertions.assertEquals("/advancedCommerce/v1/subscription/changeMetadata/4124214", request.url().encodedPath());
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertEquals(expectedMediaType, body.contentType());
+            Buffer buffer = new Buffer();
+            try {
+                body.writeTo(buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Map<String, Object> root;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            Assertions.assertEquals("932c6903-0ab8-4469-9f21-015f6fab013c", ((Map<?, ?>) root.get("requestInfo")).get("requestReferenceId"));
+            Assertions.assertEquals("USA", root.get("storefront"));
+            Assertions.assertEquals("C003-00-1", root.get("taxCode"));
+            Map<?, ?> descriptors = (Map<?, ?>) root.get("descriptors");
+            Assertions.assertEquals("NEXT_BILL_CYCLE", descriptors.get("effective"));
+            Assertions.assertEquals("Remove ads and unlock advanced features.", descriptors.get("description"));
+            Assertions.assertEquals("Ad-free package", descriptors.get("displayName"));
+            Map<?, ?> item = (Map<?, ?>) ((List<?>) root.get("items")).get(0);
+            Assertions.assertEquals("AD_FREE_1M", item.get("currentSKU"));
+            Assertions.assertEquals("NEXT_BILL_CYCLE", item.get("effective"));
+            Assertions.assertEquals("AD_FREE_1M_V2", item.get("SKU"));
+        });
+
+        AdvancedCommerceSubscriptionChangeMetadataRequest changeMetadataRequest = new AdvancedCommerceSubscriptionChangeMetadataRequest(
+                new AdvancedCommerceRequestInfo(UUID.fromString("932c6903-0ab8-4469-9f21-015f6fab013c")))
+                .descriptors(new AdvancedCommerceSubscriptionChangeMetadataDescriptors(AdvancedCommerceEffective.NEXT_BILL_CYCLE)
+                        .description("Remove ads and unlock advanced features.")
+                        .displayName("Ad-free package"))
+                .items(List.of(new AdvancedCommerceSubscriptionChangeMetadataItem("AD_FREE_1M", AdvancedCommerceEffective.NEXT_BILL_CYCLE)
+                        .sku("AD_FREE_1M_V2")))
+                .storefront("USA")
+                .taxCode("C003-00-1");
+
+        AdvancedCommerceSubscriptionChangeMetadataResponse response = client.changeSubscriptionMetadata("4124214", changeMetadataRequest);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals("signed_renewal_info", response.getSignedRenewalInfo());
+        Assertions.assertEquals("signed_transaction_info", response.getSignedTransactionInfo());
+    }
+
+    @Test
+    public void testMigrateSubscriptionToAdvancedCommerceAPI() throws IOException, APIException {
+        AppStoreServerAPIClient client = getClientWithBody("models/advancedCommerceSubscriptionMigrateResponse.json", request -> {
+            Assertions.assertEquals("POST", request.method());
+            Assertions.assertEquals("/advancedCommerce/v1/subscription/migrate/4124214", request.url().encodedPath());
+            RequestBody body = request.body();
+            Assertions.assertNotNull(body);
+            Assertions.assertEquals(expectedMediaType, body.contentType());
+            Buffer buffer = new Buffer();
+            try {
+                body.writeTo(buffer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Map<String, Object> root;
+            try {
+                root = new ObjectMapper().readValue(buffer.readUtf8(), Map.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            Assertions.assertEquals("932c6903-0ab8-4469-9f21-015f6fab013c", ((Map<?, ?>) root.get("requestInfo")).get("requestReferenceId"));
+            Assertions.assertEquals("com.example.base", root.get("targetProductId"));
+            Assertions.assertEquals("C003-00-1", root.get("taxCode"));
+            Assertions.assertEquals("USA", root.get("storefront"));
+            Map<?, ?> descriptors = (Map<?, ?>) root.get("descriptors");
+            Assertions.assertEquals("Remove ads and unlock advanced features.", descriptors.get("description"));
+            Assertions.assertEquals("Ad-free package", descriptors.get("displayName"));
+            Map<?, ?> item = (Map<?, ?>) ((List<?>) root.get("items")).get(0);
+            Assertions.assertEquals("AD_FREE_1M", item.get("SKU"));
+            Assertions.assertEquals("Remove ads for the service.", item.get("description"));
+            Assertions.assertEquals("Ad-free monthly plan", item.get("displayName"));
+        });
+
+        AdvancedCommerceSubscriptionMigrateRequest migrateRequest = new AdvancedCommerceSubscriptionMigrateRequest(
+                new AdvancedCommerceRequestInfo(UUID.fromString("932c6903-0ab8-4469-9f21-015f6fab013c")),
+                new AdvancedCommerceSubscriptionMigrateDescriptors("Remove ads and unlock advanced features.", "Ad-free package"),
+                List.of(new AdvancedCommerceSubscriptionMigrateItem("AD_FREE_1M", "Remove ads for the service.", "Ad-free monthly plan")),
+                "com.example.base",
+                "C003-00-1")
+                .storefront("USA");
+
+        AdvancedCommerceSubscriptionMigrateResponse response = client.migrateSubscriptionToAdvancedCommerceAPI("4124214", migrateRequest);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals("signed_renewal_info_value", response.getSignedRenewalInfo());
+        Assertions.assertEquals("signed_transaction_info_value", response.getSignedTransactionInfo());
     }
 
    public AppStoreServerAPIClient getClientWithBody(String path, Consumer<Request> requestVerifier) throws IOException {
