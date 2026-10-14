@@ -14,17 +14,17 @@ import java.util.Objects;
  * Information for auto-renewable subscriptions, including signed transaction information and signed renewal information, for one subscription group.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/subscriptiongroupidentifieritem">SubscriptionGroupIdentifierItem</a>
- */
+ **/
 public class SubscriptionGroupIdentifierItem {
     private static final String SERIALIZED_NAME_SUBSCRIPTION_GROUP_IDENTIFIER = "subscriptionGroupIdentifier";
     private static final String SERIALIZED_NAME_LAST_TRANSACTIONS = "lastTransactions";
+
     @JsonProperty(SERIALIZED_NAME_SUBSCRIPTION_GROUP_IDENTIFIER)
     private String subscriptionGroupIdentifier;
     @JsonProperty(SERIALIZED_NAME_LAST_TRANSACTIONS)
-    private List<LastTransactionsItem> lastTransactions = null;
+    private List<LastTransactionsItem> lastTransactions;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
-
 
     public SubscriptionGroupIdentifierItem() {
     }
@@ -35,7 +35,7 @@ public class SubscriptionGroupIdentifierItem {
     }
 
     /**
-     * The identifier of the subscription group that the subscription belongs to.
+     * The subscription group identifier of the auto-renewable subscriptions in the lastTransactions array.
      *
      * @return subscriptionGroupIdentifier
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/subscriptiongroupidentifier">subscriptionGroupIdentifier</a>
@@ -53,11 +53,12 @@ public class SubscriptionGroupIdentifierItem {
         return this;
     }
 
-    public SubscriptionGroupIdentifierItem addLastTransactionsItem(LastTransactionsItem lastTransactionsItem) {
+    public SubscriptionGroupIdentifierItem addLastTransaction(LastTransactionsItem lastTransaction) {
+        Objects.requireNonNull(lastTransaction);
         if (this.lastTransactions == null) {
             this.lastTransactions = new ArrayList<>();
         }
-        this.lastTransactions.add(lastTransactionsItem);
+        this.lastTransactions.add(lastTransaction);
         return this;
     }
 
@@ -75,17 +76,16 @@ public class SubscriptionGroupIdentifierItem {
         this.lastTransactions = lastTransactions;
     }
 
-
     public SubscriptionGroupIdentifierItem unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
         return this;
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -122,4 +122,3 @@ public class SubscriptionGroupIdentifierItem {
                 '}';
     }
 }
-

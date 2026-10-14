@@ -12,19 +12,19 @@ import java.util.UUID;
  * A promotional offer and message you provide in a real-time response to your Get Retention Message endpoint.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/promotionaloffer">promotionalOffer</a>
- */
+ **/
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PromotionalOffer {
     private static final String SERIALIZED_NAME_MESSAGE_IDENTIFIER = "messageIdentifier";
     private static final String SERIALIZED_NAME_PROMOTIONAL_OFFER_SIGNATURE_V2 = "promotionalOfferSignatureV2";
     private static final String SERIALIZED_NAME_PROMOTIONAL_OFFER_SIGNATURE_V1 = "promotionalOfferSignatureV1";
-    @JsonProperty(value = SERIALIZED_NAME_MESSAGE_IDENTIFIER)
-    private UUID messageIdentifier;
-    @JsonProperty(value = SERIALIZED_NAME_PROMOTIONAL_OFFER_SIGNATURE_V2)
-    private String promotionalOfferSignatureV2;
-    @JsonProperty(value = SERIALIZED_NAME_PROMOTIONAL_OFFER_SIGNATURE_V1)
-    private PromotionalOfferSignatureV1 promotionalOfferSignatureV1;
 
+    @JsonProperty(SERIALIZED_NAME_MESSAGE_IDENTIFIER)
+    private UUID messageIdentifier;
+    @JsonProperty(SERIALIZED_NAME_PROMOTIONAL_OFFER_SIGNATURE_V2)
+    private String promotionalOfferSignatureV2;
+    @JsonProperty(SERIALIZED_NAME_PROMOTIONAL_OFFER_SIGNATURE_V1)
+    private PromotionalOfferSignatureV1 promotionalOfferSignatureV1;
 
     public PromotionalOffer() {
     }
@@ -88,12 +88,16 @@ public class PromotionalOffer {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PromotionalOffer that = (PromotionalOffer) o;
-        return Objects.equals(messageIdentifier, that.messageIdentifier) &&
-               Objects.equals(promotionalOfferSignatureV2, that.promotionalOfferSignatureV2) &&
-               Objects.equals(promotionalOfferSignatureV1, that.promotionalOfferSignatureV1);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PromotionalOffer promotionalOffer = (PromotionalOffer) o;
+        return Objects.equals(this.messageIdentifier, promotionalOffer.messageIdentifier) &&
+                Objects.equals(this.promotionalOfferSignatureV2, promotionalOffer.promotionalOfferSignatureV2) &&
+                Objects.equals(this.promotionalOfferSignatureV1, promotionalOffer.promotionalOfferSignatureV1);
     }
 
     @Override

@@ -8,10 +8,16 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * The position where the header text appears in a message.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/headerposition">headerPosition</a>
- */
+ **/
 public enum HeaderPosition {
 
+    /**
+     * Position the header text above the message body.
+     **/
     ABOVE_BODY("ABOVE_BODY"),
+    /**
+     * Position the header text above the image.
+     **/
     ABOVE_IMAGE("ABOVE_IMAGE");
 
     private final String value;
@@ -39,4 +45,3 @@ public enum HeaderPosition {
         return String.valueOf(value);
     }
 }
-

@@ -12,18 +12,15 @@ import java.util.UUID;
  * The request body that contains the default configuration information.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/defaultconfigurationrequest">DefaultConfigurationRequest</a>
- */
+ **/
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DefaultConfigurationRequest {
     private static final String SERIALIZED_NAME_MESSAGE_IDENTIFIER = "messageIdentifier";
-    @JsonProperty(SERIALIZED_NAME_MESSAGE_IDENTIFIER)
+
+    @JsonProperty(value = SERIALIZED_NAME_MESSAGE_IDENTIFIER, required = true)
     private UUID messageIdentifier;
 
-    /**
-     * @deprecated Use {@link #DefaultConfigurationRequest(UUID)} instead.
-     */
-    @Deprecated
-    public DefaultConfigurationRequest() {
+    protected DefaultConfigurationRequest() {
     }
 
     public DefaultConfigurationRequest(UUID messageIdentifier) {
@@ -31,7 +28,7 @@ public class DefaultConfigurationRequest {
     }
 
     public DefaultConfigurationRequest messageIdentifier(UUID messageIdentifier) {
-        this.messageIdentifier = messageIdentifier;
+        this.messageIdentifier = Objects.requireNonNull(messageIdentifier);
         return this;
     }
 
@@ -46,7 +43,7 @@ public class DefaultConfigurationRequest {
     }
 
     public void setMessageIdentifier(UUID messageIdentifier) {
-        this.messageIdentifier = messageIdentifier;
+        this.messageIdentifier = Objects.requireNonNull(messageIdentifier);
     }
 
     @Override
@@ -73,4 +70,3 @@ public class DefaultConfigurationRequest {
                 '}';
     }
 }
-

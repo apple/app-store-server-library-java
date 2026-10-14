@@ -12,14 +12,14 @@ import java.util.Objects;
  * A response that contains signed transaction information for a single transaction.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/transactioninforesponse">TransactionInfoResponse</a>
- */
+ **/
 public class TransactionInfoResponse {
     private static final String SERIALIZED_NAME_SIGNED_TRANSACTION_INFO = "signedTransactionInfo";
+
     @JsonProperty(SERIALIZED_NAME_SIGNED_TRANSACTION_INFO)
     private String signedTransactionInfo;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
-
 
     public TransactionInfoResponse() {
     }
@@ -43,17 +43,16 @@ public class TransactionInfoResponse {
         this.signedTransactionInfo = signedTransactionInfo;
     }
 
-
     public TransactionInfoResponse unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
         return this;
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -88,4 +87,3 @@ public class TransactionInfoResponse {
                 '}';
     }
 }
-

@@ -64,7 +64,7 @@ public class ChainVerifier {
     public PublicKey verifyChain(String[] certificates, boolean performRevocationChecking, Date effectiveDate) throws VerificationException {
         if (performRevocationChecking && certificates.length > 0) {
             // If revocation checking is enabled (which also implies effectiveDate is now), check the cache
-            PublicKey cachedKey = getCachedPrivateKey(Arrays.asList(certificates));
+            PublicKey cachedKey = getCachedPublicKey(Arrays.asList(certificates));
             if (cachedKey != null) {
                 return cachedKey;
             }
@@ -122,9 +122,10 @@ public class ChainVerifier {
         }
     }
 
-    private PublicKey getCachedPrivateKey(List<String> certificateChain) {
-        if (verifiedPublicKeyCache.containsKey(certificateChain) && verifiedPublicKeyCache.get(certificateChain).cachedExpirationDate.isAfter(clock.instant())) {
-            return verifiedPublicKeyCache.get(certificateChain).publicKey;
+    private PublicKey getCachedPublicKey(List<String> certificateChain) {
+        CachedEntry cachedEntry = verifiedPublicKeyCache.get(certificateChain);
+        if (cachedEntry != null && cachedEntry.cachedExpirationDate.isAfter(clock.instant())) {
+            return cachedEntry.publicKey;
         }
         return null;
     }

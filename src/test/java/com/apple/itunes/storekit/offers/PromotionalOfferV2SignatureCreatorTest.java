@@ -2,7 +2,9 @@
 
 package com.apple.itunes.storekit.offers;
 
+import com.apple.itunes.storekit.util.TestSigningUtility;
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.impl.JWTParser;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.junit.jupiter.api.Assertions;
@@ -27,7 +29,7 @@ class PromotionalOfferV2SignatureCreatorTest {
             PromotionalOfferV2SignatureCreator signatureCreator = new PromotionalOfferV2SignatureCreator(new String(key.readAllBytes()), KEY_ID, ISSUER_ID, BUNDLE_ID);
             String signature = signatureCreator.createSignature(PRODUCT_ID, OFFER_IDENTIFIER, TRANSACTION_ID);
             Assertions.assertNotNull(signature);
-            DecodedJWT decodedJWT = JWT.decode(signature);
+            DecodedJWT decodedJWT = JWT.require(Algorithm.ECDSA256(TestSigningUtility.getTestSigningPublicKey(), null)).build().verify(signature);
             // Header
             Assertions.assertEquals("JWT", decodedJWT.getType());
             Assertions.assertEquals("ES256", decodedJWT.getAlgorithm());
@@ -72,6 +74,33 @@ class PromotionalOfferV2SignatureCreatorTest {
             Assertions.assertNotNull(key);
             PromotionalOfferV2SignatureCreator signatureCreator = new PromotionalOfferV2SignatureCreator(new String(key.readAllBytes()), KEY_ID, ISSUER_ID, BUNDLE_ID);
             Assertions.assertThrows(IllegalArgumentException.class, () -> signatureCreator.createSignature(null, OFFER_IDENTIFIER, TRANSACTION_ID));
+        }
+    }
+
+    @Test
+    void testKeyIdMissing() throws Exception {
+        try (InputStream key = this.getClass().getClassLoader().getResourceAsStream("certs/testSigningKey.p8")) {
+            Assertions.assertNotNull(key);
+            String signingKey = new String(key.readAllBytes());
+            Assertions.assertThrows(IllegalArgumentException.class, () -> new PromotionalOfferV2SignatureCreator(signingKey, null, ISSUER_ID, BUNDLE_ID));
+        }
+    }
+
+    @Test
+    void testIssuerIdMissing() throws Exception {
+        try (InputStream key = this.getClass().getClassLoader().getResourceAsStream("certs/testSigningKey.p8")) {
+            Assertions.assertNotNull(key);
+            String signingKey = new String(key.readAllBytes());
+            Assertions.assertThrows(IllegalArgumentException.class, () -> new PromotionalOfferV2SignatureCreator(signingKey, KEY_ID, null, BUNDLE_ID));
+        }
+    }
+
+    @Test
+    void testBundleIdMissing() throws Exception {
+        try (InputStream key = this.getClass().getClassLoader().getResourceAsStream("certs/testSigningKey.p8")) {
+            Assertions.assertNotNull(key);
+            String signingKey = new String(key.readAllBytes());
+            Assertions.assertThrows(IllegalArgumentException.class, () -> new PromotionalOfferV2SignatureCreator(signingKey, KEY_ID, ISSUER_ID, null));
         }
     }
 

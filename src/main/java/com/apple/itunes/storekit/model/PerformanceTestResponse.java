@@ -3,32 +3,43 @@
 package com.apple.itunes.storekit.model;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * The performance test response object.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/performancetestresponse">PerformanceTestResponse</a>
- */
+ **/
 public class PerformanceTestResponse {
     private static final String SERIALIZED_NAME_CONFIG = "config";
     private static final String SERIALIZED_NAME_REQUEST_ID = "requestId";
-    @JsonProperty(SERIALIZED_NAME_CONFIG)
+
+    @JsonProperty(value = SERIALIZED_NAME_CONFIG, required = true)
     private PerformanceTestConfig config;
-    @JsonProperty(SERIALIZED_NAME_REQUEST_ID)
-    private String requestId;
+    @JsonProperty(value = SERIALIZED_NAME_REQUEST_ID, required = true)
+    private UUID requestId;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
+    protected PerformanceTestResponse() {
+    }
 
-    public PerformanceTestResponse() {
+    @JsonCreator
+    public PerformanceTestResponse(
+            @JsonProperty(value = SERIALIZED_NAME_CONFIG, required = true) PerformanceTestConfig config,
+            @JsonProperty(value = SERIALIZED_NAME_REQUEST_ID, required = true) UUID requestId
+    ) {
+        this.config = Objects.requireNonNull(config);
+        this.requestId = Objects.requireNonNull(requestId);
     }
 
     public PerformanceTestResponse config(PerformanceTestConfig config) {
-        this.config = config;
+        this.config = Objects.requireNonNull(config);
         return this;
     }
 
@@ -43,11 +54,11 @@ public class PerformanceTestResponse {
     }
 
     public void setConfig(PerformanceTestConfig config) {
-        this.config = config;
+        this.config = Objects.requireNonNull(config);
     }
 
-    public PerformanceTestResponse requestId(String requestId) {
-        this.requestId = requestId;
+    public PerformanceTestResponse requestId(UUID requestId) {
+        this.requestId = Objects.requireNonNull(requestId);
         return this;
     }
 
@@ -57,14 +68,13 @@ public class PerformanceTestResponse {
      * @return requestId
      * @see <a href="https://developer.apple.com/documentation/retentionmessaging/requestid">requestId</a>
      **/
-    public String getRequestId() {
+    public UUID getRequestId() {
         return requestId;
     }
 
-    public void setRequestId(String requestId) {
-        this.requestId = requestId;
+    public void setRequestId(UUID requestId) {
+        this.requestId = Objects.requireNonNull(requestId);
     }
-
 
     public PerformanceTestResponse unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
@@ -72,10 +82,10 @@ public class PerformanceTestResponse {
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -107,7 +117,7 @@ public class PerformanceTestResponse {
     public String toString() {
         return "PerformanceTestResponse{" +
                 "config=" + config +
-                ", requestId='" + requestId + '\'' +
+                ", requestId=" + requestId +
                 ", unknownFields=" + unknownFields +
                 '}';
     }

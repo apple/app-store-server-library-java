@@ -62,5 +62,6 @@
     "commitmentExpiresDate": 1698150000000,
     "commitmentPrice": 119880,
     "totalBillingPeriods": 12
-  }
+  },
+  "previousOriginalTransactionId": "11111"
 }

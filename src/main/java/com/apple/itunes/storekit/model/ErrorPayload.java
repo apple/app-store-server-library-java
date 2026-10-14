@@ -2,18 +2,23 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Map;
 
 public class ErrorPayload {
     @JsonProperty
-    private long errorCode;
+    private Long errorCode;
     @JsonProperty
     private String errorMessage;
+    @JsonAnySetter
+    private Map<String, Object> unknownFields;
 
     public ErrorPayload() {
     }
 
-    public ErrorPayload(long errorCode, String errorMessage) {
+    public ErrorPayload(Long errorCode, String errorMessage) {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
     }
@@ -26,11 +31,24 @@ public class ErrorPayload {
         this.errorMessage = errorMessage;
     }
 
-    public long getErrorCode() {
+    public Long getErrorCode() {
         return errorCode;
     }
 
-    public void setErrorCode(long errorCode) {
+    public void setErrorCode(Long errorCode) {
         this.errorCode = errorCode;
+    }
+
+    /**
+     Fields that are not recognized for this object
+
+     @return A map of JSON keys to objects
+     */
+    public Map<String, Object> getUnknownFields() {
+        return unknownFields;
+    }
+
+    public void setUnknownFields(Map<String, Object> unknownFields) {
+        this.unknownFields = unknownFields;
     }
 }

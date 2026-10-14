@@ -43,7 +43,7 @@ public final class HelperValidationUtils {
      * @throws IllegalArgumentException if SKU exceeds maximum length
      */
     public static String validateSku(String sku) {
-        if (sku != null && sku.length() > MAXIMUM_SKU_LENGTH) {
+        if (sku != null && sku.codePointCount(0, sku.length()) > MAXIMUM_SKU_LENGTH) {
             throw new IllegalArgumentException("SKU length cannot exceed " + MAXIMUM_SKU_LENGTH + " characters");
         }
         return sku;
@@ -53,7 +53,8 @@ public final class HelperValidationUtils {
      * Validates periodCount is not null and between `MIN_PERIOD` and `MAX_PERIOD` inclusive.
      * 
      * @param periodCount
-     * @throws IllegalArgumentException if periodCount is null or out of range 
+     * @throws NullPointerException if periodCount is null
+     * @throws IllegalArgumentException if periodCount is out of range
      */
     public static Integer validatePeriodCount(Integer periodCount) {
         Objects.requireNonNull(periodCount, "periodCount cannot be null");
@@ -67,11 +68,11 @@ public final class HelperValidationUtils {
      * Validates a list of items is not null, not empty, and contains no null elements.
      * 
      * @param list the list of items to validate
-     * @param <T> the type of items in the list, must extend AbstractAdvancedCommerceItem
+     * @param <T> the type of items in the list
      * @return the validated list of items
      * @throws IllegalArgumentException if the list is null, empty, or contains null elements
      */
-    public static <T extends AbstractAdvancedCommerceItem> List<T> validateItems(List<T> list) {
+    public static <T> List<T> validateItems(List<T> list) {
         if (list == null) {
            throw new IllegalArgumentException("Items list cannot be null");
         }
@@ -91,7 +92,7 @@ public final class HelperValidationUtils {
 
     private static String validateStringWithMaxLength(String value, int maxLength, String fieldName) { 
         Objects.requireNonNull(value, fieldName + " cannot be null"); 
-        if (value.length() > maxLength) { 
+        if (value.codePointCount(0, value.length()) > maxLength) { 
             throw new IllegalArgumentException(fieldName + " length cannot exceed " + maxLength + " characters"); 
         } 
         return value;

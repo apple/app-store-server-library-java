@@ -12,14 +12,14 @@ import java.util.Objects;
  * The request body the App Store server sends to your Get Retention Message endpoint.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/realtimerequestbody">RealtimeRequestBody</a>
- */
+ **/
 public class RealtimeRequestBody {
     private static final String SERIALIZED_NAME_SIGNED_PAYLOAD = "signedPayload";
+
     @JsonProperty(SERIALIZED_NAME_SIGNED_PAYLOAD)
     private String signedPayload;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
-
 
     public RealtimeRequestBody() {
     }
@@ -43,17 +43,16 @@ public class RealtimeRequestBody {
         this.signedPayload = signedPayload;
     }
 
-
     public RealtimeRequestBody unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
         return this;
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -70,9 +69,9 @@ public class RealtimeRequestBody {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        RealtimeRequestBody responseBodyV2 = (RealtimeRequestBody) o;
-        return Objects.equals(this.signedPayload, responseBodyV2.signedPayload) &&
-                Objects.equals(this.unknownFields, responseBodyV2.unknownFields);
+        RealtimeRequestBody realtimeRequestBody = (RealtimeRequestBody) o;
+        return Objects.equals(this.signedPayload, realtimeRequestBody.signedPayload) &&
+                Objects.equals(this.unknownFields, realtimeRequestBody.unknownFields);
     }
 
     @Override
@@ -88,4 +87,3 @@ public class RealtimeRequestBody {
                 '}';
     }
 }
-

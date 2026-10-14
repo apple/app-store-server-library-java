@@ -14,178 +14,132 @@ import java.util.UUID;
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/consumptionrequestv1">ConsumptionRequestV1</a>
  * @deprecated Use {@link ConsumptionRequest} instead.
- */
+ **/
 @Deprecated
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ConsumptionRequestV1 {
-    private static final String SERIALIZED_NAME_CUSTOMER_CONSENTED = "customerConsented";
-    private static final String SERIALIZED_NAME_CONSUMPTION_STATUS = "consumptionStatus";
-    private static final String SERIALIZED_NAME_PLATFORM = "platform";
-    private static final String SERIALIZED_NAME_SAMPLE_CONTENT_PROVIDED = "sampleContentProvided";
-    private static final String SERIALIZED_NAME_DELIVERY_STATUS = "deliveryStatus";
-    private static final String SERIALIZED_NAME_APP_ACCOUNT_TOKEN = "appAccountToken";
     private static final String SERIALIZED_NAME_ACCOUNT_TENURE = "accountTenure";
-    private static final String SERIALIZED_NAME_PLAY_TIME = "playTime";
-    private static final String SERIALIZED_NAME_LIFETIME_DOLLARS_REFUNDED = "lifetimeDollarsRefunded";
+    private static final String SERIALIZED_NAME_APP_ACCOUNT_TOKEN = "appAccountToken";
+    private static final String SERIALIZED_NAME_CONSUMPTION_STATUS = "consumptionStatus";
+    private static final String SERIALIZED_NAME_CUSTOMER_CONSENTED = "customerConsented";
+    private static final String SERIALIZED_NAME_DELIVERY_STATUS = "deliveryStatus";
     private static final String SERIALIZED_NAME_LIFETIME_DOLLARS_PURCHASED = "lifetimeDollarsPurchased";
-    private static final String SERIALIZED_NAME_USER_STATUS = "userStatus";
+    private static final String SERIALIZED_NAME_LIFETIME_DOLLARS_REFUNDED = "lifetimeDollarsRefunded";
+    private static final String SERIALIZED_NAME_PLATFORM = "platform";
+    private static final String SERIALIZED_NAME_PLAY_TIME = "playTime";
     private static final String SERIALIZED_NAME_REFUND_PREFERENCE = "refundPreference";
-    @JsonProperty(SERIALIZED_NAME_CUSTOMER_CONSENTED)
-    private Boolean customerConsented;
-    @JsonProperty(SERIALIZED_NAME_CONSUMPTION_STATUS)
-    private Integer consumptionStatus;
-    @JsonProperty(SERIALIZED_NAME_PLATFORM)
-    private Integer platform;
-    @JsonProperty(SERIALIZED_NAME_SAMPLE_CONTENT_PROVIDED)
-    private Boolean sampleContentProvided;
-    @JsonProperty(SERIALIZED_NAME_DELIVERY_STATUS)
-    private Integer deliveryStatus;
-    @JsonProperty(SERIALIZED_NAME_APP_ACCOUNT_TOKEN)
+    private static final String SERIALIZED_NAME_SAMPLE_CONTENT_PROVIDED = "sampleContentProvided";
+    private static final String SERIALIZED_NAME_USER_STATUS = "userStatus";
+
+    @JsonProperty(value = SERIALIZED_NAME_ACCOUNT_TENURE, required = true)
+    private Integer accountTenure;
+    @JsonProperty(value = SERIALIZED_NAME_APP_ACCOUNT_TOKEN, required = true)
     @JsonSerialize(nullsUsing = AppAccountTokenNullSerializer.class)
     private UUID appAccountToken;
-    @JsonProperty(SERIALIZED_NAME_ACCOUNT_TENURE)
-    private Integer accountTenure;
-    @JsonProperty(SERIALIZED_NAME_PLAY_TIME)
-    private Integer playTime;
-    @JsonProperty(SERIALIZED_NAME_LIFETIME_DOLLARS_REFUNDED)
-    private Integer lifetimeDollarsRefunded;
-    @JsonProperty(SERIALIZED_NAME_LIFETIME_DOLLARS_PURCHASED)
+    @JsonProperty(value = SERIALIZED_NAME_CONSUMPTION_STATUS, required = true)
+    private Integer consumptionStatus;
+    @JsonProperty(value = SERIALIZED_NAME_CUSTOMER_CONSENTED, required = true)
+    private Boolean customerConsented;
+    @JsonProperty(value = SERIALIZED_NAME_DELIVERY_STATUS, required = true)
+    private Integer deliveryStatus;
+    @JsonProperty(value = SERIALIZED_NAME_LIFETIME_DOLLARS_PURCHASED, required = true)
     private Integer lifetimeDollarsPurchased;
-    @JsonProperty(SERIALIZED_NAME_USER_STATUS)
-    private Integer userStatus;
+    @JsonProperty(value = SERIALIZED_NAME_LIFETIME_DOLLARS_REFUNDED, required = true)
+    private Integer lifetimeDollarsRefunded;
+    @JsonProperty(value = SERIALIZED_NAME_PLATFORM, required = true)
+    private Integer platform;
+    @JsonProperty(value = SERIALIZED_NAME_PLAY_TIME, required = true)
+    private Integer playTime;
     @JsonProperty(SERIALIZED_NAME_REFUND_PREFERENCE)
     private Integer refundPreference;
+    @JsonProperty(value = SERIALIZED_NAME_SAMPLE_CONTENT_PROVIDED, required = true)
+    private Boolean sampleContentProvided;
+    @JsonProperty(value = SERIALIZED_NAME_USER_STATUS, required = true)
+    private Integer userStatus;
 
-
-    public ConsumptionRequestV1() {
+    protected ConsumptionRequestV1() {
     }
 
-    public ConsumptionRequestV1 customerConsented(Boolean customerConsented) {
-        this.customerConsented = customerConsented;
+    public ConsumptionRequestV1(
+            AccountTenure accountTenure,
+            UUID appAccountToken,
+            ConsumptionStatus consumptionStatus,
+            Boolean customerConsented,
+            DeliveryStatusV1 deliveryStatus,
+            LifetimeDollarsPurchased lifetimeDollarsPurchased,
+            LifetimeDollarsRefunded lifetimeDollarsRefunded,
+            Platform platform,
+            PlayTime playTime,
+            Boolean sampleContentProvided,
+            UserStatus userStatus
+    ) {
+        this.accountTenure = Objects.requireNonNull(accountTenure).getValue();
+        this.appAccountToken = appAccountToken;
+        this.consumptionStatus = Objects.requireNonNull(consumptionStatus).getValue();
+        this.customerConsented = Objects.requireNonNull(customerConsented);
+        this.deliveryStatus = Objects.requireNonNull(deliveryStatus).getValue();
+        this.lifetimeDollarsPurchased = Objects.requireNonNull(lifetimeDollarsPurchased).getValue();
+        this.lifetimeDollarsRefunded = Objects.requireNonNull(lifetimeDollarsRefunded).getValue();
+        this.platform = Objects.requireNonNull(platform).getValue();
+        this.playTime = Objects.requireNonNull(playTime).getValue();
+        this.sampleContentProvided = Objects.requireNonNull(sampleContentProvided);
+        this.userStatus = Objects.requireNonNull(userStatus).getValue();
+    }
+
+    public ConsumptionRequestV1(
+            Integer rawAccountTenure,
+            UUID appAccountToken,
+            Integer rawConsumptionStatus,
+            Boolean customerConsented,
+            Integer rawDeliveryStatus,
+            Integer rawLifetimeDollarsPurchased,
+            Integer rawLifetimeDollarsRefunded,
+            Integer rawPlatform,
+            Integer rawPlayTime,
+            Boolean sampleContentProvided,
+            Integer rawUserStatus
+    ) {
+        this.accountTenure = Objects.requireNonNull(rawAccountTenure);
+        this.appAccountToken = appAccountToken;
+        this.consumptionStatus = Objects.requireNonNull(rawConsumptionStatus);
+        this.customerConsented = Objects.requireNonNull(customerConsented);
+        this.deliveryStatus = Objects.requireNonNull(rawDeliveryStatus);
+        this.lifetimeDollarsPurchased = Objects.requireNonNull(rawLifetimeDollarsPurchased);
+        this.lifetimeDollarsRefunded = Objects.requireNonNull(rawLifetimeDollarsRefunded);
+        this.platform = Objects.requireNonNull(rawPlatform);
+        this.playTime = Objects.requireNonNull(rawPlayTime);
+        this.sampleContentProvided = Objects.requireNonNull(sampleContentProvided);
+        this.userStatus = Objects.requireNonNull(rawUserStatus);
+    }
+
+    public ConsumptionRequestV1 accountTenure(AccountTenure accountTenure) {
+        this.accountTenure = Objects.requireNonNull(accountTenure).getValue();
         return this;
     }
 
     /**
-     * A Boolean value that indicates whether the customer consented to provide consumption data to the App Store.
+     * The age of the customer’s account.
      *
-     * @return customerConsented
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/customerconsented">customerConsented</a>
+     * @return accountTenure
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/accounttenure">accountTenure</a>
      **/
-    public Boolean getCustomerConsented() {
-        return customerConsented;
-    }
-
-    public void setCustomerConsented(Boolean customerConsented) {
-        this.customerConsented = customerConsented;
-    }
-
-    public ConsumptionRequestV1 consumptionStatus(ConsumptionStatus consumptionStatus) {
-        this.consumptionStatus = consumptionStatus != null ? consumptionStatus.getValue() : null;
-        return this;
+    public AccountTenure getAccountTenure() {
+        return AccountTenure.fromValue(accountTenure);
     }
 
     /**
-     * A value that indicates the extent to which the customer consumed the in-app purchase.
-     *
-     * @return consumptionStatus
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/consumptionstatus">consumptionStatus</a>
+     * @see #getAccountTenure()
      **/
-    public ConsumptionStatus getConsumptionStatus() {
-        return consumptionStatus != null ? ConsumptionStatus.fromValue(consumptionStatus) : null;
+    public Integer getRawAccountTenure() {
+        return accountTenure;
     }
 
-    /**
-     * @see #getConsumptionStatus()
-     */
-    public Integer getRawConsumptionStatus() {
-        return consumptionStatus;
+    public void setAccountTenure(AccountTenure accountTenure) {
+        this.accountTenure = Objects.requireNonNull(accountTenure).getValue();
     }
 
-    public void setConsumptionStatus(ConsumptionStatus consumptionStatus) {
-        this.consumptionStatus = consumptionStatus != null ? consumptionStatus.getValue() : null;
-    }
-
-    public void setRawConsumptionStatus(Integer rawConsumptionStatus) {
-        this.consumptionStatus = rawConsumptionStatus;
-    }
-
-    public ConsumptionRequestV1 platform(Platform platform) {
-        this.platform = platform != null ? platform.getValue() :  null;
-        return this;
-    }
-
-    /**
-     * A value that indicates the platform on which the customer consumed the in-app purchase.
-     *
-     * @return platform
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/platform">platform</a>
-     **/
-    public Platform getPlatform() {
-        return platform != null ? Platform.fromValue(platform) : null;
-    }
-
-    /**
-     * @see #getPlatform()
-     */
-    public Integer getRawPlatform() {
-        return platform;
-    }
-
-    public void setPlatform(Platform platform) {
-        this.platform = platform != null ? platform.getValue() : null;
-    }
-
-    public void setRawPlatform(Integer rawPlatform) {
-        this.platform = rawPlatform;
-    }
-
-    public ConsumptionRequestV1 sampleContentProvided(Boolean sampleContentProvided) {
-        this.sampleContentProvided = sampleContentProvided;
-        return this;
-    }
-
-    /**
-     * A Boolean value that indicates whether you provided, prior to its purchase, a free sample or trial of the content, or information about its functionality.
-     *
-     * @return sampleContentProvided
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/samplecontentprovided">sampleContentProvided</a>
-     **/
-    public Boolean getSampleContentProvided() {
-        return sampleContentProvided;
-    }
-
-    public void setSampleContentProvided(Boolean sampleContentProvided) {
-        this.sampleContentProvided = sampleContentProvided;
-    }
-
-    public ConsumptionRequestV1 deliveryStatus(DeliveryStatusV1 deliveryStatus) {
-        this.deliveryStatus = deliveryStatus != null ? deliveryStatus.getValue() : null;
-        return this;
-    }
-
-    /**
-     * A value that indicates whether the app successfully delivered an in-app purchase that works properly.
-     *
-     * @return deliveryStatus
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/deliverystatusv1">deliveryStatusV1</a>
-     **/
-    public DeliveryStatusV1 getDeliveryStatus() {
-        return deliveryStatus != null ? DeliveryStatusV1.fromValue(deliveryStatus) : null;
-    }
-
-    /**
-     * @see #getDeliveryStatus()
-     */
-    public Integer getRawDeliveryStatus() {
-        return deliveryStatus;
-    }
-
-    public void setDeliveryStatus(DeliveryStatusV1 deliveryStatus) {
-        this.deliveryStatus = deliveryStatus != null ? deliveryStatus.getValue() : null;
-    }
-
-    public void setRawDeliveryStatus(Integer rawDeliveryStatus) {
-        this.deliveryStatus = rawDeliveryStatus;
+    public void setRawAccountTenure(Integer rawAccountTenure) {
+        this.accountTenure = Objects.requireNonNull(rawAccountTenure);
     }
 
     public ConsumptionRequestV1 appAccountToken(UUID appAccountToken) {
@@ -194,7 +148,7 @@ public class ConsumptionRequestV1 {
     }
 
     /**
-     * The UUID that an app optionally generates to map a customer’s in-app purchase with its resulting App Store transaction.
+     * The UUID of the in-app user account that completed the in-app purchase transaction.
      *
      * @return appAccountToken
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/appaccounttoken">appAccountToken</a>
@@ -207,98 +161,87 @@ public class ConsumptionRequestV1 {
         this.appAccountToken = appAccountToken;
     }
 
-    public ConsumptionRequestV1 accountTenure(AccountTenure accountTenure) {
-        this.accountTenure = accountTenure != null ? accountTenure.getValue() : null;
+    public ConsumptionRequestV1 consumptionStatus(ConsumptionStatus consumptionStatus) {
+        this.consumptionStatus = Objects.requireNonNull(consumptionStatus).getValue();
         return this;
     }
 
     /**
-     * The age of the customer’s account.
+     * A value that indicates the extent to which the customer consumed the in-app purchase.
      *
-     * @return accountTenure
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/accounttenure">accountTenure</a>
+     * @return consumptionStatus
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/consumptionstatus">consumptionStatus</a>
      **/
-    public AccountTenure getAccountTenure() {
-        return accountTenure != null ? AccountTenure.fromValue(accountTenure) : null;
+    public ConsumptionStatus getConsumptionStatus() {
+        return ConsumptionStatus.fromValue(consumptionStatus);
     }
 
     /**
-     * @see #getAccountTenure()
-     */
-    public Integer getRawAccountTenure() {
-        return accountTenure;
+     * @see #getConsumptionStatus()
+     **/
+    public Integer getRawConsumptionStatus() {
+        return consumptionStatus;
     }
 
-    public void setAccountTenure(AccountTenure accountTenure) {
-        this.accountTenure = accountTenure != null ? accountTenure.getValue() : null;
+    public void setConsumptionStatus(ConsumptionStatus consumptionStatus) {
+        this.consumptionStatus = Objects.requireNonNull(consumptionStatus).getValue();
     }
 
-    public void setRawAccountTenure(Integer rawAccountTenure) {
-        this.accountTenure = rawAccountTenure;
+    public void setRawConsumptionStatus(Integer rawConsumptionStatus) {
+        this.consumptionStatus = Objects.requireNonNull(rawConsumptionStatus);
     }
 
-    public ConsumptionRequestV1 playTime(PlayTime playTime) {
-        this.playTime = playTime != null ? playTime.getValue() : null;
+    public ConsumptionRequestV1 customerConsented(Boolean customerConsented) {
+        this.customerConsented = Objects.requireNonNull(customerConsented);
         return this;
     }
 
     /**
-     * A value that indicates the amount of time that the customer used the app.
+     * A Boolean value of true or false that indicates whether the customer consented to provide consumption data.
      *
-     * @return playTime
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/playtime">playTime</a>
+     * @return customerConsented
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/customerconsented">customerConsented</a>
      **/
-    public PlayTime getPlayTime() {
-        return playTime != null ? PlayTime.fromValue(playTime) : null;
+    public Boolean getCustomerConsented() {
+        return customerConsented;
     }
 
-    /**
-     * @see #getPlayTime()
-     */
-    public Integer getRawPlayTime() {
-        return playTime;
+    public void setCustomerConsented(Boolean customerConsented) {
+        this.customerConsented = Objects.requireNonNull(customerConsented);
     }
 
-    public void setPlayTime(PlayTime playTime) {
-        this.playTime = playTime != null ? playTime.getValue() : null;
-    }
-
-    public void setRawPlayTime(Integer rawPlayTime) {
-        this.playTime = rawPlayTime;
-    }
-
-    public ConsumptionRequestV1 lifetimeDollarsRefunded(LifetimeDollarsRefunded lifetimeDollarsRefunded) {
-        this.lifetimeDollarsRefunded = lifetimeDollarsRefunded != null ? lifetimeDollarsRefunded.getValue() : null;
+    public ConsumptionRequestV1 deliveryStatus(DeliveryStatusV1 deliveryStatus) {
+        this.deliveryStatus = Objects.requireNonNull(deliveryStatus).getValue();
         return this;
     }
 
     /**
-     * A value that indicates the total amount, in USD, of refunds the customer has received, in your app, across all platforms.
+     * A value that indicates whether the app successfully delivered an in-app purchase that works properly.
      *
-     * @return lifetimeDollarsRefunded
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/lifetimedollarsrefunded">lifetimeDollarsRefunded</a>
+     * @return deliveryStatus
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/deliverystatusv1">deliveryStatusV1</a>
      **/
-    public LifetimeDollarsRefunded getLifetimeDollarsRefunded() {
-        return lifetimeDollarsRefunded != null ? LifetimeDollarsRefunded.fromValue(lifetimeDollarsRefunded) : null;
+    public DeliveryStatusV1 getDeliveryStatus() {
+        return DeliveryStatusV1.fromValue(deliveryStatus);
     }
 
     /**
-     * @see #getLifetimeDollarsRefunded()
-     */
-    public Integer getRawLifetimeDollarsRefunded() {
-        return lifetimeDollarsRefunded;
+     * @see #getDeliveryStatus()
+     **/
+    public Integer getRawDeliveryStatus() {
+        return deliveryStatus;
     }
 
-    public void setLifetimeDollarsRefunded(LifetimeDollarsRefunded lifetimeDollarsRefunded) {
-        this.lifetimeDollarsRefunded = lifetimeDollarsRefunded != null ? lifetimeDollarsRefunded.getValue() : null;
+    public void setDeliveryStatus(DeliveryStatusV1 deliveryStatus) {
+        this.deliveryStatus = Objects.requireNonNull(deliveryStatus).getValue();
     }
 
-    public void setRawLifetimeDollarsRefunded(Integer rawLifetimeDollarsRefunded) {
-        this.lifetimeDollarsRefunded = rawLifetimeDollarsRefunded;
+    public void setRawDeliveryStatus(Integer rawDeliveryStatus) {
+        this.deliveryStatus = Objects.requireNonNull(rawDeliveryStatus);
     }
 
     public ConsumptionRequestV1 lifetimeDollarsPurchased(LifetimeDollarsPurchased lifetimeDollarsPurchased) {
-        this.lifetimeDollarsPurchased = lifetimeDollarsPurchased != null ? lifetimeDollarsPurchased.getValue() : null;
+        this.lifetimeDollarsPurchased = Objects.requireNonNull(lifetimeDollarsPurchased).getValue();
         return this;
     }
 
@@ -309,52 +252,112 @@ public class ConsumptionRequestV1 {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/lifetimedollarspurchased">lifetimeDollarsPurchased</a>
      **/
     public LifetimeDollarsPurchased getLifetimeDollarsPurchased() {
-        return lifetimeDollarsPurchased != null ? LifetimeDollarsPurchased.fromValue(lifetimeDollarsPurchased) : null;
+        return LifetimeDollarsPurchased.fromValue(lifetimeDollarsPurchased);
     }
 
     /**
      * @see #getLifetimeDollarsPurchased()
-     */
+     **/
     public Integer getRawLifetimeDollarsPurchased() {
         return lifetimeDollarsPurchased;
     }
 
     public void setLifetimeDollarsPurchased(LifetimeDollarsPurchased lifetimeDollarsPurchased) {
-        this.lifetimeDollarsPurchased = lifetimeDollarsPurchased != null ? lifetimeDollarsPurchased.getValue() : null;
+        this.lifetimeDollarsPurchased = Objects.requireNonNull(lifetimeDollarsPurchased).getValue();
     }
 
     public void setRawLifetimeDollarsPurchased(Integer rawLifetimeDollarsPurchased) {
-        this.lifetimeDollarsPurchased = rawLifetimeDollarsPurchased;
+        this.lifetimeDollarsPurchased = Objects.requireNonNull(rawLifetimeDollarsPurchased);
     }
 
-    public ConsumptionRequestV1 userStatus(UserStatus userStatus) {
-        this.userStatus = userStatus != null ? userStatus.getValue() : null;
+    public ConsumptionRequestV1 lifetimeDollarsRefunded(LifetimeDollarsRefunded lifetimeDollarsRefunded) {
+        this.lifetimeDollarsRefunded = Objects.requireNonNull(lifetimeDollarsRefunded).getValue();
         return this;
     }
 
     /**
-     * The status of the customer’s account.
+     * A value that indicates the total amount, in USD, of refunds the customer has received, in your app, across all platforms.
      *
-     * @return userStatus
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/userstatus">userStatus</a>
+     * @return lifetimeDollarsRefunded
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/lifetimedollarsrefunded">lifetimeDollarsRefunded</a>
      **/
-    public UserStatus getUserStatus() {
-        return userStatus != null ? UserStatus.fromValue(userStatus) : null;
+    public LifetimeDollarsRefunded getLifetimeDollarsRefunded() {
+        return LifetimeDollarsRefunded.fromValue(lifetimeDollarsRefunded);
     }
 
     /**
-     * @see #getUserStatus()
-     */
-    public Integer getRawUserStatus() {
-        return userStatus;
+     * @see #getLifetimeDollarsRefunded()
+     **/
+    public Integer getRawLifetimeDollarsRefunded() {
+        return lifetimeDollarsRefunded;
     }
 
-    public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus != null ? userStatus.getValue() : null;
+    public void setLifetimeDollarsRefunded(LifetimeDollarsRefunded lifetimeDollarsRefunded) {
+        this.lifetimeDollarsRefunded = Objects.requireNonNull(lifetimeDollarsRefunded).getValue();
     }
 
-    public void setRawUserStatus(Integer rawUserStatus) {
-        this.userStatus = rawUserStatus;
+    public void setRawLifetimeDollarsRefunded(Integer rawLifetimeDollarsRefunded) {
+        this.lifetimeDollarsRefunded = Objects.requireNonNull(rawLifetimeDollarsRefunded);
+    }
+
+    public ConsumptionRequestV1 platform(Platform platform) {
+        this.platform = Objects.requireNonNull(platform).getValue();
+        return this;
+    }
+
+    /**
+     * A value that indicates the platform on which the customer consumed the in-app purchase.
+     *
+     * @return platform
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/platform">platform</a>
+     **/
+    public Platform getPlatform() {
+        return Platform.fromValue(platform);
+    }
+
+    /**
+     * @see #getPlatform()
+     **/
+    public Integer getRawPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(Platform platform) {
+        this.platform = Objects.requireNonNull(platform).getValue();
+    }
+
+    public void setRawPlatform(Integer rawPlatform) {
+        this.platform = Objects.requireNonNull(rawPlatform);
+    }
+
+    public ConsumptionRequestV1 playTime(PlayTime playTime) {
+        this.playTime = Objects.requireNonNull(playTime).getValue();
+        return this;
+    }
+
+    /**
+     * A value that indicates the amount of time that the customer used the app.
+     *
+     * @return playTime
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/playtime">playTime</a>
+     **/
+    public PlayTime getPlayTime() {
+        return PlayTime.fromValue(playTime);
+    }
+
+    /**
+     * @see #getPlayTime()
+     **/
+    public Integer getRawPlayTime() {
+        return playTime;
+    }
+
+    public void setPlayTime(PlayTime playTime) {
+        this.playTime = Objects.requireNonNull(playTime).getValue();
+    }
+
+    public void setRawPlayTime(Integer rawPlayTime) {
+        this.playTime = Objects.requireNonNull(rawPlayTime);
     }
 
     public ConsumptionRequestV1 refundPreference(RefundPreferenceV1 refundPreference) {
@@ -369,12 +372,12 @@ public class ConsumptionRequestV1 {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/refundpreferencev1">refundPreferenceV1</a>
      **/
     public RefundPreferenceV1 getRefundPreference() {
-        return refundPreference != null ? RefundPreferenceV1.fromValue(refundPreference) : null;
+        return RefundPreferenceV1.fromValue(refundPreference);
     }
 
     /**
      * @see #getRefundPreference()
-     */
+     **/
     public Integer getRawRefundPreference() {
         return refundPreference;
     }
@@ -387,6 +390,55 @@ public class ConsumptionRequestV1 {
         this.refundPreference = rawRefundPreference;
     }
 
+    public ConsumptionRequestV1 sampleContentProvided(Boolean sampleContentProvided) {
+        this.sampleContentProvided = Objects.requireNonNull(sampleContentProvided);
+        return this;
+    }
+
+    /**
+     * A Boolean value of true or false that indicates whether you provided, prior to its purchase, a free sample or trial of the content, or information about its functionality.
+     *
+     * @return sampleContentProvided
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/samplecontentprovided">sampleContentProvided</a>
+     **/
+    public Boolean getSampleContentProvided() {
+        return sampleContentProvided;
+    }
+
+    public void setSampleContentProvided(Boolean sampleContentProvided) {
+        this.sampleContentProvided = Objects.requireNonNull(sampleContentProvided);
+    }
+
+    public ConsumptionRequestV1 userStatus(UserStatus userStatus) {
+        this.userStatus = Objects.requireNonNull(userStatus).getValue();
+        return this;
+    }
+
+    /**
+     * The status of the customer’s account.
+     *
+     * @return userStatus
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/userstatus">userStatus</a>
+     **/
+    public UserStatus getUserStatus() {
+        return UserStatus.fromValue(userStatus);
+    }
+
+    /**
+     * @see #getUserStatus()
+     **/
+    public Integer getRawUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = Objects.requireNonNull(userStatus).getValue();
+    }
+
+    public void setRawUserStatus(Integer rawUserStatus) {
+        this.userStatus = Objects.requireNonNull(rawUserStatus);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -395,41 +447,41 @@ public class ConsumptionRequestV1 {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ConsumptionRequestV1 consumptionRequest = (ConsumptionRequestV1) o;
-        return Objects.equals(this.customerConsented, consumptionRequest.customerConsented) &&
-                Objects.equals(this.consumptionStatus, consumptionRequest.consumptionStatus) &&
-                Objects.equals(this.platform, consumptionRequest.platform) &&
-                Objects.equals(this.sampleContentProvided, consumptionRequest.sampleContentProvided) &&
-                Objects.equals(this.deliveryStatus, consumptionRequest.deliveryStatus) &&
-                Objects.equals(this.appAccountToken, consumptionRequest.appAccountToken) &&
-                Objects.equals(this.accountTenure, consumptionRequest.accountTenure) &&
-                Objects.equals(this.playTime, consumptionRequest.playTime) &&
-                Objects.equals(this.lifetimeDollarsRefunded, consumptionRequest.lifetimeDollarsRefunded) &&
-                Objects.equals(this.lifetimeDollarsPurchased, consumptionRequest.lifetimeDollarsPurchased) &&
-                Objects.equals(this.userStatus, consumptionRequest.userStatus) &&
-                Objects.equals(this.refundPreference, consumptionRequest.refundPreference);
+        ConsumptionRequestV1 consumptionRequestV1 = (ConsumptionRequestV1) o;
+        return Objects.equals(this.accountTenure, consumptionRequestV1.accountTenure) &&
+                Objects.equals(this.appAccountToken, consumptionRequestV1.appAccountToken) &&
+                Objects.equals(this.consumptionStatus, consumptionRequestV1.consumptionStatus) &&
+                Objects.equals(this.customerConsented, consumptionRequestV1.customerConsented) &&
+                Objects.equals(this.deliveryStatus, consumptionRequestV1.deliveryStatus) &&
+                Objects.equals(this.lifetimeDollarsPurchased, consumptionRequestV1.lifetimeDollarsPurchased) &&
+                Objects.equals(this.lifetimeDollarsRefunded, consumptionRequestV1.lifetimeDollarsRefunded) &&
+                Objects.equals(this.platform, consumptionRequestV1.platform) &&
+                Objects.equals(this.playTime, consumptionRequestV1.playTime) &&
+                Objects.equals(this.refundPreference, consumptionRequestV1.refundPreference) &&
+                Objects.equals(this.sampleContentProvided, consumptionRequestV1.sampleContentProvided) &&
+                Objects.equals(this.userStatus, consumptionRequestV1.userStatus);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(customerConsented, consumptionStatus, platform, sampleContentProvided, deliveryStatus, appAccountToken, accountTenure, playTime, lifetimeDollarsRefunded, lifetimeDollarsPurchased, userStatus, refundPreference);
+        return Objects.hash(accountTenure, appAccountToken, consumptionStatus, customerConsented, deliveryStatus, lifetimeDollarsPurchased, lifetimeDollarsRefunded, platform, playTime, refundPreference, sampleContentProvided, userStatus);
     }
 
     @Override
     public String toString() {
         return "ConsumptionRequestV1{" +
-                "customerConsented=" + customerConsented +
-                ", consumptionStatus=" + consumptionStatus +
-                ", platform=" + platform +
-                ", sampleContentProvided=" + sampleContentProvided +
-                ", deliveryStatus=" + deliveryStatus +
+                "accountTenure=" + accountTenure +
                 ", appAccountToken=" + appAccountToken +
-                ", accountTenure=" + accountTenure +
-                ", playTime=" + playTime +
-                ", lifetimeDollarsRefunded=" + lifetimeDollarsRefunded +
+                ", consumptionStatus=" + consumptionStatus +
+                ", customerConsented=" + customerConsented +
+                ", deliveryStatus=" + deliveryStatus +
                 ", lifetimeDollarsPurchased=" + lifetimeDollarsPurchased +
-                ", userStatus=" + userStatus +
+                ", lifetimeDollarsRefunded=" + lifetimeDollarsRefunded +
+                ", platform=" + platform +
+                ", playTime=" + playTime +
                 ", refundPreference=" + refundPreference +
+                ", sampleContentProvided=" + sampleContentProvided +
+                ", userStatus=" + userStatus +
                 '}';
     }
 }

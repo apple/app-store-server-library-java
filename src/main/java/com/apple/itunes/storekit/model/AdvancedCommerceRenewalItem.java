@@ -10,9 +10,8 @@ import java.util.Objects;
 
 /**
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/advancedcommercerenewalitem">advancedCommerceRenewalItem</a>
- */
+ **/
 public class AdvancedCommerceRenewalItem {
-
     private static final String SERIALIZED_NAME_SKU = "SKU";
     private static final String SERIALIZED_NAME_DESCRIPTION = "description";
     private static final String SERIALIZED_NAME_DISPLAY_NAME = "displayName";
@@ -44,7 +43,7 @@ public class AdvancedCommerceRenewalItem {
     }
 
     /**
-     * @return sku
+     * @return SKU
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/advancedcommercesku">advancedCommerceSKU</a>
      **/
     public String getSku() {
@@ -145,6 +144,11 @@ public class AdvancedCommerceRenewalItem {
         return this;
     }
 
+    /**
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -155,10 +159,20 @@ public class AdvancedCommerceRenewalItem {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AdvancedCommerceRenewalItem that = (AdvancedCommerceRenewalItem) o;
-        return Objects.equals(sku, that.sku) && Objects.equals(description, that.description) && Objects.equals(displayName, that.displayName) && Objects.equals(offer, that.offer) && Objects.equals(price, that.price) && Objects.equals(priceIncreaseInfo, that.priceIncreaseInfo) && Objects.equals(unknownFields, that.unknownFields);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AdvancedCommerceRenewalItem advancedCommerceRenewalItem = (AdvancedCommerceRenewalItem) o;
+        return Objects.equals(this.sku, advancedCommerceRenewalItem.sku) &&
+                Objects.equals(this.description, advancedCommerceRenewalItem.description) &&
+                Objects.equals(this.displayName, advancedCommerceRenewalItem.displayName) &&
+                Objects.equals(this.offer, advancedCommerceRenewalItem.offer) &&
+                Objects.equals(this.price, advancedCommerceRenewalItem.price) &&
+                Objects.equals(this.priceIncreaseInfo, advancedCommerceRenewalItem.priceIncreaseInfo) &&
+                Objects.equals(this.unknownFields, advancedCommerceRenewalItem.unknownFields);
     }
 
     @Override

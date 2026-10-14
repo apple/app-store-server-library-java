@@ -45,9 +45,11 @@ public class BearerTokenAuthenticator implements BearerTokenAuthenticatorInterfa
     }
 
     public String generateToken() {
+        Instant now = Instant.now();
         return JWT.create()
                 .withAudience(APP_STORE_CONNECT_AUDIENCE)
-                .withExpiresAt(Instant.now().plus(ChronoUnit.MINUTES.getDuration().multipliedBy(5)))
+                .withIssuedAt(now)
+                .withExpiresAt(now.plus(ChronoUnit.MINUTES.getDuration().multipliedBy(5)))
                 .withIssuer(issuerId)
                 .withKeyId(keyId)
                 .withPayload(Map.of(BUNDLE_ID_KEY, bundleId))

@@ -8,13 +8,18 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * The server environment, either sandbox or production.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/environment">environment</a>
- */
+ **/
 public enum Environment {
 
+    /**
+     * Indicates that the data applies to testing in the sandbox environment.
+     **/
     SANDBOX("Sandbox"),
+    /**
+     * Indicates that the data applies to the production environment.
+     **/
     PRODUCTION("Production"),
     XCODE("Xcode"),
-    // Used for unit testing
     LOCAL_TESTING("LocalTesting");
 
     private final String value;
@@ -42,4 +47,3 @@ public enum Environment {
         return String.valueOf(value);
     }
 }
-

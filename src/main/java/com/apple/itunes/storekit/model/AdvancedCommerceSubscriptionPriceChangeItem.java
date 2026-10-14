@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -12,15 +13,16 @@ import java.util.Objects;
  * The data your app provides to change a subscription price.
  *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionpricechangeitem">SubscriptionPriceChangeItem</a>
- */
-public class AdvancedCommerceSubscriptionPriceChangeItem extends AbstractAdvancedCommerceBaseItem{
+ **/
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class AdvancedCommerceSubscriptionPriceChangeItem extends AbstractAdvancedCommerceBaseItem {
+    private static final String SERIALIZED_NAME_DEPENDENT_SKUS = "dependentSKUs";
     private static final String SERIALIZED_NAME_PRICE = "price";
-    private static final String SERIALIZED_DEPENDENT_SKUS = "dependentSKUs";
 
+    @JsonProperty(SERIALIZED_NAME_DEPENDENT_SKUS)
+    private List<String> dependentSKUs;
     @JsonProperty(value = SERIALIZED_NAME_PRICE, required = true)
     private Long price;
-    @JsonProperty(SERIALIZED_DEPENDENT_SKUS)
-    private List<String> dependentSKUs;
 
     protected AdvancedCommerceSubscriptionPriceChangeItem() {
         super();
@@ -36,21 +38,20 @@ public class AdvancedCommerceSubscriptionPriceChangeItem extends AbstractAdvance
         return this;
     }
 
-    public AdvancedCommerceSubscriptionPriceChangeItem price(Long price) {
-        this.price = Objects.requireNonNull(price);
-        return this;
+    @Override
+    public AdvancedCommerceSubscriptionPriceChangeItem sku(String sku) {
+        return (AdvancedCommerceSubscriptionPriceChangeItem) super.sku(sku);
     }
 
     /**
-     * @return price
-     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/price">price</a>
+     * The product identifier of an Apple In-App Purchase product you manage in your own system.
+     *
+     * @return SKU
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/sku">SKU</a>
      **/
-    public Long getPrice() {
-        return price;
-    }
-
-    public void setPrice(Long price) {
-        this.price = Objects.requireNonNull(price);
+    @Override
+    public String getSku() {
+        return super.getSku();
     }
 
     public AdvancedCommerceSubscriptionPriceChangeItem dependentSKUs(List<String> dependentSKUs) {
@@ -70,6 +71,8 @@ public class AdvancedCommerceSubscriptionPriceChangeItem extends AbstractAdvance
     }
 
     /**
+     * The product identifier of a dependent SKU in a subscription price change.
+     *
      * @return dependentSKUs
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/dependentsku">dependentSKU</a>
      **/
@@ -90,26 +93,52 @@ public class AdvancedCommerceSubscriptionPriceChangeItem extends AbstractAdvance
         }
     }
 
+    public AdvancedCommerceSubscriptionPriceChangeItem price(Long price) {
+        this.price = Objects.requireNonNull(price);
+        return this;
+    }
+
+    /**
+     * A price, in milliunits of a currency, for an Advanced Commerce API SKU.
+     *
+     * @return price
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/price">price</a>
+     **/
+    public Long getPrice() {
+        return price;
+    }
+
+    public void setPrice(Long price) {
+        this.price = Objects.requireNonNull(price);
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        AdvancedCommerceSubscriptionPriceChangeItem that = (AdvancedCommerceSubscriptionPriceChangeItem) o;
-        return Objects.equals(price, that.price) && Objects.equals(dependentSKUs, that.dependentSKUs);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        AdvancedCommerceSubscriptionPriceChangeItem advancedCommerceSubscriptionPriceChangeItem = (AdvancedCommerceSubscriptionPriceChangeItem) o;
+        return Objects.equals(this.dependentSKUs, advancedCommerceSubscriptionPriceChangeItem.dependentSKUs) &&
+                Objects.equals(this.price, advancedCommerceSubscriptionPriceChangeItem.price);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), price, dependentSKUs);
+        return Objects.hash(super.hashCode(), dependentSKUs, price);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" +
-                "sku='" + sku + '\'' +
-                ", price=" + price +
+        return "AdvancedCommerceSubscriptionPriceChangeItem{" +
+                "sku='" + getSku() + '\'' +
                 ", dependentSKUs=" + dependentSKUs +
+                ", price=" + price +
                 '}';
     }
 }

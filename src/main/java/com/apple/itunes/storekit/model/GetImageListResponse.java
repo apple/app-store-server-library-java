@@ -5,6 +5,7 @@ package com.apple.itunes.storekit.model;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -13,20 +14,29 @@ import java.util.Objects;
  * A response that contains status information for all images.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/getimagelistresponse">GetImageListResponse</a>
- */
+ **/
 public class GetImageListResponse {
     private static final String SERIALIZED_NAME_IMAGE_IDENTIFIERS = "imageIdentifiers";
+
     @JsonProperty(SERIALIZED_NAME_IMAGE_IDENTIFIERS)
     private List<GetImageListResponseItem> imageIdentifiers;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
-
 
     public GetImageListResponse() {
     }
 
     public GetImageListResponse imageIdentifiers(List<GetImageListResponseItem> imageIdentifiers) {
         this.imageIdentifiers = imageIdentifiers;
+        return this;
+    }
+
+    public GetImageListResponse addImageIdentifier(GetImageListResponseItem imageIdentifier) {
+        Objects.requireNonNull(imageIdentifier);
+        if (this.imageIdentifiers == null) {
+            this.imageIdentifiers = new ArrayList<>();
+        }
+        this.imageIdentifiers.add(imageIdentifier);
         return this;
     }
 
@@ -50,10 +60,10 @@ public class GetImageListResponse {
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -88,4 +98,3 @@ public class GetImageListResponse {
                 '}';
     }
 }
-

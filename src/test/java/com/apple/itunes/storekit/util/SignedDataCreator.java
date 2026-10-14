@@ -13,7 +13,10 @@ import java.security.interfaces.ECPrivateKey;
 public class SignedDataCreator {
 
     public static String createSignedDataFromJson(String path) throws IOException, NoSuchAlgorithmException {
-        String json = TestingUtility.readFile(path);
+        return createSignedData(TestingUtility.readFile(path));
+    }
+
+    public static String createSignedData(String json) throws NoSuchAlgorithmException {
         KeyPairGenerator ec = KeyPairGenerator.getInstance("EC");
         ec.initialize(256);
         return JWT.create()

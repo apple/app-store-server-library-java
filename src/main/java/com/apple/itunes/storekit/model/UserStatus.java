@@ -8,13 +8,28 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * The status of a customer’s account within your app.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/userstatus">userStatus</a>
- */
+ **/
 public enum UserStatus {
 
+    /**
+     * Account status is undeclared.
+     **/
     UNDECLARED(0),
+    /**
+     * The customer’s account is active.
+     **/
     ACTIVE(1),
+    /**
+     * The customer’s account is suspended.
+     **/
     SUSPENDED(2),
+    /**
+     * The customer’s account is terminated.
+     **/
     TERMINATED(3),
+    /**
+     * The customer’s account has limited access.
+     **/
     LIMITED_ACCESS(4);
 
     private final Integer value;
@@ -42,4 +57,3 @@ public enum UserStatus {
         return String.valueOf(value);
     }
 }
-

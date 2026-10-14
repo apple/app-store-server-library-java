@@ -5,15 +5,15 @@ package com.apple.itunes.storekit.model;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 /**
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/advancedcommercetransactioninfo">advancedCommerceTransactionInfo</a>
- */
+ **/
 public class AdvancedCommerceTransactionInfo {
-
     private static final String SERIALIZED_NAME_DESCRIPTORS = "descriptors";
     private static final String SERIALIZED_NAME_ESTIMATED_TAX = "estimatedTax";
     private static final String SERIALIZED_NAME_ITEMS = "items";
@@ -84,9 +84,18 @@ public class AdvancedCommerceTransactionInfo {
         return this;
     }
 
+    public AdvancedCommerceTransactionInfo addItem(AdvancedCommerceTransactionItem item) {
+        Objects.requireNonNull(item);
+        if (this.items == null) {
+            this.items = new ArrayList<>();
+        }
+        this.items.add(item);
+        return this;
+    }
+
     /**
      * @return items
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/advancedcommercetransactionitem">advancedCommerceTransactionItem</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/advancedcommercetransactionitems">advancedCommerceTransactionItems</a>
      **/
     public List<AdvancedCommerceTransactionItem> getItems() {
         return items;
@@ -106,12 +115,12 @@ public class AdvancedCommerceTransactionInfo {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/advancedcommerceperiod">advancedCommercePeriod</a>
      **/
     public AdvancedCommercePeriod getPeriod() {
-        return period != null ? AdvancedCommercePeriod.fromValue(period) : null;
+        return AdvancedCommercePeriod.fromValue(period);
     }
 
     /**
      * @see #getPeriod()
-     */
+     **/
     public String getRawPeriod() {
         return period;
     }
@@ -197,6 +206,11 @@ public class AdvancedCommerceTransactionInfo {
         return this;
     }
 
+    /**
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -207,10 +221,22 @@ public class AdvancedCommerceTransactionInfo {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AdvancedCommerceTransactionInfo that = (AdvancedCommerceTransactionInfo) o;
-        return Objects.equals(descriptors, that.descriptors) && Objects.equals(estimatedTax, that.estimatedTax) && Objects.equals(items, that.items) && Objects.equals(period, that.period) && Objects.equals(requestReferenceId, that.requestReferenceId) && Objects.equals(taxCode, that.taxCode) && Objects.equals(taxExclusivePrice, that.taxExclusivePrice) && Objects.equals(taxRate, that.taxRate) && Objects.equals(unknownFields, that.unknownFields);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AdvancedCommerceTransactionInfo advancedCommerceTransactionInfo = (AdvancedCommerceTransactionInfo) o;
+        return Objects.equals(this.descriptors, advancedCommerceTransactionInfo.descriptors) &&
+                Objects.equals(this.estimatedTax, advancedCommerceTransactionInfo.estimatedTax) &&
+                Objects.equals(this.items, advancedCommerceTransactionInfo.items) &&
+                Objects.equals(this.period, advancedCommerceTransactionInfo.period) &&
+                Objects.equals(this.requestReferenceId, advancedCommerceTransactionInfo.requestReferenceId) &&
+                Objects.equals(this.taxCode, advancedCommerceTransactionInfo.taxCode) &&
+                Objects.equals(this.taxExclusivePrice, advancedCommerceTransactionInfo.taxExclusivePrice) &&
+                Objects.equals(this.taxRate, advancedCommerceTransactionInfo.taxRate) &&
+                Objects.equals(this.unknownFields, advancedCommerceTransactionInfo.unknownFields);
     }
 
     @Override

@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -12,7 +13,8 @@ import java.util.Objects;
  * The request data your app provides to make changes to an auto-renewable subscription.
  *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionmodifyinapprequest">SubscriptionModifyInAppRequest</a>
- */
+ **/
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdvancedCommerceSubscriptionModifyInAppRequest extends AbstractAdvancedCommerceInAppRequest<AdvancedCommerceSubscriptionModifyInAppRequest> {
     private static final String OPERATION = "MODIFY_SUBSCRIPTION";
     private static final String VERSION = "1";
@@ -55,17 +57,48 @@ public class AdvancedCommerceSubscriptionModifyInAppRequest extends AbstractAdva
 
     public AdvancedCommerceSubscriptionModifyInAppRequest(
             AdvancedCommerceRequestInfo requestInfo,
-            String transactionId,
-            Boolean retainBillingCycle
+            Boolean retainBillingCycle,
+            String transactionId
     ) {
         super(OPERATION, VERSION, requestInfo);
-        this.transactionId = Objects.requireNonNull(transactionId);
         this.retainBillingCycle = Objects.requireNonNull(retainBillingCycle);
+        this.transactionId = Objects.requireNonNull(transactionId);
     }
 
     @Override
     protected AdvancedCommerceSubscriptionModifyInAppRequest self() {
         return this;
+    }
+
+    /**
+     * @return operation
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionmodifyinapprequest">SubscriptionModifyInAppRequest</a>
+     **/
+    @Override
+    public String getOperation() {
+        return super.getOperation();
+    }
+
+    /**
+     * A number that represents the version of the data structure or Advanced Commerce API.
+     *
+     * @return version
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/version">version</a>
+     **/
+    @Override
+    public String getVersion() {
+        return super.getVersion();
+    }
+
+    /**
+     * The metadata to include in server requests.
+     *
+     * @return requestInfo
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/requestinfo">RequestInfo</a>
+     **/
+    @Override
+    public AdvancedCommerceRequestInfo getRequestInfo() {
+        return super.getRequestInfo();
     }
 
     public AdvancedCommerceSubscriptionModifyInAppRequest addItems(List<AdvancedCommerceSubscriptionModifyAddItem> addItems) {
@@ -83,6 +116,8 @@ public class AdvancedCommerceSubscriptionModifyInAppRequest extends AbstractAdva
     }
 
     /**
+     * The data your app provides to add items when it makes changes to an auto-renewable subscription.
+     *
      * @return addItems
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionmodifyadditem">SubscriptionModifyAddItem</a>
      **/
@@ -109,6 +144,8 @@ public class AdvancedCommerceSubscriptionModifyInAppRequest extends AbstractAdva
     }
 
     /**
+     * The data your app provides to change an item of an auto-renewable subscription.
+     *
      * @return changeItems
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionmodifychangeitem">SubscriptionModifyChangeItem</a>
      **/
@@ -126,6 +163,8 @@ public class AdvancedCommerceSubscriptionModifyInAppRequest extends AbstractAdva
     }
 
     /**
+     * The three-letter ISO 4217 currency code for the price of a product.
+     *
      * @return currency
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/currency">currency</a>
      **/
@@ -143,6 +182,8 @@ public class AdvancedCommerceSubscriptionModifyInAppRequest extends AbstractAdva
     }
 
     /**
+     * The data your app provides to change the description and display name of an auto-renewable subscription.
+     *
      * @return descriptors
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionmodifydescriptors">SubscriptionModifyDescriptors</a>
      **/
@@ -160,6 +201,8 @@ public class AdvancedCommerceSubscriptionModifyInAppRequest extends AbstractAdva
     }
 
     /**
+     * The data your app provides to change the period of an auto-renewable subscription.
+     *
      * @return periodChange
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionmodifyperiodchange">SubscriptionModifyPeriodChange</a>
      **/
@@ -172,7 +215,7 @@ public class AdvancedCommerceSubscriptionModifyInAppRequest extends AbstractAdva
     }
 
     public AdvancedCommerceSubscriptionModifyInAppRequest removeItems(List<AdvancedCommerceSubscriptionModifyRemoveItem> removeItems) {
-        this.removeItems = removeItems;
+        this.removeItems = removeItems != null ? HelperValidationUtils.validateItems(removeItems) : null;
         return this;
     }
 
@@ -186,6 +229,8 @@ public class AdvancedCommerceSubscriptionModifyInAppRequest extends AbstractAdva
     }
 
     /**
+     * The data your app provides to remove an item from an auto-renewable subscription.
+     *
      * @return removeItems
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionmodifyremoveitem">SubscriptionModifyRemoveItem</a>
      **/
@@ -194,7 +239,7 @@ public class AdvancedCommerceSubscriptionModifyInAppRequest extends AbstractAdva
     }
 
     public void setRemoveItems(List<AdvancedCommerceSubscriptionModifyRemoveItem> removeItems) {
-        this.removeItems = removeItems;
+        this.removeItems = removeItems != null ? HelperValidationUtils.validateItems(removeItems) : null;
     }
 
     public AdvancedCommerceSubscriptionModifyInAppRequest retainBillingCycle(Boolean retainBillingCycle) {
@@ -203,6 +248,8 @@ public class AdvancedCommerceSubscriptionModifyInAppRequest extends AbstractAdva
     }
 
     /**
+     * A Boolean value that determines whether to keep the existing billing cycle with the change you request.
+     *
      * @return retainBillingCycle
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/retainbillingcycle">retainBillingCycle</a>
      **/
@@ -220,6 +267,8 @@ public class AdvancedCommerceSubscriptionModifyInAppRequest extends AbstractAdva
     }
 
     /**
+     * A three-letter code that represents the country or region associated with the App Store storefront.
+     *
      * @return storefront
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/storefront">storefront</a>
      **/
@@ -237,6 +286,8 @@ public class AdvancedCommerceSubscriptionModifyInAppRequest extends AbstractAdva
     }
 
     /**
+     * A tax code that applies to a SKU.
+     *
      * @return taxCode
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/taxcode">taxCode</a>
      **/
@@ -254,6 +305,8 @@ public class AdvancedCommerceSubscriptionModifyInAppRequest extends AbstractAdva
     }
 
     /**
+     * A unique identifier that the App Store generates for a transaction.
+     *
      * @return transactionId
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/transactionid">transactionId</a>
      **/
@@ -267,11 +320,26 @@ public class AdvancedCommerceSubscriptionModifyInAppRequest extends AbstractAdva
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        AdvancedCommerceSubscriptionModifyInAppRequest that = (AdvancedCommerceSubscriptionModifyInAppRequest) o;
-        return Objects.equals(addItems, that.addItems) && Objects.equals(changeItems, that.changeItems) && Objects.equals(currency, that.currency) && Objects.equals(descriptors, that.descriptors) && Objects.equals(periodChange, that.periodChange) && Objects.equals(removeItems, that.removeItems) && Objects.equals(retainBillingCycle, that.retainBillingCycle) && Objects.equals(storefront, that.storefront) && Objects.equals(taxCode, that.taxCode) && Objects.equals(transactionId, that.transactionId);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        AdvancedCommerceSubscriptionModifyInAppRequest advancedCommerceSubscriptionModifyInAppRequest = (AdvancedCommerceSubscriptionModifyInAppRequest) o;
+        return Objects.equals(this.addItems, advancedCommerceSubscriptionModifyInAppRequest.addItems) &&
+                Objects.equals(this.changeItems, advancedCommerceSubscriptionModifyInAppRequest.changeItems) &&
+                Objects.equals(this.currency, advancedCommerceSubscriptionModifyInAppRequest.currency) &&
+                Objects.equals(this.descriptors, advancedCommerceSubscriptionModifyInAppRequest.descriptors) &&
+                Objects.equals(this.periodChange, advancedCommerceSubscriptionModifyInAppRequest.periodChange) &&
+                Objects.equals(this.removeItems, advancedCommerceSubscriptionModifyInAppRequest.removeItems) &&
+                Objects.equals(this.retainBillingCycle, advancedCommerceSubscriptionModifyInAppRequest.retainBillingCycle) &&
+                Objects.equals(this.storefront, advancedCommerceSubscriptionModifyInAppRequest.storefront) &&
+                Objects.equals(this.taxCode, advancedCommerceSubscriptionModifyInAppRequest.taxCode) &&
+                Objects.equals(this.transactionId, advancedCommerceSubscriptionModifyInAppRequest.transactionId);
     }
 
     @Override
@@ -281,15 +349,17 @@ public class AdvancedCommerceSubscriptionModifyInAppRequest extends AbstractAdva
 
     @Override
     public String toString() {
-         return getClass().getSimpleName() + "{" +
-                "addItems=" + addItems +
+        return "AdvancedCommerceSubscriptionModifyInAppRequest{" +
+                "operation='" + getOperation() + '\'' +
+                ", version='" + getVersion() + '\'' +
+                ", requestInfo=" + getRequestInfo() +
+                ", addItems=" + addItems +
                 ", changeItems=" + changeItems +
                 ", currency='" + currency + '\'' +
                 ", descriptors=" + descriptors +
                 ", periodChange=" + periodChange +
                 ", removeItems=" + removeItems +
                 ", retainBillingCycle=" + retainBillingCycle +
-                ", requestInfo=" + getRequestInfo() +
                 ", storefront='" + storefront + '\'' +
                 ", taxCode='" + taxCode + '\'' +
                 ", transactionId='" + transactionId + '\'' +

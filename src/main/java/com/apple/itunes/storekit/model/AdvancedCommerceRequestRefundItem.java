@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -10,7 +11,8 @@ import java.util.Objects;
  * Information about the refund request for an item, such as its SKU, the refund amount, reason, and type.
  *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/requestrefunditem">RequestRefundItem</a>
- */
+ **/
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdvancedCommerceRequestRefundItem extends AbstractAdvancedCommerceBaseItem {
     private static final String SERIALIZED_NAME_REFUND_AMOUNT = "refundAmount";
     private static final String SERIALIZED_NAME_REFUND_REASON = "refundReason";
@@ -18,7 +20,7 @@ public class AdvancedCommerceRequestRefundItem extends AbstractAdvancedCommerceB
     private static final String SERIALIZED_NAME_REVOKE = "revoke";
 
     @JsonProperty(SERIALIZED_NAME_REFUND_AMOUNT)
-    private Integer refundAmount;
+    private Long refundAmount;
     @JsonProperty(value = SERIALIZED_NAME_REFUND_REASON, required = true)
     private String refundReason;
     @JsonProperty(value = SERIALIZED_NAME_REFUND_TYPE, required = true)
@@ -28,18 +30,6 @@ public class AdvancedCommerceRequestRefundItem extends AbstractAdvancedCommerceB
 
     protected AdvancedCommerceRequestRefundItem() {
         super();
-    }
-
-    public AdvancedCommerceRequestRefundItem(
-            String sku,
-            String rawRefundReason,
-            String rawRefundType,
-            Boolean revoke
-    ) {
-        super(sku);
-        this.refundReason = Objects.requireNonNull(rawRefundReason);
-        this.refundType = Objects.requireNonNull(rawRefundType);
-        this.revoke = Objects.requireNonNull(revoke);
     }
 
     public AdvancedCommerceRequestRefundItem(
@@ -54,12 +44,35 @@ public class AdvancedCommerceRequestRefundItem extends AbstractAdvancedCommerceB
         this.revoke = Objects.requireNonNull(revoke);
     }
 
+    public AdvancedCommerceRequestRefundItem(String sku, String rawRefundReason, String rawRefundType, Boolean revoke) {
+        super(sku);
+        this.refundReason = Objects.requireNonNull(rawRefundReason);
+        this.refundType = Objects.requireNonNull(rawRefundType);
+        this.revoke = Objects.requireNonNull(revoke);
+    }
+
     @Override
     protected AdvancedCommerceRequestRefundItem self() {
         return this;
     }
 
-    public AdvancedCommerceRequestRefundItem refundAmount(Integer refundAmount) {
+    @Override
+    public AdvancedCommerceRequestRefundItem sku(String sku) {
+        return (AdvancedCommerceRequestRefundItem) super.sku(sku);
+    }
+
+    /**
+     * The product identifier.
+     *
+     * @return SKU
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/sku">SKU</a>
+     **/
+    @Override
+    public String getSku() {
+        return super.getSku();
+    }
+
+    public AdvancedCommerceRequestRefundItem refundAmount(Long refundAmount) {
         this.refundAmount = refundAmount;
         return this;
     }
@@ -70,11 +83,11 @@ public class AdvancedCommerceRequestRefundItem extends AbstractAdvancedCommerceB
      * @return refundAmount
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/refundamount">refundAmount</a>
      **/
-    public Integer getRefundAmount() {
+    public Long getRefundAmount() {
         return refundAmount;
     }
 
-    public void setRefundAmount(Integer refundAmount) {
+    public void setRefundAmount(Long refundAmount) {
         this.refundAmount = refundAmount;
     }
 
@@ -91,6 +104,13 @@ public class AdvancedCommerceRequestRefundItem extends AbstractAdvancedCommerceB
      **/
     public AdvancedCommerceRefundReason getRefundReason() {
         return AdvancedCommerceRefundReason.fromValue(refundReason);
+    }
+
+    /**
+     * @see #getRefundReason()
+     **/
+    public String getRawRefundReason() {
+        return refundReason;
     }
 
     public void setRefundReason(AdvancedCommerceRefundReason refundReason) {
@@ -110,6 +130,7 @@ public class AdvancedCommerceRequestRefundItem extends AbstractAdvancedCommerceB
      * The type of refund requested.
      *
      * @return refundType
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/requestrefunditem">RequestRefundItem</a>
      **/
     public AdvancedCommerceRefundType getRefundType() {
         return AdvancedCommerceRefundType.fromValue(refundType);
@@ -117,7 +138,7 @@ public class AdvancedCommerceRequestRefundItem extends AbstractAdvancedCommerceB
 
     /**
      * @see #getRefundType()
-     */
+     **/
     public String getRawRefundType() {
         return refundType;
     }
@@ -137,6 +158,7 @@ public class AdvancedCommerceRequestRefundItem extends AbstractAdvancedCommerceB
 
     /**
      * @return revoke
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/requestrefunditem">RequestRefundItem</a>
      **/
     public Boolean getRevoke() {
         return revoke;
@@ -148,23 +170,33 @@ public class AdvancedCommerceRequestRefundItem extends AbstractAdvancedCommerceB
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AdvancedCommerceRequestRefundItem that = (AdvancedCommerceRequestRefundItem) o;
-        return Objects.equals(sku, that.sku) && Objects.equals(refundAmount, that.refundAmount) && Objects.equals(refundReason, that.refundReason) && Objects.equals(refundType, that.refundType) && Objects.equals(revoke, that.revoke);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        AdvancedCommerceRequestRefundItem advancedCommerceRequestRefundItem = (AdvancedCommerceRequestRefundItem) o;
+        return Objects.equals(this.refundAmount, advancedCommerceRequestRefundItem.refundAmount) &&
+                Objects.equals(this.refundReason, advancedCommerceRequestRefundItem.refundReason) &&
+                Objects.equals(this.refundType, advancedCommerceRequestRefundItem.refundType) &&
+                Objects.equals(this.revoke, advancedCommerceRequestRefundItem.revoke);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sku, refundAmount, refundReason, refundType, revoke);
+        return Objects.hash(super.hashCode(), refundAmount, refundReason, refundType, revoke);
     }
 
     @Override
     public String toString() {
         return "AdvancedCommerceRequestRefundItem{" +
-                "sku='" + sku + '\'' +
+                "sku='" + getSku() + '\'' +
                 ", refundAmount=" + refundAmount +
-                ", refundReason=" + refundReason +
+                ", refundReason='" + refundReason + '\'' +
                 ", refundType='" + refundType + '\'' +
                 ", revoke=" + revoke +
                 '}';

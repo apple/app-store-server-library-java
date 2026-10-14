@@ -14,17 +14,17 @@ import java.util.Objects;
  * A response that includes the order lookup status and an array of signed transactions for the in-app purchases in the order.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/orderlookupresponse">OrderLookupResponse</a>
- */
+ **/
 public class OrderLookupResponse {
     private static final String SERIALIZED_NAME_STATUS = "status";
     private static final String SERIALIZED_NAME_SIGNED_TRANSACTIONS = "signedTransactions";
+
     @JsonProperty(SERIALIZED_NAME_STATUS)
     private Integer status;
     @JsonProperty(SERIALIZED_NAME_SIGNED_TRANSACTIONS)
-    private List<String> signedTransactions = null;
+    private List<String> signedTransactions;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
-
 
     public OrderLookupResponse() {
     }
@@ -41,12 +41,12 @@ public class OrderLookupResponse {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/orderlookupstatus">OrderLookupStatus</a>
      **/
     public OrderLookupStatus getStatus() {
-        return status != null ? OrderLookupStatus.fromValue(status) : null;
+        return OrderLookupStatus.fromValue(status);
     }
 
     /**
      * @see #getStatus()
-     */
+     **/
     public Integer getRawStatus() {
         return status;
     }
@@ -64,16 +64,17 @@ public class OrderLookupResponse {
         return this;
     }
 
-    public OrderLookupResponse addSignedTransactionsItem(String signedTransactionsItem) {
+    public OrderLookupResponse addSignedTransaction(String signedTransaction) {
+        Objects.requireNonNull(signedTransaction);
         if (this.signedTransactions == null) {
             this.signedTransactions = new ArrayList<>();
         }
-        this.signedTransactions.add(signedTransactionsItem);
+        this.signedTransactions.add(signedTransaction);
         return this;
     }
 
     /**
-     * An array of in-app purchase transactions that are part of order, signed by Apple, in JSON Web Signature format.
+     * An array of in-app purchase transactions that are part of the order, signed by Apple, in JSON Web Signature format.
      *
      * @return signedTransactions
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/jwstransaction">JWSTransaction</a>
@@ -86,17 +87,16 @@ public class OrderLookupResponse {
         this.signedTransactions = signedTransactions;
     }
 
-
     public OrderLookupResponse unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
         return this;
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -133,4 +133,3 @@ public class OrderLookupResponse {
                 '}';
     }
 }
-

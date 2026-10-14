@@ -2,7 +2,9 @@
 
 package com.apple.itunes.storekit.offers;
 
+import com.apple.itunes.storekit.util.TestSigningUtility;
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -26,7 +28,7 @@ class IntroductoryOfferEligibilitySignatureCreatorTest {
             IntroductoryOfferEligibilitySignatureCreator signatureCreator = new IntroductoryOfferEligibilitySignatureCreator(new String(key.readAllBytes()), KEY_ID, ISSUER_ID, BUNDLE_ID);
             String signature = signatureCreator.createSignature(PRODUCT_ID, ALLOW_INTRODUCTORY_OFFER, TRANSACTION_ID);
             Assertions.assertNotNull(signature);
-            DecodedJWT decodedJWT = JWT.decode(signature);
+            DecodedJWT decodedJWT = JWT.require(Algorithm.ECDSA256(TestSigningUtility.getTestSigningPublicKey(), null)).build().verify(signature);
             // Header
             Assertions.assertEquals("JWT", decodedJWT.getType());
             Assertions.assertEquals("ES256", decodedJWT.getAlgorithm());

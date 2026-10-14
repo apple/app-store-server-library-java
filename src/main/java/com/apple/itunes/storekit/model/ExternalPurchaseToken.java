@@ -3,6 +3,7 @@
 package com.apple.itunes.storekit.model;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
@@ -12,39 +13,53 @@ import java.util.Objects;
  * The payload data that contains an external purchase token.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/externalpurchasetoken">externalPurchaseToken</a>
- */
+ **/
 public class ExternalPurchaseToken {
     private static final String SERIALIZED_NAME_EXTERNAL_PURCHASE_ID = "externalPurchaseId";
     private static final String SERIALIZED_NAME_TOKEN_CREATION_DATE = "tokenCreationDate";
     private static final String SERIALIZED_NAME_APP_APPLE_ID = "appAppleId";
     private static final String SERIALIZED_NAME_BUNDLE_ID = "bundleId";
-    private static final String SERIALIZED_NAME_TOKEN_TYPE = "tokenType";
     private static final String SERIALIZED_NAME_TOKEN_EXPIRATION_DATE = "tokenExpirationDate";
-    @JsonProperty(SERIALIZED_NAME_EXTERNAL_PURCHASE_ID)
+    private static final String SERIALIZED_NAME_TOKEN_TYPE = "tokenType";
+
+    @JsonProperty(value = SERIALIZED_NAME_EXTERNAL_PURCHASE_ID, required = true)
     private String externalPurchaseId;
-    @JsonProperty(SERIALIZED_NAME_TOKEN_CREATION_DATE)
+    @JsonProperty(value = SERIALIZED_NAME_TOKEN_CREATION_DATE, required = true)
     private Long tokenCreationDate;
-    @JsonProperty(SERIALIZED_NAME_APP_APPLE_ID)
+    @JsonProperty(value = SERIALIZED_NAME_APP_APPLE_ID, required = true)
     private Long appAppleId;
-    @JsonProperty(SERIALIZED_NAME_BUNDLE_ID)
+    @JsonProperty(value = SERIALIZED_NAME_BUNDLE_ID, required = true)
     private String bundleId;
-    @JsonProperty(SERIALIZED_NAME_TOKEN_TYPE)
-    private String tokenType;
     @JsonProperty(SERIALIZED_NAME_TOKEN_EXPIRATION_DATE)
     private Long tokenExpirationDate;
+    @JsonProperty(SERIALIZED_NAME_TOKEN_TYPE)
+    private String tokenType;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
-    public ExternalPurchaseToken() {
+    protected ExternalPurchaseToken() {
+    }
+
+    @JsonCreator
+    public ExternalPurchaseToken(
+            @JsonProperty(value = SERIALIZED_NAME_EXTERNAL_PURCHASE_ID, required = true) String externalPurchaseId,
+            @JsonProperty(value = SERIALIZED_NAME_TOKEN_CREATION_DATE, required = true) Long tokenCreationDate,
+            @JsonProperty(value = SERIALIZED_NAME_APP_APPLE_ID, required = true) Long appAppleId,
+            @JsonProperty(value = SERIALIZED_NAME_BUNDLE_ID, required = true) String bundleId
+    ) {
+        this.externalPurchaseId = Objects.requireNonNull(externalPurchaseId);
+        this.tokenCreationDate = Objects.requireNonNull(tokenCreationDate);
+        this.appAppleId = Objects.requireNonNull(appAppleId);
+        this.bundleId = Objects.requireNonNull(bundleId);
     }
 
     public ExternalPurchaseToken externalPurchaseId(String externalPurchaseId) {
-        this.externalPurchaseId = externalPurchaseId;
+        this.externalPurchaseId = Objects.requireNonNull(externalPurchaseId);
         return this;
     }
 
     /**
-     * The field of an external purchase token that uniquely identifies the token.
+     * The unique identifier of the token.
      *
      * @return externalPurchaseId
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/externalpurchaseid">externalPurchaseId</a>
@@ -54,16 +69,16 @@ public class ExternalPurchaseToken {
     }
 
     public void setExternalPurchaseId(String externalPurchaseId) {
-        this.externalPurchaseId = externalPurchaseId;
+        this.externalPurchaseId = Objects.requireNonNull(externalPurchaseId);
     }
 
     public ExternalPurchaseToken tokenCreationDate(Long tokenCreationDate) {
-        this.tokenCreationDate = tokenCreationDate;
+        this.tokenCreationDate = Objects.requireNonNull(tokenCreationDate);
         return this;
     }
 
     /**
-     * The field of an external purchase token that contains the UNIX date, in milliseconds, when the system created the token.
+     * The UNIX time, in milliseconds, when the system created the token.
      *
      * @return tokenCreationDate
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/tokencreationdate">tokenCreationDate</a>
@@ -73,16 +88,16 @@ public class ExternalPurchaseToken {
     }
 
     public void setTokenCreationDate(Long tokenCreationDate) {
-        this.tokenCreationDate = tokenCreationDate;
+        this.tokenCreationDate = Objects.requireNonNull(tokenCreationDate);
     }
 
     public ExternalPurchaseToken appAppleId(Long appAppleId) {
-        this.appAppleId = appAppleId;
+        this.appAppleId = Objects.requireNonNull(appAppleId);
         return this;
     }
 
     /**
-     * The unique identifier of an app in the App Store.
+     * The app Apple ID for which the system generated the token.
      *
      * @return appAppleId
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/appappleid">appAppleId</a>
@@ -92,16 +107,16 @@ public class ExternalPurchaseToken {
     }
 
     public void setAppAppleId(Long appAppleId) {
-        this.appAppleId = appAppleId;
+        this.appAppleId = Objects.requireNonNull(appAppleId);
     }
 
     public ExternalPurchaseToken bundleId(String bundleId) {
-        this.bundleId = bundleId;
+        this.bundleId = Objects.requireNonNull(bundleId);
         return this;
     }
 
     /**
-     * The bundle identifier of an app.
+     * The bundle ID of the app for which the system generated the token.
      *
      * @return bundleId
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/bundleid">bundleId</a>
@@ -111,37 +126,7 @@ public class ExternalPurchaseToken {
     }
 
     public void setBundleId(String bundleId) {
-        this.bundleId = bundleId;
-    }
-
-    public ExternalPurchaseToken tokenType(TokenType tokenType) {
-        this.tokenType = tokenType != null ? tokenType.getValue() : null;
-        return this;
-    }
-
-    /**
-     * The type of an external purchase custom link token.
-     *
-     * @return tokenType
-     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/tokentype">tokenType</a>
-     **/
-    public TokenType getTokenType() {
-        return tokenType != null ? TokenType.fromValue(tokenType) : null;
-    }
-
-    /**
-     * @see #getTokenType()
-     */
-    public String getRawTokenType() {
-        return tokenType;
-    }
-
-    public void setTokenType(TokenType tokenType) {
-        this.tokenType = tokenType != null ? tokenType.getValue() : null;
-    }
-
-    public void setRawTokenType(String rawTokenType) {
-        this.tokenType = rawTokenType;
+        this.bundleId = Objects.requireNonNull(bundleId);
     }
 
     public ExternalPurchaseToken tokenExpirationDate(Long tokenExpirationDate) {
@@ -150,7 +135,7 @@ public class ExternalPurchaseToken {
     }
 
     /**
-     * The field of a custom link token that contains the UNIX date, in milliseconds, when the token expires.
+     * The UNIX time, in milliseconds, when a token expires.
      *
      * @return tokenExpirationDate
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/tokenexpirationdate">tokenExpirationDate</a>
@@ -163,16 +148,46 @@ public class ExternalPurchaseToken {
         this.tokenExpirationDate = tokenExpirationDate;
     }
 
+    public ExternalPurchaseToken tokenType(TokenType tokenType) {
+        this.tokenType = tokenType != null ? tokenType.getValue() : null;
+        return this;
+    }
+
+    /**
+     * The custom link token type, either SERVICES or ACQUISITION.
+     *
+     * @return tokenType
+     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/tokentype">tokenType</a>
+     **/
+    public TokenType getTokenType() {
+        return TokenType.fromValue(tokenType);
+    }
+
+    /**
+     * @see #getTokenType()
+     **/
+    public String getRawTokenType() {
+        return tokenType;
+    }
+
+    public void setTokenType(TokenType tokenType) {
+        this.tokenType = tokenType != null ? tokenType.getValue() : null;
+    }
+
+    public void setRawTokenType(String rawTokenType) {
+        this.tokenType = rawTokenType;
+    }
+
     public ExternalPurchaseToken unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
         return this;
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -194,14 +209,14 @@ public class ExternalPurchaseToken {
                 Objects.equals(this.tokenCreationDate, externalPurchaseToken.tokenCreationDate) &&
                 Objects.equals(this.appAppleId, externalPurchaseToken.appAppleId) &&
                 Objects.equals(this.bundleId, externalPurchaseToken.bundleId) &&
-                Objects.equals(this.tokenType, externalPurchaseToken.tokenType) &&
                 Objects.equals(this.tokenExpirationDate, externalPurchaseToken.tokenExpirationDate) &&
+                Objects.equals(this.tokenType, externalPurchaseToken.tokenType) &&
                 Objects.equals(this.unknownFields, externalPurchaseToken.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(externalPurchaseId, tokenCreationDate, appAppleId, bundleId, tokenType, tokenExpirationDate, unknownFields);
+        return Objects.hash(externalPurchaseId, tokenCreationDate, appAppleId, bundleId, tokenExpirationDate, tokenType, unknownFields);
     }
 
     @Override
@@ -211,10 +226,9 @@ public class ExternalPurchaseToken {
                 ", tokenCreationDate=" + tokenCreationDate +
                 ", appAppleId=" + appAppleId +
                 ", bundleId='" + bundleId + '\'' +
-                ", tokenType='" + tokenType + '\'' +
                 ", tokenExpirationDate=" + tokenExpirationDate +
+                ", tokenType='" + tokenType + '\'' +
                 ", unknownFields=" + unknownFields +
                 '}';
     }
 }
-

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class ResponseBodyV2DecodedPayloadTest {
 
@@ -96,7 +97,7 @@ public class ResponseBodyV2DecodedPayloadTest {
         Assertions.assertEquals(41234L, notification.getSummary().getAppAppleId());
         Assertions.assertEquals("com.example", notification.getSummary().getBundleId());
         Assertions.assertEquals("com.example.product", notification.getSummary().getProductId());
-        Assertions.assertEquals("efb27071-45a4-4aca-9854-2a1e9146f265", notification.getSummary().getRequestIdentifier());
+        Assertions.assertEquals(UUID.fromString("efb27071-45a4-4aca-9854-2a1e9146f265"), notification.getSummary().getRequestIdentifier());
         Assertions.assertEquals(List.of("CAN", "USA", "MEX"), notification.getSummary().getStorefrontCountryCodes());
         Assertions.assertEquals(5, notification.getSummary().getSucceededCount());
         Assertions.assertEquals(2, notification.getSummary().getFailedCount());
@@ -168,6 +169,30 @@ public class ResponseBodyV2DecodedPayloadTest {
         Assertions.assertEquals(TokenType.ACQUISITION, notification.getExternalPurchaseToken().getTokenType());
         Assertions.assertEquals("ACQUISITION", notification.getExternalPurchaseToken().getRawTokenType());
         Assertions.assertEquals(1698149000000L, notification.getExternalPurchaseToken().getTokenExpirationDate());
+    }
+
+    @Test
+    public void testExternalPurchaseTokenCoreTechnologyNotificationDecoding() throws IOException, NoSuchAlgorithmException, VerificationException {
+        String signedNotification = SignedDataCreator.createSignedDataFromJson("models/signedExternalPurchaseTokenCoreTechnologyNotification.json");
+
+        SignedDataVerifier verifier = new SignedDataVerifier(Set.of(new ByteArrayInputStream(TestingUtility.readBytes("certs/testCA.der"))), "com.example", 1234L, Environment.LOCAL_TESTING, false) {
+            @Override
+            protected void verifyNotification(String bundleId, Long appAppleId, Environment notificationEnv) {
+                Assertions.assertEquals("com.example", bundleId);
+                Assertions.assertEquals(55555, appAppleId);
+                Assertions.assertEquals(Environment.PRODUCTION, notificationEnv);
+            }
+        };
+
+        ResponseBodyV2DecodedPayload notification = verifier.verifyAndDecodeNotification(signedNotification);
+
+        Assertions.assertEquals(NotificationTypeV2.EXTERNAL_PURCHASE_TOKEN, notification.getNotificationType());
+        Assertions.assertEquals(Subtype.UNREPORTED, notification.getSubtype());
+        Assertions.assertNotNull(notification.getExternalPurchaseToken());
+        Assertions.assertEquals("b2158121-7af9-49d4-9561-1f588205523e", notification.getExternalPurchaseToken().getExternalPurchaseId());
+        Assertions.assertEquals(TokenType.CORE_TECHNOLOGY, notification.getExternalPurchaseToken().getTokenType());
+        Assertions.assertEquals("CORE_TECHNOLOGY", notification.getExternalPurchaseToken().getRawTokenType());
+        Assertions.assertNull(notification.getExternalPurchaseToken().getTokenExpirationDate());
     }
 
     @Test

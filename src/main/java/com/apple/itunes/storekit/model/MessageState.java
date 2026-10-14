@@ -8,11 +8,20 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * The approval state of the message.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/messagestate">messageState</a>
- */
+ **/
 public enum MessageState {
 
+    /**
+     * The message is awaiting approval.
+     **/
     PENDING("PENDING"),
+    /**
+     * The message is approved.
+     **/
     APPROVED("APPROVED"),
+    /**
+     * The message is rejected.
+     **/
     REJECTED("REJECTED");
 
     private final String value;
@@ -40,4 +49,3 @@ public enum MessageState {
         return String.valueOf(value);
     }
 }
-

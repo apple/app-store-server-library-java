@@ -10,9 +10,8 @@ import java.util.Objects;
 
 /**
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/advancedcommercerefund">advancedCommerceRefund</a>
- */
+ **/
 public class AdvancedCommerceRefund {
-
     private static final String SERIALIZED_NAME_REFUND_AMOUNT = "refundAmount";
     private static final String SERIALIZED_NAME_REFUND_DATE = "refundDate";
     private static final String SERIALIZED_NAME_REFUND_REASON = "refundReason";
@@ -76,12 +75,12 @@ public class AdvancedCommerceRefund {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/advancedcommercerefundreason">advancedCommerceRefundReason</a>
      **/
     public AdvancedCommerceRefundReason getRefundReason() {
-        return refundReason != null ? AdvancedCommerceRefundReason.fromValue(refundReason) : null;
+        return AdvancedCommerceRefundReason.fromValue(refundReason);
     }
 
     /**
      * @see #getRefundReason()
-     */
+     **/
     public String getRawRefundReason() {
         return refundReason;
     }
@@ -104,12 +103,12 @@ public class AdvancedCommerceRefund {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/advancedcommercerefundtype">advancedCommerceRefundType</a>
      **/
     public AdvancedCommerceRefundType getRefundType() {
-        return refundType != null ? AdvancedCommerceRefundType.fromValue(refundType) : null;
+        return AdvancedCommerceRefundType.fromValue(refundType);
     }
 
     /**
      * @see #getRefundType()
-     */
+     **/
     public String getRawRefundType() {
         return refundType;
     }
@@ -127,6 +126,11 @@ public class AdvancedCommerceRefund {
         return this;
     }
 
+    /**
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -137,10 +141,18 @@ public class AdvancedCommerceRefund {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AdvancedCommerceRefund that = (AdvancedCommerceRefund) o;
-        return Objects.equals(refundAmount, that.refundAmount) && Objects.equals(refundDate, that.refundDate) && Objects.equals(refundReason, that.refundReason) && Objects.equals(refundType, that.refundType) && Objects.equals(unknownFields, that.unknownFields);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AdvancedCommerceRefund advancedCommerceRefund = (AdvancedCommerceRefund) o;
+        return Objects.equals(this.refundAmount, advancedCommerceRefund.refundAmount) &&
+                Objects.equals(this.refundDate, advancedCommerceRefund.refundDate) &&
+                Objects.equals(this.refundReason, advancedCommerceRefund.refundReason) &&
+                Objects.equals(this.refundType, advancedCommerceRefund.refundType) &&
+                Objects.equals(this.unknownFields, advancedCommerceRefund.unknownFields);
     }
 
     @Override

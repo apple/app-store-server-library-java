@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * The period of the offer.
  *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/offer">Offer</a>
- */
+ **/
 public enum AdvancedCommerceOfferPeriod {
 
     P3D("P3D"),

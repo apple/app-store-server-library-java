@@ -7,12 +7,21 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * The status of the performance test.
  *
- * @see <a href="https://developer.apple.com/documentation/retentionmessaging/performanceteststatus">performanceTestStatus</a>
- */
+ * @see <a href="https://developer.apple.com/documentation/retentionmessaging/performanceteststatus">PerformanceTestStatus</a>
+ **/
 public enum PerformanceTestStatus {
 
+    /**
+     * The test is still pending.
+     **/
     PENDING("PENDING"),
+    /**
+     * The test passed.
+     **/
     PASS("PASS"),
+    /**
+     * The test failed.
+     **/
     FAIL("FAIL");
 
     private final String value;

@@ -12,6 +12,7 @@ import java.security.interfaces.ECPrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
+import java.util.Locale;
 import java.util.UUID;
 
 public class PromotionalOfferSignatureCreator {
@@ -21,6 +22,12 @@ public class PromotionalOfferSignatureCreator {
     private final String bundleId;
 
     public PromotionalOfferSignatureCreator(String signingKey, String keyId, String bundleId) {
+        if (keyId == null) {
+            throw new IllegalArgumentException("keyId cannot be null");
+        }
+        if (bundleId == null) {
+            throw new IllegalArgumentException("bundleId cannot be null");
+        }
         try {
             signingKey = signingKey.replace("-----BEGIN PRIVATE KEY-----", "")
                     .replaceAll("\\R+", "")
@@ -40,7 +47,7 @@ public class PromotionalOfferSignatureCreator {
     /**
      * Create a promotional offer signature
      *
-     * @see <a href="https://developer.apple.com/documentation/storekit/in-app_purchase/original_api_for_in-app_purchase/subscriptions_and_offers/generating_a_signature_for_promotional_offers">Generating a signature for promotional offers</a>
+     * @see <a href="https://developer.apple.com/documentation/storekit/generating-a-signature-for-promotional-offers">Generating a signature for promotional offers</a>
      * @param productIdentifier The subscription product identifier
      * @param subscriptionOfferID The subscription discount identifier
      * @param appAccountToken An optional string value that you define; may be an empty string
@@ -49,11 +56,20 @@ public class PromotionalOfferSignatureCreator {
      * @return The Base64 encoded signature
      */
     public String createSignature(String productIdentifier, String subscriptionOfferID, String appAccountToken, UUID nonce, long timestamp) {
+        if (productIdentifier == null) {
+            throw new IllegalArgumentException("productIdentifier cannot be null");
+        }
+        if (subscriptionOfferID == null) {
+            throw new IllegalArgumentException("subscriptionOfferID cannot be null");
+        }
+        if (nonce == null) {
+            throw new IllegalArgumentException("nonce cannot be null");
+        }
         String payload = this.bundleId + '\u2063' +
                 this.keyId + '\u2063' +
                 productIdentifier + '\u2063' +
                 subscriptionOfferID + '\u2063' +
-                appAccountToken.toLowerCase()  + '\u2063'+
+                (appAccountToken != null ? appAccountToken.toLowerCase(Locale.ROOT) : "")  + '\u2063'+
                 nonce.toString().toLowerCase() + '\u2063' +
                 timestamp;
         try {

@@ -12,14 +12,14 @@ import java.util.Objects;
  * The response body the App Store sends in a version 2 server notification.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/responsebodyv2">responseBodyV2</a>
- */
+ **/
 public class ResponseBodyV2 {
     private static final String SERIALIZED_NAME_SIGNED_PAYLOAD = "signedPayload";
+
     @JsonProperty(SERIALIZED_NAME_SIGNED_PAYLOAD)
     private String signedPayload;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
-
 
     public ResponseBodyV2() {
     }
@@ -30,7 +30,7 @@ public class ResponseBodyV2 {
     }
 
     /**
-     * A cryptographically signed payload, in JSON Web Signature (JWS) format, containing the response body for a version 2 notification.
+     * The payload in JSON Web Signature (JWS) format, signed by the App Store.
      *
      * @return signedPayload
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/signedpayload">signedPayload</a>
@@ -43,17 +43,16 @@ public class ResponseBodyV2 {
         this.signedPayload = signedPayload;
     }
 
-
     public ResponseBodyV2 unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
         return this;
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -88,4 +87,3 @@ public class ResponseBodyV2 {
                 '}';
     }
 }
-

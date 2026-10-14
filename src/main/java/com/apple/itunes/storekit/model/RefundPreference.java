@@ -8,11 +8,20 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * A value that indicates your preferred outcome for the refund request.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/refundpreference">refundPreference</a>
- */
+ **/
 public enum RefundPreference {
 
+    /**
+     * You prefer that the App Store declines the refund.
+     **/
     DECLINE("DECLINE"),
+    /**
+     * You prefer that the App Store grants the refund in full.
+     **/
     GRANT_FULL("GRANT_FULL"),
+    /**
+     * You prefer that the App Store grants a prorated refund.
+     **/
     GRANT_PRORATED("GRANT_PRORATED");
 
     private final String value;

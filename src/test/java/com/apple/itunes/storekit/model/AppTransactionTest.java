@@ -36,5 +36,8 @@ public class AppTransactionTest {
         Assertions.assertEquals("71134", appTransaction.getAppTransactionId());
         Assertions.assertEquals(PurchasePlatform.IOS, appTransaction.getOriginalPlatform());
         Assertions.assertEquals("iOS", appTransaction.getRawOriginalPlatform());
+        Assertions.assertEquals(StoreType.CONSUMER, appTransaction.getStoreType());
+        Assertions.assertEquals("CONSUMER", appTransaction.getRawStoreType());
+        Assertions.assertNull(appTransaction.getUnknownFields());
     }
 }

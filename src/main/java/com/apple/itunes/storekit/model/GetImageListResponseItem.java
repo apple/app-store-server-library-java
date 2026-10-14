@@ -13,17 +13,18 @@ import java.util.UUID;
  * An image identifier and state information for an image.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/getimagelistresponseitem">GetImageListResponseItem</a>
- */
+ **/
 public class GetImageListResponseItem {
     private static final String SERIALIZED_NAME_IMAGE_IDENTIFIER = "imageIdentifier";
-    private static final String SERIALIZED_NAME_IMAGE_STATE = "imageState";
     private static final String SERIALIZED_NAME_IMAGE_SIZE = "imageSize";
+    private static final String SERIALIZED_NAME_IMAGE_STATE = "imageState";
+
     @JsonProperty(SERIALIZED_NAME_IMAGE_IDENTIFIER)
     private UUID imageIdentifier;
-    @JsonProperty(SERIALIZED_NAME_IMAGE_STATE)
-    private String imageState;
     @JsonProperty(SERIALIZED_NAME_IMAGE_SIZE)
     private String imageSize;
+    @JsonProperty(SERIALIZED_NAME_IMAGE_STATE)
+    private String imageState;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
@@ -49,36 +50,6 @@ public class GetImageListResponseItem {
         this.imageIdentifier = imageIdentifier;
     }
 
-    public GetImageListResponseItem imageState(ImageState imageState) {
-        this.imageState = imageState != null ? imageState.getValue() : null;
-        return this;
-    }
-
-    /**
-     * The current state of the image.
-     *
-     * @return imageState
-     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/imagestate">imageState</a>
-     **/
-    public ImageState getImageState() {
-        return imageState != null ? ImageState.fromValue(imageState) : null;
-    }
-
-    /**
-     * @see #getImageState()
-     */
-    public String getRawImageState() {
-        return imageState;
-    }
-
-    public void setImageState(ImageState imageState) {
-        this.imageState = imageState != null ? imageState.getValue() : null;
-    }
-
-    public void setRawImageState(String rawImageState) {
-        this.imageState = rawImageState;
-    }
-
     public GetImageListResponseItem imageSize(ImageSize imageSize) {
         this.imageSize = imageSize != null ? imageSize.getValue() : null;
         return this;
@@ -91,12 +62,12 @@ public class GetImageListResponseItem {
      * @see <a href="https://developer.apple.com/documentation/retentionmessaging/imagesize">imageSize</a>
      **/
     public ImageSize getImageSize() {
-        return imageSize != null ? ImageSize.fromValue(imageSize) : null;
+        return ImageSize.fromValue(imageSize);
     }
 
     /**
      * @see #getImageSize()
-     */
+     **/
     public String getRawImageSize() {
         return imageSize;
     }
@@ -109,6 +80,35 @@ public class GetImageListResponseItem {
         this.imageSize = rawImageSize;
     }
 
+    public GetImageListResponseItem imageState(ImageState imageState) {
+        this.imageState = imageState != null ? imageState.getValue() : null;
+        return this;
+    }
+
+    /**
+     * The current state of the image.
+     *
+     * @return imageState
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/imagestate">imageState</a>
+     **/
+    public ImageState getImageState() {
+        return ImageState.fromValue(imageState);
+    }
+
+    /**
+     * @see #getImageState()
+     **/
+    public String getRawImageState() {
+        return imageState;
+    }
+
+    public void setImageState(ImageState imageState) {
+        this.imageState = imageState != null ? imageState.getValue() : null;
+    }
+
+    public void setRawImageState(String rawImageState) {
+        this.imageState = rawImageState;
+    }
 
     public GetImageListResponseItem unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
@@ -116,10 +116,10 @@ public class GetImageListResponseItem {
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -138,24 +138,23 @@ public class GetImageListResponseItem {
         }
         GetImageListResponseItem getImageListResponseItem = (GetImageListResponseItem) o;
         return Objects.equals(this.imageIdentifier, getImageListResponseItem.imageIdentifier) &&
-                Objects.equals(this.imageState, getImageListResponseItem.imageState) &&
                 Objects.equals(this.imageSize, getImageListResponseItem.imageSize) &&
+                Objects.equals(this.imageState, getImageListResponseItem.imageState) &&
                 Objects.equals(this.unknownFields, getImageListResponseItem.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(imageIdentifier, imageState, imageSize, unknownFields);
+        return Objects.hash(imageIdentifier, imageSize, imageState, unknownFields);
     }
 
     @Override
     public String toString() {
         return "GetImageListResponseItem{" +
                 "imageIdentifier=" + imageIdentifier +
-                ", imageState='" + imageState + '\'' +
                 ", imageSize='" + imageSize + '\'' +
+                ", imageState='" + imageState + '\'' +
                 ", unknownFields=" + unknownFields +
                 '}';
     }
 }
-

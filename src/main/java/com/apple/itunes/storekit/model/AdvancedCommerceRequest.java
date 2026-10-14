@@ -2,10 +2,12 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class AdvancedCommerceRequest<T extends AdvancedCommerceRequest<T>> {
 
     protected static final String SERIALIZED_NAME_REQUEST_INFO = "requestInfo";

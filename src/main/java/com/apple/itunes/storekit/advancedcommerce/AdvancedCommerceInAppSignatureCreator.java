@@ -5,6 +5,7 @@ package com.apple.itunes.storekit.advancedcommerce;
 import com.apple.itunes.storekit.model.AdvancedCommerceInAppRequest;
 import com.apple.itunes.storekit.signature.JWSSignatureCreator;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -36,6 +37,7 @@ public class AdvancedCommerceInAppSignatureCreator extends JWSSignatureCreator {
                 .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
+        objectMapper.setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
     }
 
     /**

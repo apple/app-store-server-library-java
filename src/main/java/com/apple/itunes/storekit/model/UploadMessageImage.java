@@ -12,11 +12,12 @@ import java.util.UUID;
  * The definition of an image with its alternative text.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/uploadmessageimage">UploadMessageImage</a>
- */
+ **/
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UploadMessageImage {
     private static final String SERIALIZED_NAME_IMAGE_IDENTIFIER = "imageIdentifier";
     private static final String SERIALIZED_NAME_ALT_TEXT = "altText";
+
     @JsonProperty(value = SERIALIZED_NAME_IMAGE_IDENTIFIER, required = true)
     private UUID imageIdentifier;
     @JsonProperty(value = SERIALIZED_NAME_ALT_TEXT, required = true)
@@ -27,8 +28,7 @@ public class UploadMessageImage {
     protected UploadMessageImage() {
     }
 
-    public UploadMessageImage(UUID imageIdentifier,
-                              String altText) {
+    public UploadMessageImage(UUID imageIdentifier, String altText) {
         this.imageIdentifier = Objects.requireNonNull(imageIdentifier);
         this.altText = validateAltText(altText);
     }
@@ -49,9 +49,8 @@ public class UploadMessageImage {
     }
 
     public void setImageIdentifier(UUID imageIdentifier) {
-        this.imageIdentifier = imageIdentifier;
+        this.imageIdentifier = Objects.requireNonNull(imageIdentifier);
     }
-
 
     public UploadMessageImage altText(String altText) {
         this.altText = validateAltText(altText);
@@ -106,4 +105,3 @@ public class UploadMessageImage {
                 '}';
     }
 }
-

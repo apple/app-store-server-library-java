@@ -12,7 +12,7 @@
 - Incorporate changes for Retention Messaging API v1.3 and 1.4 [https://github.com/apple/app-store-server-library-java/pull/242]
 
 ## Version 5.0.0
-- Incorporate changes for App Store Server API v1.19 [https://github.com/apple/app-store-server-library-java/pull/219] from @riyazpanjwani
+- Incorporate changes for App Store Server API v1.19 [https://github.com/apple/app-store-server-library-java/pull/220] from @riyazpanjwani
   - This changes ConsumptionRequest and several dependent types to the V2 variant, while the V1 version was created as a new type, to align with documentation, which is a breaking change
 
 ## Version 4.0.0
@@ -49,7 +49,7 @@
 
 ## Version 2.2.0
 - Incorporate changes for App Store Server API v1.12 and App Store Server Notifications v2.12 [https://github.com/apple/app-store-server-library-java/pull/103]
-- Handle null appAccountToken appropriately in PromotionalOfferSignatureCreator [https://github.com/apple/app-store-server-library-java/pull/100]
+- Handle null appAccountToken appropriately in ConsumptionRequest [https://github.com/apple/app-store-server-library-java/pull/100]
 
 ## Version 2.1.0
 - Incorporate changes for App Store Server API v1.11 and App Store Server Notifications v2.11 [https://github.com/apple/app-store-server-library-java/pull/94]

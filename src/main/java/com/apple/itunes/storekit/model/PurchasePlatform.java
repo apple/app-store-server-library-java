@@ -5,14 +5,15 @@ package com.apple.itunes.storekit.model;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * Values that represent Apple platforms.
+ * The platform on which a customer originally purchases an app.
  *
  * @see <a href="https://developer.apple.com/documentation/storekit/appstore/platform">AppStore.Platform</a>
- */
+ * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/originalplatform">originalPlatform</a>
+ **/
 public enum PurchasePlatform {
 
-    IOS("iOS"),
     MAC_OS("macOS"),
+    IOS("iOS"),
     TV_OS("tvOS"),
     VISION_OS("visionOS");
 
@@ -41,4 +42,3 @@ public enum PurchasePlatform {
         return String.valueOf(value);
     }
 }
-

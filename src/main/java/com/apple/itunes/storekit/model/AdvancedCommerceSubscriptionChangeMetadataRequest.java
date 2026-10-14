@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -12,7 +13,8 @@ import java.util.Objects;
  * The request body you provide to change the metadata of a subscription.
  *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionchangemetadatarequest">SubscriptionChangeMetadataRequest</a>
- */
+ **/
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdvancedCommerceSubscriptionChangeMetadataRequest extends AdvancedCommerceRequest<AdvancedCommerceSubscriptionChangeMetadataRequest> {
     private static final String SERIALIZED_NAME_DESCRIPTORS = "descriptors";
     private static final String SERIALIZED_NAME_ITEMS = "items";
@@ -28,7 +30,9 @@ public class AdvancedCommerceSubscriptionChangeMetadataRequest extends AdvancedC
     @JsonProperty(SERIALIZED_NAME_TAX_CODE)
     private String taxCode;
 
-    protected AdvancedCommerceSubscriptionChangeMetadataRequest() {}
+    protected AdvancedCommerceSubscriptionChangeMetadataRequest() {
+        super();
+    }
 
     public AdvancedCommerceSubscriptionChangeMetadataRequest(AdvancedCommerceRequestInfo requestInfo) {
         super(requestInfo);
@@ -39,12 +43,25 @@ public class AdvancedCommerceSubscriptionChangeMetadataRequest extends AdvancedC
         return this;
     }
 
+    /**
+     * The metadata to include in server requests.
+     *
+     * @return requestInfo
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/requestinfo">RequestInfo</a>
+     **/
+    @Override
+    public AdvancedCommerceRequestInfo getRequestInfo() {
+        return super.getRequestInfo();
+    }
+
     public AdvancedCommerceSubscriptionChangeMetadataRequest descriptors(AdvancedCommerceSubscriptionChangeMetadataDescriptors descriptors) {
         this.descriptors = descriptors;
         return this;
     }
 
     /**
+     * The subscription metadata to change, specifically the description and display name.
+     *
      * @return descriptors
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionchangemetadatadescriptors">SubscriptionChangeMetadataDescriptors</a>
      **/
@@ -57,7 +74,7 @@ public class AdvancedCommerceSubscriptionChangeMetadataRequest extends AdvancedC
     }
 
     public AdvancedCommerceSubscriptionChangeMetadataRequest items(List<AdvancedCommerceSubscriptionChangeMetadataItem> items) {
-        this.items = items;
+        this.items = items != null ? HelperValidationUtils.validateItems(items) : null;
         return this;
     }
 
@@ -71,6 +88,8 @@ public class AdvancedCommerceSubscriptionChangeMetadataRequest extends AdvancedC
     }
 
     /**
+     * The metadata to change for an item, specifically its SKU, description, and display name.
+     *
      * @return items
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionchangemetadataitem">SubscriptionChangeMetadataItem</a>
      **/
@@ -79,25 +98,7 @@ public class AdvancedCommerceSubscriptionChangeMetadataRequest extends AdvancedC
     }
 
     public void setItems(List<AdvancedCommerceSubscriptionChangeMetadataItem> items) {
-        this.items = items;
-    }
-
-
-    public AdvancedCommerceSubscriptionChangeMetadataRequest taxCode(String taxCode) {
-        this.taxCode = taxCode;
-        return this;
-    }
-
-    /**
-     * @return taxCode
-     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/taxcode">TaxCode</a>
-     **/
-    public String getTaxCode() {
-        return taxCode;
-    }
-
-    public void setTaxCode(String taxCode) {
-        this.taxCode = taxCode;
+        this.items = items != null ? HelperValidationUtils.validateItems(items) : null;
     }
 
     public AdvancedCommerceSubscriptionChangeMetadataRequest storefront(String storefront) {
@@ -106,6 +107,8 @@ public class AdvancedCommerceSubscriptionChangeMetadataRequest extends AdvancedC
     }
 
     /**
+     * A three-letter code that represents the country or region associated with the App Store storefront.
+     *
      * @return storefront
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/storefront">storefront</a>
      **/
@@ -117,13 +120,41 @@ public class AdvancedCommerceSubscriptionChangeMetadataRequest extends AdvancedC
         this.storefront = storefront;
     }
 
+    public AdvancedCommerceSubscriptionChangeMetadataRequest taxCode(String taxCode) {
+        this.taxCode = taxCode;
+        return this;
+    }
+
+    /**
+     * A tax code that applies to a SKU.
+     *
+     * @return taxCode
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/taxcode">taxCode</a>
+     **/
+    public String getTaxCode() {
+        return taxCode;
+    }
+
+    public void setTaxCode(String taxCode) {
+        this.taxCode = taxCode;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        AdvancedCommerceSubscriptionChangeMetadataRequest that = (AdvancedCommerceSubscriptionChangeMetadataRequest) o;
-        return Objects.equals(descriptors, that.descriptors) && Objects.equals(items, that.items) && Objects.equals(taxCode, that.taxCode) && Objects.equals(storefront, that.storefront);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        AdvancedCommerceSubscriptionChangeMetadataRequest advancedCommerceSubscriptionChangeMetadataRequest = (AdvancedCommerceSubscriptionChangeMetadataRequest) o;
+        return Objects.equals(this.descriptors, advancedCommerceSubscriptionChangeMetadataRequest.descriptors) &&
+                Objects.equals(this.items, advancedCommerceSubscriptionChangeMetadataRequest.items) &&
+                Objects.equals(this.storefront, advancedCommerceSubscriptionChangeMetadataRequest.storefront) &&
+                Objects.equals(this.taxCode, advancedCommerceSubscriptionChangeMetadataRequest.taxCode);
     }
 
     @Override
@@ -133,10 +164,10 @@ public class AdvancedCommerceSubscriptionChangeMetadataRequest extends AdvancedC
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" +
-                "descriptors=" + descriptors + '\'' +
-                ", items=" + items + '\'' +
-                ", requestInfo=" + getRequestInfo() + '\'' +
+        return "AdvancedCommerceSubscriptionChangeMetadataRequest{" +
+                "requestInfo=" + getRequestInfo() +
+                ", descriptors=" + descriptors +
+                ", items=" + items +
                 ", storefront='" + storefront + '\'' +
                 ", taxCode='" + taxCode + '\'' +
                 '}';

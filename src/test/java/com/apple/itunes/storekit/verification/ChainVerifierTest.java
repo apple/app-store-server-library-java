@@ -5,16 +5,20 @@ package com.apple.itunes.storekit.verification;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
+import java.security.cert.CertPathValidator;
 import java.security.cert.CertPathValidatorException;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 
 public class ChainVerifierTest {
@@ -223,6 +227,62 @@ public class ChainVerifierTest {
                 REAL_APPLE_ROOT_BASE64_ENCODED
         }, true, EFFECTIVE_DATE);
         Mockito.verify(mockedChainVerifier, Mockito.times(2)).verifyChainWithoutCaching(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
+    }
+
+    @Test
+    public void testOcspResponseCachingWhenEntryIsRemovedDuringLookup() throws Exception {
+        String[] chain = new String[] {
+                LEAF_CERT_BASE64_ENCODED,
+                INTERMEDIATE_CA_BASE64_ENCODED,
+                ROOT_CA_BASE64_ENCODED
+        };
+        mockedChainVerifier.verifyChain(chain, true, EFFECTIVE_DATE);
+        Field cacheField = ChainVerifier.class.getDeclaredField("verifiedPublicKeyCache");
+        cacheField.setAccessible(true);
+        Map<?, ?> cache = (Map<?, ?>) cacheField.get(mockedChainVerifier);
+        Mockito.when(clock.instant()).thenAnswer(invocation -> {
+            cache.clear();
+            return Instant.ofEpochMilli(CLOCK_DATE + 1_000);
+        });
+        PublicKey cachedKey = mockedChainVerifier.verifyChain(chain, true, EFFECTIVE_DATE);
+        Assertions.assertSame(publicKey, cachedKey);
+        Mockito.verify(mockedChainVerifier, Mockito.times(1)).verifyChainWithoutCaching(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
+    }
+
+    @Test
+    public void testOcspNetworkFailureIsRetryable() throws Exception {
+        ChainVerifier verifier = getChainVerifier(ROOT_CA_BASE64_ENCODED);
+        CertPathValidator realCertPathValidator = CertPathValidator.getInstance("PKIX");
+        CertPathValidator certPathValidator = Mockito.mock(CertPathValidator.class);
+        Mockito.when(certPathValidator.getRevocationChecker()).thenReturn(realCertPathValidator.getRevocationChecker());
+        Mockito.when(certPathValidator.validate(Mockito.any(), Mockito.any())).thenThrow(new CertPathValidatorException(null, null, null, -1, CertPathValidatorException.BasicReason.UNDETERMINED_REVOCATION_STATUS));
+        try (MockedStatic<CertPathValidator> mockedCertPathValidator = Mockito.mockStatic(CertPathValidator.class)) {
+            mockedCertPathValidator.when(() -> CertPathValidator.getInstance("PKIX")).thenReturn(certPathValidator);
+            VerificationException exception = Assertions.assertThrows(VerificationException.class, () -> verifier.verifyChain(new String[] {
+                    LEAF_CERT_BASE64_ENCODED,
+                    INTERMEDIATE_CA_BASE64_ENCODED,
+                    ROOT_CA_BASE64_ENCODED
+            }, true, EFFECTIVE_DATE));
+            Assertions.assertEquals(VerificationStatus.RETRYABLE_VERIFICATION_FAILURE, exception.getStatus());
+        }
+    }
+
+    @Test
+    public void testOcspFailureWithOtherReasonIsNotRetryable() throws Exception {
+        ChainVerifier verifier = getChainVerifier(ROOT_CA_BASE64_ENCODED);
+        CertPathValidator realCertPathValidator = CertPathValidator.getInstance("PKIX");
+        CertPathValidator certPathValidator = Mockito.mock(CertPathValidator.class);
+        Mockito.when(certPathValidator.getRevocationChecker()).thenReturn(realCertPathValidator.getRevocationChecker());
+        Mockito.when(certPathValidator.validate(Mockito.any(), Mockito.any())).thenThrow(new CertPathValidatorException(null, null, null, -1, CertPathValidatorException.BasicReason.REVOKED));
+        try (MockedStatic<CertPathValidator> mockedCertPathValidator = Mockito.mockStatic(CertPathValidator.class)) {
+            mockedCertPathValidator.when(() -> CertPathValidator.getInstance("PKIX")).thenReturn(certPathValidator);
+            VerificationException exception = Assertions.assertThrows(VerificationException.class, () -> verifier.verifyChain(new String[] {
+                    LEAF_CERT_BASE64_ENCODED,
+                    INTERMEDIATE_CA_BASE64_ENCODED,
+                    ROOT_CA_BASE64_ENCODED
+            }, true, EFFECTIVE_DATE));
+            Assertions.assertEquals(VerificationStatus.INVALID_CHAIN, exception.getStatus());
+        }
     }
 
     /**

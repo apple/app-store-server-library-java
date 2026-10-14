@@ -3,11 +3,13 @@
 package com.apple.itunes.storekit.model;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
 import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class AbstractAdvancedCommerceItem extends AbstractAdvancedCommerceBaseItem {
     private static final String SERIALIZED_NAME_DESCRIPTION = "description";
     private static final String SERIALIZED_NAME_DISPLAY_NAME = "displayName";

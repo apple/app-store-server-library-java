@@ -15,7 +15,7 @@ public abstract class AbstractAdvancedCommerceResponse {
 
     @JsonProperty(SERIALIZED_NAME_SIGNED_RENEWAL_INFO)
     private String signedRenewalInfo;
-    @JsonProperty(SERIALIZED_NAME_SIGNED_TRANSACTION_INFO)
+    @JsonProperty(value = SERIALIZED_NAME_SIGNED_TRANSACTION_INFO, required = true)
     private String signedTransactionInfo;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
@@ -38,7 +38,7 @@ public abstract class AbstractAdvancedCommerceResponse {
      * Subscription renewal information, signed by the App Store, in JSON Web Signature (JWS) format.
      * 
      * @return signedRenewalInfo
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/jwsrenewalinfo">JWSRenewalInfo</a>
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/jwsrenewalinfo">JWSRenewalInfo</a>
      **/
     public String getSignedRenewalInfo() {
         return signedRenewalInfo;
@@ -57,7 +57,7 @@ public abstract class AbstractAdvancedCommerceResponse {
      * Transaction information signed by the App Store, in JSON Web Signature (JWS) Compact Serialization format.
      *
      * @return signedTransactionInfo
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/jwstransaction">JWSTransaction</a>
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/jwstransaction">JWSTransaction</a>
      **/
     public String getSignedTransactionInfo() {
         return signedTransactionInfo;

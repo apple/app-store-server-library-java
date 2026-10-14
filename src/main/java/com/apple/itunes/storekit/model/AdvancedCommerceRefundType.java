@@ -5,10 +5,10 @@ package com.apple.itunes.storekit.model;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * Information about the refund request for an item, such as its SKU, the refund amount, reason, and type.
+ * The type of refund requested.
  *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/requestrefunditem">RequestRefundItem</a>
- */
+ **/
 public enum AdvancedCommerceRefundType {
 
     FULL("FULL"),

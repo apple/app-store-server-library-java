@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -10,41 +11,67 @@ import java.util.Objects;
  * The metadata to change for an item, specifically its SKU, description, and display name.
  *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionchangemetadataitem">SubscriptionChangeMetadataItem</a>
- */
+ **/
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdvancedCommerceSubscriptionChangeMetadataItem {
+    private static final String SERIALIZED_NAME_SKU = "SKU";
     private static final String SERIALIZED_NAME_CURRENT_SKU = "currentSKU";
-    private static final String SERIALIZED_NAME_EFFECTIVE = "effective";
     private static final String SERIALIZED_NAME_DESCRIPTION = "description";
     private static final String SERIALIZED_NAME_DISPLAY_NAME = "displayName";
-    private static final String SERIALIZED_NAME_SKU = "SKU";
+    private static final String SERIALIZED_NAME_EFFECTIVE = "effective";
 
+    @JsonProperty(SERIALIZED_NAME_SKU)
+    private String sku;
     @JsonProperty(value = SERIALIZED_NAME_CURRENT_SKU, required = true)
     private String currentSku;
-    @JsonProperty(value = SERIALIZED_NAME_EFFECTIVE, required = true)
-    private AdvancedCommerceEffective effective;
     @JsonProperty(SERIALIZED_NAME_DESCRIPTION)
     private String description;
     @JsonProperty(SERIALIZED_NAME_DISPLAY_NAME)
     private String displayName;
-    @JsonProperty(SERIALIZED_NAME_SKU)
-    private String sku;
+    @JsonProperty(value = SERIALIZED_NAME_EFFECTIVE, required = true)
+    private String effective;
 
-    protected AdvancedCommerceSubscriptionChangeMetadataItem() {}
+    protected AdvancedCommerceSubscriptionChangeMetadataItem() {
+    }
 
-    public AdvancedCommerceSubscriptionChangeMetadataItem(String currentSKU, AdvancedCommerceEffective effective) {
-        this.currentSku = HelperValidationUtils.validateSku(currentSKU);
-        this.effective = Objects.requireNonNull(effective);
+    public AdvancedCommerceSubscriptionChangeMetadataItem(String currentSku, AdvancedCommerceEffective effective) {
+        this.currentSku = HelperValidationUtils.validateSku(Objects.requireNonNull(currentSku));
+        this.effective = Objects.requireNonNull(effective).getValue();
+    }
+
+    public AdvancedCommerceSubscriptionChangeMetadataItem(String currentSku, String rawEffective) {
+        this.currentSku = HelperValidationUtils.validateSku(Objects.requireNonNull(currentSku));
+        this.effective = Objects.requireNonNull(rawEffective);
+    }
+
+    public AdvancedCommerceSubscriptionChangeMetadataItem sku(String sku) {
+        this.sku = HelperValidationUtils.validateSku(sku);
+        return this;
+    }
+
+    /**
+     * The new SKU of the item.
+     *
+     * @return SKU
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/sku">SKU</a>
+     **/
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = HelperValidationUtils.validateSku(sku);
     }
 
     public AdvancedCommerceSubscriptionChangeMetadataItem currentSku(String currentSku) {
-        this.currentSku = HelperValidationUtils.validateSku(currentSku);
+        this.currentSku = HelperValidationUtils.validateSku(Objects.requireNonNull(currentSku));
         return this;
     }
 
     /**
      * The original SKU of the item.
      *
-     * @return currentSku
+     * @return currentSKU
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/sku">SKU</a>
      **/
     public String getCurrentSku() {
@@ -52,26 +79,7 @@ public class AdvancedCommerceSubscriptionChangeMetadataItem {
     }
 
     public void setCurrentSku(String currentSku) {
-        this.currentSku = HelperValidationUtils.validateSku(currentSku);
-    }
-
-    public AdvancedCommerceSubscriptionChangeMetadataItem effective(AdvancedCommerceEffective effective) {
-        this.effective = Objects.requireNonNull(effective);
-        return this;
-    }
-
-    /**
-     * The string that determines when the metadata change goes into effect.
-     *
-     * @return effective
-     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/effective">effective</a>
-     **/
-    public AdvancedCommerceEffective getEffective() {
-        return effective;
-    }
-
-    public void setEffective(AdvancedCommerceEffective effective) {
-        this.effective = Objects.requireNonNull(effective);
+        this.currentSku = HelperValidationUtils.validateSku(Objects.requireNonNull(currentSku));
     }
 
     public AdvancedCommerceSubscriptionChangeMetadataItem description(String description) {
@@ -81,7 +89,7 @@ public class AdvancedCommerceSubscriptionChangeMetadataItem {
 
     /**
      * The new description for the item.
-     * 
+     *
      * @return description
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/description">description</a>
      **/
@@ -100,7 +108,7 @@ public class AdvancedCommerceSubscriptionChangeMetadataItem {
 
     /**
      * The new display name for the item.
-     * 
+     *
      * @return displayName
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/displayname">displayName</a>
      **/
@@ -112,36 +120,55 @@ public class AdvancedCommerceSubscriptionChangeMetadataItem {
         this.displayName = displayName == null ? null : HelperValidationUtils.validateDisplayName(displayName);
     }
 
-    public AdvancedCommerceSubscriptionChangeMetadataItem sku(String sku) {
-        this.sku = HelperValidationUtils.validateSku(sku);
+    public AdvancedCommerceSubscriptionChangeMetadataItem effective(AdvancedCommerceEffective effective) {
+        this.effective = Objects.requireNonNull(effective).getValue();
         return this;
     }
 
     /**
-     * The new SKU of the item.
-     * 
-     * @return SKU
-     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/sku">SKU</a>
+     * The string that determines when the metadata change goes into effect.
+     *
+     * @return effective
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/effective">effective</a>
      **/
-    public String getSku() {
-        return sku;
+    public AdvancedCommerceEffective getEffective() {
+        return AdvancedCommerceEffective.fromValue(effective);
     }
 
-    public void setSku(String sku) {
-        this.sku = sku == null ? null : HelperValidationUtils.validateSku(sku);
-    } 
+    /**
+     * @see #getEffective()
+     **/
+    public String getRawEffective() {
+        return effective;
+    }
+
+    public void setEffective(AdvancedCommerceEffective effective) {
+        this.effective = Objects.requireNonNull(effective).getValue();
+    }
+
+    public void setRawEffective(String rawEffective) {
+        this.effective = Objects.requireNonNull(rawEffective);
+    }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AdvancedCommerceSubscriptionChangeMetadataItem that = (AdvancedCommerceSubscriptionChangeMetadataItem) o;
-        return Objects.equals(effective, that.effective) && Objects.equals(currentSku, that.currentSku) && Objects.equals(description, that.description) && Objects.equals(displayName, that.displayName) && Objects.equals(sku, that.sku);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AdvancedCommerceSubscriptionChangeMetadataItem advancedCommerceSubscriptionChangeMetadataItem = (AdvancedCommerceSubscriptionChangeMetadataItem) o;
+        return Objects.equals(this.sku, advancedCommerceSubscriptionChangeMetadataItem.sku) &&
+                Objects.equals(this.currentSku, advancedCommerceSubscriptionChangeMetadataItem.currentSku) &&
+                Objects.equals(this.description, advancedCommerceSubscriptionChangeMetadataItem.description) &&
+                Objects.equals(this.displayName, advancedCommerceSubscriptionChangeMetadataItem.displayName) &&
+                Objects.equals(this.effective, advancedCommerceSubscriptionChangeMetadataItem.effective);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(effective, currentSku, description, displayName, sku);
+        return Objects.hash(sku, currentSku, description, displayName, effective);
     }
 
     @Override
@@ -151,7 +178,7 @@ public class AdvancedCommerceSubscriptionChangeMetadataItem {
                 ", currentSku='" + currentSku + '\'' +
                 ", description='" + description + '\'' +
                 ", displayName='" + displayName + '\'' +
-                ", effective=" + effective +
+                ", effective='" + effective + '\'' +
                 '}';
     }
 }

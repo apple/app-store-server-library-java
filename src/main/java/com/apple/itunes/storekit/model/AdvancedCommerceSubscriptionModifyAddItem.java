@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -10,7 +11,8 @@ import java.util.Objects;
  * The data your app provides to add items when it makes changes to an auto-renewable subscription.
  *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionmodifyadditem">SubscriptionModifyAddItem</a>
- */
+ **/
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdvancedCommerceSubscriptionModifyAddItem extends AbstractAdvancedCommerceItem {
     private static final String SERIALIZED_NAME_OFFER = "offer";
     private static final String SERIALIZED_NAME_PRICE = "price";
@@ -27,13 +29,62 @@ public class AdvancedCommerceSubscriptionModifyAddItem extends AbstractAdvancedC
         super();
     }
 
-    protected AbstractAdvancedCommerceItem self() {
-       return this;
-    }
-
-    public AdvancedCommerceSubscriptionModifyAddItem(String sku, String description, String displayName, long price) {
+    public AdvancedCommerceSubscriptionModifyAddItem(String sku, String description, String displayName, Long price) {
         super(sku, description, displayName);
         this.price = Objects.requireNonNull(price);
+    }
+
+    @Override
+    protected AdvancedCommerceSubscriptionModifyAddItem self() {
+        return this;
+    }
+
+    @Override
+    public AdvancedCommerceSubscriptionModifyAddItem sku(String sku) {
+        return (AdvancedCommerceSubscriptionModifyAddItem) super.sku(sku);
+    }
+
+    @Override
+    public AdvancedCommerceSubscriptionModifyAddItem description(String description) {
+        return (AdvancedCommerceSubscriptionModifyAddItem) super.description(description);
+    }
+
+    @Override
+    public AdvancedCommerceSubscriptionModifyAddItem displayName(String displayName) {
+        return (AdvancedCommerceSubscriptionModifyAddItem) super.displayName(displayName);
+    }
+
+    /**
+     * The product identifier of an Apple In-App Purchase product you manage in your own system.
+     *
+     * @return SKU
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/sku">SKU</a>
+     **/
+    @Override
+    public String getSku() {
+        return super.getSku();
+    }
+
+    /**
+     * A string you provide that describes a SKU.
+     *
+     * @return description
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/description">description</a>
+     **/
+    @Override
+    public String getDescription() {
+        return super.getDescription();
+    }
+
+    /**
+     * A string with a product name that you can localize and is suitable for display to customers.
+     *
+     * @return displayName
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/displayname">displayName</a>
+     **/
+    @Override
+    public String getDisplayName() {
+        return super.getDisplayName();
     }
 
     public AdvancedCommerceSubscriptionModifyAddItem offer(AdvancedCommerceOffer offer) {
@@ -55,12 +106,14 @@ public class AdvancedCommerceSubscriptionModifyAddItem extends AbstractAdvancedC
         this.offer = offer;
     }
 
-    public AdvancedCommerceSubscriptionModifyAddItem price(long price) {
+    public AdvancedCommerceSubscriptionModifyAddItem price(Long price) {
         this.price = Objects.requireNonNull(price);
         return this;
     }
 
     /**
+     * A price, in milliunits of a currency, for an Advanced Commerce API SKU.
+     *
      * @return price
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/price">price</a>
      **/
@@ -78,6 +131,8 @@ public class AdvancedCommerceSubscriptionModifyAddItem extends AbstractAdvancedC
     }
 
     /**
+     * A prorated price, in milliunits of a currency, for an Advanced Commerce API SKU.
+     *
      * @return proratedPrice
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/proratedprice">proratedPrice</a>
      **/
@@ -91,11 +146,19 @@ public class AdvancedCommerceSubscriptionModifyAddItem extends AbstractAdvancedC
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        AdvancedCommerceSubscriptionModifyAddItem that = (AdvancedCommerceSubscriptionModifyAddItem) o;
-        return Objects.equals(offer, that.offer) && Objects.equals(price, that.price) && Objects.equals(proratedPrice, that.proratedPrice);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        AdvancedCommerceSubscriptionModifyAddItem advancedCommerceSubscriptionModifyAddItem = (AdvancedCommerceSubscriptionModifyAddItem) o;
+        return Objects.equals(this.offer, advancedCommerceSubscriptionModifyAddItem.offer) &&
+                Objects.equals(this.price, advancedCommerceSubscriptionModifyAddItem.price) &&
+                Objects.equals(this.proratedPrice, advancedCommerceSubscriptionModifyAddItem.proratedPrice);
     }
 
     @Override
@@ -103,15 +166,15 @@ public class AdvancedCommerceSubscriptionModifyAddItem extends AbstractAdvancedC
         return Objects.hash(super.hashCode(), offer, price, proratedPrice);
     }
 
- @Override
+    @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" +
-                "sku='" + sku + '\'' +
-                ", description='" + description + '\'' +
-                ", displayName='" + displayName + '\'' +
-                ", offer=" + offer + '\'' +
-                ", price=" + price  + '\'' +
-                ", proratedPrice=" + proratedPrice  + '\'' +
+        return "AdvancedCommerceSubscriptionModifyAddItem{" +
+                "sku='" + getSku() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", displayName='" + getDisplayName() + '\'' +
+                ", offer=" + offer +
+                ", price=" + price +
+                ", proratedPrice=" + proratedPrice +
                 '}';
     }
 }

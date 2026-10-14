@@ -8,12 +8,24 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * The type of offer.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/offertype">offerType</a>
- */
+ **/
 public enum OfferType {
 
+    /**
+     * An introductory offer.
+     **/
     INTRODUCTORY_OFFER(1),
+    /**
+     * A promotional offer.
+     **/
     PROMOTIONAL_OFFER(2),
+    /**
+     * An offer with an offer code.
+     **/
     OFFER_CODE(3),
+    /**
+     * A win-back offer.
+     **/
     WIN_BACK_OFFER(4);
 
     private final Integer value;
@@ -41,4 +53,3 @@ public enum OfferType {
         return String.valueOf(value);
     }
 }
-

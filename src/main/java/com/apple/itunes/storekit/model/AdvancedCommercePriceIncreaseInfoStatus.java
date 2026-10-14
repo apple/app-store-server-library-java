@@ -5,8 +5,8 @@ package com.apple.itunes.storekit.model;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/advancedcommercepriceincreaseinfostatus">advancedCommercePriceIncreaseInfoStatus</a>
- */
+ * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/advancedcommercepriceincreaseinfostatus">advancedCommercePriceIncreaseInfoStatus</a>
+ **/
 public enum AdvancedCommercePriceIncreaseInfoStatus {
 
     SCHEDULED("SCHEDULED"),

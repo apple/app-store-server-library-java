@@ -5,6 +5,7 @@ package com.apple.itunes.storekit.model;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -13,38 +14,19 @@ import java.util.Objects;
  * The App Store server notification history record, including the signed notification payload and the result of the server’s first send attempt.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/notificationhistoryresponseitem">notificationHistoryResponseItem</a>
- */
+ **/
 public class NotificationHistoryResponseItem {
-    private static final String SERIALIZED_NAME_SIGNED_PAYLOAD = "signedPayload";
     private static final String SERIALIZED_NAME_SEND_ATTEMPTS = "sendAttempts";
-    @JsonProperty(SERIALIZED_NAME_SIGNED_PAYLOAD)
-    private String signedPayload;
+    private static final String SERIALIZED_NAME_SIGNED_PAYLOAD = "signedPayload";
+
     @JsonProperty(SERIALIZED_NAME_SEND_ATTEMPTS)
     private List<SendAttemptItem> sendAttempts;
+    @JsonProperty(SERIALIZED_NAME_SIGNED_PAYLOAD)
+    private String signedPayload;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
-
     public NotificationHistoryResponseItem() {
-    }
-
-    public NotificationHistoryResponseItem signedPayload(String signedPayload) {
-        this.signedPayload = signedPayload;
-        return this;
-    }
-
-    /**
-     * A cryptographically signed payload, in JSON Web Signature (JWS) format, containing the response body for a version 2 notification.
-     *
-     * @return signedPayload
-     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/signedpayload">signedPayload</a>
-     **/
-    public String getSignedPayload() {
-        return signedPayload;
-    }
-
-    public void setSignedPayload(String signedPayload) {
-        this.signedPayload = signedPayload;
     }
 
     public NotificationHistoryResponseItem sendAttempts(List<SendAttemptItem> sendAttempts) {
@@ -52,8 +34,17 @@ public class NotificationHistoryResponseItem {
         return this;
     }
 
+    public NotificationHistoryResponseItem addSendAttempt(SendAttemptItem sendAttempt) {
+        Objects.requireNonNull(sendAttempt);
+        if (this.sendAttempts == null) {
+            this.sendAttempts = new ArrayList<>();
+        }
+        this.sendAttempts.add(sendAttempt);
+        return this;
+    }
+
     /**
-     * An array of information the App Store server records for its attempts to send a notification to your server. The maximum number of entries in the array is six.
+     * An array of information the App Store server records for its attempts to send a notification to your server.
      *
      * @return sendAttempts
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/sendattemptitem">sendAttemptItem</a>
@@ -66,6 +57,24 @@ public class NotificationHistoryResponseItem {
         this.sendAttempts = sendAttempts;
     }
 
+    public NotificationHistoryResponseItem signedPayload(String signedPayload) {
+        this.signedPayload = signedPayload;
+        return this;
+    }
+
+    /**
+     * The cryptographically signed payload, in JSON Web Signature (JWS) format, containing the original response body of a version 2 notification.
+     *
+     * @return signedPayload
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/signedpayload">signedPayload</a>
+     **/
+    public String getSignedPayload() {
+        return signedPayload;
+    }
+
+    public void setSignedPayload(String signedPayload) {
+        this.signedPayload = signedPayload;
+    }
 
     public NotificationHistoryResponseItem unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
@@ -73,10 +82,10 @@ public class NotificationHistoryResponseItem {
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -94,23 +103,22 @@ public class NotificationHistoryResponseItem {
             return false;
         }
         NotificationHistoryResponseItem notificationHistoryResponseItem = (NotificationHistoryResponseItem) o;
-        return Objects.equals(this.signedPayload, notificationHistoryResponseItem.signedPayload) &&
-                Objects.equals(this.sendAttempts, notificationHistoryResponseItem.sendAttempts) &&
+        return Objects.equals(this.sendAttempts, notificationHistoryResponseItem.sendAttempts) &&
+                Objects.equals(this.signedPayload, notificationHistoryResponseItem.signedPayload) &&
                 Objects.equals(this.unknownFields, notificationHistoryResponseItem.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(signedPayload, sendAttempts, unknownFields);
+        return Objects.hash(sendAttempts, signedPayload, unknownFields);
     }
 
     @Override
     public String toString() {
         return "NotificationHistoryResponseItem{" +
-                "signedPayload='" + signedPayload + '\'' +
-                ", sendAttempts=" + sendAttempts +
+                "sendAttempts=" + sendAttempts +
+                ", signedPayload='" + signedPayload + '\'' +
                 ", unknownFields=" + unknownFields +
                 '}';
     }
 }
-

@@ -5,14 +5,24 @@ package com.apple.itunes.storekit.model;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * The relationship of the user with the family-shared purchase to which they have access.
+ * A string that describes whether the transaction was purchased by the customer, or is available to them through Family Sharing, an organization, or a group.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/inappownershiptype">inAppOwnershipType</a>
- */
+ **/
 public enum InAppOwnershipType {
 
+    /**
+     * The transaction belongs to a family member who benefits from service.
+     **/
     FAMILY_SHARED("FAMILY_SHARED"),
-    PURCHASED("PURCHASED");
+    /**
+     * The transaction belongs to the purchaser.
+     **/
+    PURCHASED("PURCHASED"),
+    /**
+     * The transaction belongs to a customer who has access through an organization or group.
+     **/
+    ASSIGNED("ASSIGNED");
 
     private final String value;
 
@@ -39,4 +49,3 @@ public enum InAppOwnershipType {
         return String.valueOf(value);
     }
 }
-

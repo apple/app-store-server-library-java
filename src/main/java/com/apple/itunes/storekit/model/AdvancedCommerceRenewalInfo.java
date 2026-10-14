@@ -5,15 +5,15 @@ package com.apple.itunes.storekit.model;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 /**
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/advancedcommercerenewalinfo">advancedCommerceRenewalInfo</a>
- */
+ **/
 public class AdvancedCommerceRenewalInfo {
-
     private static final String SERIALIZED_NAME_CONSISTENCY_TOKEN = "consistencyToken";
     private static final String SERIALIZED_NAME_DESCRIPTORS = "descriptors";
     private static final String SERIALIZED_NAME_ITEMS = "items";
@@ -78,9 +78,18 @@ public class AdvancedCommerceRenewalInfo {
         return this;
     }
 
+    public AdvancedCommerceRenewalInfo addItem(AdvancedCommerceRenewalItem item) {
+        Objects.requireNonNull(item);
+        if (this.items == null) {
+            this.items = new ArrayList<>();
+        }
+        this.items.add(item);
+        return this;
+    }
+
     /**
      * @return items
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/advancedcommercerenewalitem">advancedCommerceRenewalItem</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/advancedcommercerenewalitems">advancedCommerceRenewalItems</a>
      **/
     public List<AdvancedCommerceRenewalItem> getItems() {
         return items;
@@ -100,12 +109,12 @@ public class AdvancedCommerceRenewalInfo {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/advancedcommerceperiod">advancedCommercePeriod</a>
      **/
     public AdvancedCommercePeriod getPeriod() {
-        return period != null ? AdvancedCommercePeriod.fromValue(period) : null;
+        return AdvancedCommercePeriod.fromValue(period);
     }
 
     /**
      * @see #getPeriod()
-     */
+     **/
     public String getRawPeriod() {
         return period;
     }
@@ -157,6 +166,11 @@ public class AdvancedCommerceRenewalInfo {
         return this;
     }
 
+    /**
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -167,10 +181,20 @@ public class AdvancedCommerceRenewalInfo {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AdvancedCommerceRenewalInfo that = (AdvancedCommerceRenewalInfo) o;
-        return Objects.equals(consistencyToken, that.consistencyToken) && Objects.equals(descriptors, that.descriptors) && Objects.equals(items, that.items) && Objects.equals(period, that.period) && Objects.equals(requestReferenceId, that.requestReferenceId) && Objects.equals(taxCode, that.taxCode) && Objects.equals(unknownFields, that.unknownFields);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AdvancedCommerceRenewalInfo advancedCommerceRenewalInfo = (AdvancedCommerceRenewalInfo) o;
+        return Objects.equals(this.consistencyToken, advancedCommerceRenewalInfo.consistencyToken) &&
+                Objects.equals(this.descriptors, advancedCommerceRenewalInfo.descriptors) &&
+                Objects.equals(this.items, advancedCommerceRenewalInfo.items) &&
+                Objects.equals(this.period, advancedCommerceRenewalInfo.period) &&
+                Objects.equals(this.requestReferenceId, advancedCommerceRenewalInfo.requestReferenceId) &&
+                Objects.equals(this.taxCode, advancedCommerceRenewalInfo.taxCode) &&
+                Objects.equals(this.unknownFields, advancedCommerceRenewalInfo.unknownFields);
     }
 
     @Override

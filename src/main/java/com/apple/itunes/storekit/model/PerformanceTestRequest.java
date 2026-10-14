@@ -11,10 +11,11 @@ import java.util.Objects;
  * The request object you provide for a performance test that contains an original transaction identifier.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/performancetestrequest">PerformanceTestRequest</a>
- */
+ **/
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PerformanceTestRequest {
     private static final String SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID = "originalTransactionId";
+
     @JsonProperty(value = SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID, required = true)
     private String originalTransactionId;
 

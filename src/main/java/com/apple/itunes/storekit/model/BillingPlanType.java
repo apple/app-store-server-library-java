@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/billingplantype">billingPlanType</a>
- */
+ **/
 public enum BillingPlanType {
 
     BILLED_UPFRONT("BILLED_UPFRONT"),

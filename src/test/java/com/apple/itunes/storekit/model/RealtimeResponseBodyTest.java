@@ -46,9 +46,7 @@ public class RealtimeResponseBodyTest {
         // Create a RealtimeResponseBody with an AlternateProduct
         UUID messageId = UUID.fromString("b2c3d4e5-f6a7-8901-b2c3-d4e5f6a78901");
         String productId = "com.example.alternate.product";
-        AlternateProduct alternateProduct = new AlternateProduct()
-                .messageIdentifier(messageId)
-                .productId(productId)
+        AlternateProduct alternateProduct = new AlternateProduct(messageId, productId)
                 .billingPlanType(BillingPlanType.MONTHLY);
         RealtimeResponseBody responseBody = new RealtimeResponseBody().alternateProduct(alternateProduct);
 
