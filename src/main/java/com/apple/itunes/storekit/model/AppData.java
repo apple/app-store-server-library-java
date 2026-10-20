@@ -12,12 +12,13 @@ import java.util.Objects;
  * The object that contains the app metadata and signed app transaction information.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/appdata">appData</a>
- */
+ **/
 public class AppData {
     private static final String SERIALIZED_NAME_APP_APPLE_ID = "appAppleId";
     private static final String SERIALIZED_NAME_BUNDLE_ID = "bundleId";
     private static final String SERIALIZED_NAME_ENVIRONMENT = "environment";
     private static final String SERIALIZED_NAME_SIGNED_APP_TRANSACTION_INFO = "signedAppTransactionInfo";
+
     @JsonProperty(SERIALIZED_NAME_APP_APPLE_ID)
     private Long appAppleId;
     @JsonProperty(SERIALIZED_NAME_BUNDLE_ID)
@@ -28,7 +29,6 @@ public class AppData {
     private String signedAppTransactionInfo;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
-
 
     public AppData() {
     }
@@ -83,12 +83,12 @@ public class AppData {
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/environment">environment</a>
      **/
     public Environment getEnvironment() {
-        return environment != null ? Environment.fromValue(environment) : null;
+        return Environment.fromValue(environment);
     }
 
     /**
      * @see #getEnvironment()
-     */
+     **/
     public String getRawEnvironment() {
         return environment;
     }
@@ -126,10 +126,10 @@ public class AppData {
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }

@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -11,7 +12,8 @@ import java.util.Objects;
  * The request data your app provides when a customer purchases an auto-renewable subscription.
  *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptioncreaterequest">SubscriptionCreateRequest</a>
- */
+ **/
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdvancedCommerceSubscriptionCreateRequest extends AbstractAdvancedCommerceInAppRequest<AdvancedCommerceSubscriptionCreateRequest> {
     private static final String OPERATION = "CREATE_SUBSCRIPTION";
     private static final String VERSION = "1";
@@ -31,7 +33,7 @@ public class AdvancedCommerceSubscriptionCreateRequest extends AbstractAdvancedC
     @JsonProperty(value = SERIALIZED_NAME_ITEMS, required = true)
     private List<AdvancedCommerceSubscriptionCreateItem> items;
     @JsonProperty(value = SERIALIZED_NAME_PERIOD, required = true)
-    private AdvancedCommercePeriod period;
+    private String period;
     @JsonProperty(SERIALIZED_NAME_PREVIOUS_TRANSACTION_ID)
     private String previousTransactionId;
     @JsonProperty(SERIALIZED_NAME_STOREFRONT)
@@ -44,18 +46,34 @@ public class AdvancedCommerceSubscriptionCreateRequest extends AbstractAdvancedC
     }
 
     public AdvancedCommerceSubscriptionCreateRequest(
+            AdvancedCommerceRequestInfo requestInfo,
             String currency,
             AdvancedCommerceDescriptors descriptors,
             List<AdvancedCommerceSubscriptionCreateItem> items,
             AdvancedCommercePeriod period,
-            AdvancedCommerceRequestInfo requestInfo,
             String taxCode
     ) {
         super(OPERATION, VERSION, requestInfo);
         this.currency = Objects.requireNonNull(currency);
         this.descriptors = Objects.requireNonNull(descriptors);
         this.items = HelperValidationUtils.validateItems(items);
-        this.period = Objects.requireNonNull(period);
+        this.period = Objects.requireNonNull(period).getValue();
+        this.taxCode = Objects.requireNonNull(taxCode);
+    }
+
+    public AdvancedCommerceSubscriptionCreateRequest(
+            AdvancedCommerceRequestInfo requestInfo,
+            String currency,
+            AdvancedCommerceDescriptors descriptors,
+            List<AdvancedCommerceSubscriptionCreateItem> items,
+            String rawPeriod,
+            String taxCode
+    ) {
+        super(OPERATION, VERSION, requestInfo);
+        this.currency = Objects.requireNonNull(currency);
+        this.descriptors = Objects.requireNonNull(descriptors);
+        this.items = HelperValidationUtils.validateItems(items);
+        this.period = Objects.requireNonNull(rawPeriod);
         this.taxCode = Objects.requireNonNull(taxCode);
     }
 
@@ -64,12 +82,45 @@ public class AdvancedCommerceSubscriptionCreateRequest extends AbstractAdvancedC
         return this;
     }
 
+    /**
+     * @return operation
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptioncreaterequest">SubscriptionCreateRequest</a>
+     **/
+    @Override
+    public String getOperation() {
+        return super.getOperation();
+    }
+
+    /**
+     * A number that represents the version of the data structure or Advanced Commerce API.
+     *
+     * @return version
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/version">version</a>
+     **/
+    @Override
+    public String getVersion() {
+        return super.getVersion();
+    }
+
+    /**
+     * The metadata to include in server requests.
+     *
+     * @return requestInfo
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/requestinfo">RequestInfo</a>
+     **/
+    @Override
+    public AdvancedCommerceRequestInfo getRequestInfo() {
+        return super.getRequestInfo();
+    }
+
     public AdvancedCommerceSubscriptionCreateRequest currency(String currency) {
         this.currency = Objects.requireNonNull(currency);
         return this;
     }
 
     /**
+     * The three-letter ISO 4217 currency code for the price of a product.
+     *
      * @return currency
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/currency">currency</a>
      **/
@@ -87,6 +138,8 @@ public class AdvancedCommerceSubscriptionCreateRequest extends AbstractAdvancedC
     }
 
     /**
+     * The display name and description of a subscription product.
+     *
      * @return descriptors
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/descriptors">Descriptors</a>
      **/
@@ -110,6 +163,8 @@ public class AdvancedCommerceSubscriptionCreateRequest extends AbstractAdvancedC
     }
 
     /**
+     * The data that describes a subscription item.
+     *
      * @return items
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptioncreateitem">SubscriptionCreateItem</a>
      **/
@@ -122,20 +177,33 @@ public class AdvancedCommerceSubscriptionCreateRequest extends AbstractAdvancedC
     }
 
     public AdvancedCommerceSubscriptionCreateRequest period(AdvancedCommercePeriod period) {
-        this.period = Objects.requireNonNull(period);
+        this.period = Objects.requireNonNull(period).getValue();
         return this;
     }
 
     /**
+     * The duration of a single cycle of an auto-renewable subscription.
+     *
      * @return period
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/period">period</a>
      **/
     public AdvancedCommercePeriod getPeriod() {
+        return AdvancedCommercePeriod.fromValue(period);
+    }
+
+    /**
+     * @see #getPeriod()
+     **/
+    public String getRawPeriod() {
         return period;
     }
 
     public void setPeriod(AdvancedCommercePeriod period) {
-        this.period = Objects.requireNonNull(period);
+        this.period = Objects.requireNonNull(period).getValue();
+    }
+
+    public void setRawPeriod(String rawPeriod) {
+        this.period = Objects.requireNonNull(rawPeriod);
     }
 
     public AdvancedCommerceSubscriptionCreateRequest previousTransactionId(String previousTransactionId) {
@@ -144,6 +212,8 @@ public class AdvancedCommerceSubscriptionCreateRequest extends AbstractAdvancedC
     }
 
     /**
+     * A unique identifier that the App Store generates for a transaction.
+     *
      * @return previousTransactionId
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/transactionid">transactionId</a>
      **/
@@ -161,6 +231,8 @@ public class AdvancedCommerceSubscriptionCreateRequest extends AbstractAdvancedC
     }
 
     /**
+     * A three-letter code that represents the country or region associated with the App Store storefront.
+     *
      * @return storefront
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/storefront">storefront</a>
      **/
@@ -178,8 +250,10 @@ public class AdvancedCommerceSubscriptionCreateRequest extends AbstractAdvancedC
     }
 
     /**
+     * A tax code that applies to a SKU.
+     *
      * @return taxCode
-     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/taxCode">taxCode</a>
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/taxcode">taxCode</a>
      **/
     public String getTaxCode() {
         return taxCode;
@@ -191,11 +265,23 @@ public class AdvancedCommerceSubscriptionCreateRequest extends AbstractAdvancedC
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        AdvancedCommerceSubscriptionCreateRequest that = (AdvancedCommerceSubscriptionCreateRequest) o;
-        return Objects.equals(currency, that.currency) && Objects.equals(descriptors, that.descriptors) && Objects.equals(items, that.items) && Objects.equals(period, that.period) && Objects.equals(previousTransactionId, that.previousTransactionId) && Objects.equals(storefront, that.storefront) && Objects.equals(taxCode, that.taxCode);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        AdvancedCommerceSubscriptionCreateRequest advancedCommerceSubscriptionCreateRequest = (AdvancedCommerceSubscriptionCreateRequest) o;
+        return Objects.equals(this.currency, advancedCommerceSubscriptionCreateRequest.currency) &&
+                Objects.equals(this.descriptors, advancedCommerceSubscriptionCreateRequest.descriptors) &&
+                Objects.equals(this.items, advancedCommerceSubscriptionCreateRequest.items) &&
+                Objects.equals(this.period, advancedCommerceSubscriptionCreateRequest.period) &&
+                Objects.equals(this.previousTransactionId, advancedCommerceSubscriptionCreateRequest.previousTransactionId) &&
+                Objects.equals(this.storefront, advancedCommerceSubscriptionCreateRequest.storefront) &&
+                Objects.equals(this.taxCode, advancedCommerceSubscriptionCreateRequest.taxCode);
     }
 
     @Override
@@ -205,13 +291,15 @@ public class AdvancedCommerceSubscriptionCreateRequest extends AbstractAdvancedC
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" +
-                "currency='" + currency + '\'' +
+        return "AdvancedCommerceSubscriptionCreateRequest{" +
+                "operation='" + getOperation() + '\'' +
+                ", version='" + getVersion() + '\'' +
+                ", requestInfo=" + getRequestInfo() +
+                ", currency='" + currency + '\'' +
                 ", descriptors=" + descriptors +
                 ", items=" + items +
-                ", period=" + period +
+                ", period='" + period + '\'' +
                 ", previousTransactionId='" + previousTransactionId + '\'' +
-                ", requestInfo=" + getRequestInfo() +
                 ", storefront='" + storefront + '\'' +
                 ", taxCode='" + taxCode + '\'' +
                 '}';

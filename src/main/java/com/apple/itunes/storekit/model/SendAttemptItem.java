@@ -12,10 +12,11 @@ import java.util.Objects;
  * The success or error information and the date the App Store server records when it attempts to send a server notification to your server.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/sendattemptitem">sendAttemptItem</a>
- */
+ **/
 public class SendAttemptItem {
     private static final String SERIALIZED_NAME_ATTEMPT_DATE = "attemptDate";
     private static final String SERIALIZED_NAME_SEND_ATTEMPT_RESULT = "sendAttemptResult";
+
     @JsonProperty(SERIALIZED_NAME_ATTEMPT_DATE)
     private Long attemptDate;
     @JsonProperty(SERIALIZED_NAME_SEND_ATTEMPT_RESULT)
@@ -32,7 +33,7 @@ public class SendAttemptItem {
     }
 
     /**
-     * The date the App Store server attempts to send a notification.
+     * The date the App Store server attempts to send the notification.
      *
      * @return attemptDate
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/attemptdate">attemptDate</a>
@@ -57,12 +58,12 @@ public class SendAttemptItem {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/sendattemptresult">sendAttemptResult</a>
      **/
     public SendAttemptResult getSendAttemptResult() {
-        return sendAttemptResult != null ? SendAttemptResult.fromValue(sendAttemptResult) : null;
+        return SendAttemptResult.fromValue(sendAttemptResult);
     }
 
     /**
      * @see #getSendAttemptResult()
-     */
+     **/
     public String getRawSendAttemptResult() {
         return sendAttemptResult;
     }
@@ -75,17 +76,16 @@ public class SendAttemptItem {
         this.sendAttemptResult = rawSendAttemptResult;
     }
 
-
     public SendAttemptItem unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
         return this;
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -122,4 +122,3 @@ public class SendAttemptItem {
                 '}';
     }
 }
-

@@ -8,12 +8,24 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * The payment mode for a discount offer on an In-App Purchase.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/offerdiscounttype">offerDiscountType</a>
- */
+ **/
 public enum OfferDiscountType {
 
+    /**
+     * A payment mode of a discount for auto-renewable subscriptions that indicates a free trial.
+     **/
     FREE_TRIAL("FREE_TRIAL"),
+    /**
+     * A payment mode of a discount for auto-renewable subscriptions that customers pay over a single or multiple billing periods.
+     **/
     PAY_AS_YOU_GO("PAY_AS_YOU_GO"),
+    /**
+     * A payment mode of a discount for auto-renewable subscriptions that customers pay up front.
+     **/
     PAY_UP_FRONT("PAY_UP_FRONT"),
+    /**
+     * A payment mode for a discount for In-App Purchase types including consumable, non-consumable, and non-renewing subscription.
+     **/
     ONE_TIME("ONE_TIME");
 
     private final String value;

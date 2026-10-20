@@ -7,13 +7,26 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * The type of the refund or revocation that applies to the transaction.
  *
- * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/revocationtype">revocationType</a>
- */
+ * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/revocationtype">revocationType</a>
+ **/
 public enum RevocationType {
 
+    /**
+     * The transaction has a full refund.
+     **/
     REFUND_FULL("REFUND_FULL"),
+    /**
+     * The transaction has a prorated refund.
+     **/
     REFUND_PRORATED("REFUND_PRORATED"),
-    FAMILY_REVOKE("FAMILY_REVOKE");
+    /**
+     * The transaction is revoked from Family Sharing.
+     **/
+    FAMILY_REVOKE("FAMILY_REVOKE"),
+    /**
+     * The organization or group purchaser removed the subscription from the customer.
+     **/
+    ASSIGNMENT_REVOKE("ASSIGNMENT_REVOKE");
 
     private final String value;
 

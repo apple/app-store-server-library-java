@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -11,7 +12,8 @@ import java.util.Objects;
  * The request body for requesting a refund for a transaction.
  *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/requestrefundrequest">RequestRefundRequest</a>
- */
+ **/
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdvancedCommerceRequestRefundRequest extends AdvancedCommerceRequest<AdvancedCommerceRequestRefundRequest> {
     private static final String SERIALIZED_NAME_CURRENCY = "currency";
     private static final String SERIALIZED_NAME_ITEMS = "items";
@@ -32,12 +34,12 @@ public class AdvancedCommerceRequestRefundRequest extends AdvancedCommerceReques
     }
 
     public AdvancedCommerceRequestRefundRequest(
+            AdvancedCommerceRequestInfo requestInfo,
             List<AdvancedCommerceRequestRefundItem> items,
-            Boolean refundRiskingPreference,
-            AdvancedCommerceRequestInfo requestInfo
+            Boolean refundRiskingPreference
     ) {
         super(requestInfo);
-        this.items = Objects.requireNonNull(items);
+        this.items = HelperValidationUtils.validateItems(items);
         this.refundRiskingPreference = Objects.requireNonNull(refundRiskingPreference);
     }
 
@@ -46,8 +48,19 @@ public class AdvancedCommerceRequestRefundRequest extends AdvancedCommerceReques
         return this;
     }
 
+    /**
+     * The metadata to include in server requests.
+     *
+     * @return requestInfo
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/requestinfo">RequestInfo</a>
+     **/
+    @Override
+    public AdvancedCommerceRequestInfo getRequestInfo() {
+        return super.getRequestInfo();
+    }
+
     public AdvancedCommerceRequestRefundRequest currency(String currency) {
-        this.currency = Objects.requireNonNull(currency);
+        this.currency = currency;
         return this;
     }
 
@@ -62,11 +75,11 @@ public class AdvancedCommerceRequestRefundRequest extends AdvancedCommerceReques
     }
 
     public void setCurrency(String currency) {
-        this.currency = Objects.requireNonNull(currency);
+        this.currency = currency;
     }
 
     public AdvancedCommerceRequestRefundRequest items(List<AdvancedCommerceRequestRefundItem> items) {
-        this.items = Objects.requireNonNull(items);
+        this.items = HelperValidationUtils.validateItems(items);
         return this;
     }
 
@@ -77,6 +90,8 @@ public class AdvancedCommerceRequestRefundRequest extends AdvancedCommerceReques
     }
 
     /**
+     * Information about the refund request for an item, such as its SKU, the refund amount, reason, and type.
+     *
      * @return items
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/requestrefunditem">RequestRefundItem</a>
      **/
@@ -85,7 +100,7 @@ public class AdvancedCommerceRequestRefundRequest extends AdvancedCommerceReques
     }
 
     public void setItems(List<AdvancedCommerceRequestRefundItem> items) {
-        this.items = Objects.requireNonNull(items);
+        this.items = HelperValidationUtils.validateItems(items);
     }
 
     public AdvancedCommerceRequestRefundRequest refundRiskingPreference(Boolean refundRiskingPreference) {
@@ -94,8 +109,10 @@ public class AdvancedCommerceRequestRefundRequest extends AdvancedCommerceReques
     }
 
     /**
+     * A Boolean value that indicates whether the App Store asks you for consumption data to help inform the refund decision.
+     *
      * @return refundRiskingPreference
-     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/refundriskingpreference">RefundRiskingPreference</a>
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/refundriskingpreference">refundRiskingPreference</a>
      **/
     public Boolean getRefundRiskingPreference() {
         return refundRiskingPreference;
@@ -105,13 +122,14 @@ public class AdvancedCommerceRequestRefundRequest extends AdvancedCommerceReques
         this.refundRiskingPreference = Objects.requireNonNull(refundRiskingPreference);
     }
 
-
     public AdvancedCommerceRequestRefundRequest storefront(String storefront) {
         this.storefront = storefront;
         return this;
     }
 
     /**
+     * A three-letter code that represents the country or region associated with the App Store storefront.
+     *
      * @return storefront
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/storefront">storefront</a>
      **/
@@ -125,14 +143,20 @@ public class AdvancedCommerceRequestRefundRequest extends AdvancedCommerceReques
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        AdvancedCommerceRequestRefundRequest that = (AdvancedCommerceRequestRefundRequest) o;
-        return Objects.equals(currency, that.currency) && 
-            Objects.equals(items, that.items) && 
-            Objects.equals(refundRiskingPreference, that.refundRiskingPreference) && 
-            Objects.equals(storefront, that.storefront);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        AdvancedCommerceRequestRefundRequest advancedCommerceRequestRefundRequest = (AdvancedCommerceRequestRefundRequest) o;
+        return Objects.equals(this.currency, advancedCommerceRequestRefundRequest.currency) &&
+                Objects.equals(this.items, advancedCommerceRequestRefundRequest.items) &&
+                Objects.equals(this.refundRiskingPreference, advancedCommerceRequestRefundRequest.refundRiskingPreference) &&
+                Objects.equals(this.storefront, advancedCommerceRequestRefundRequest.storefront);
     }
 
     @Override
@@ -142,11 +166,11 @@ public class AdvancedCommerceRequestRefundRequest extends AdvancedCommerceReques
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" +
-                "currency='" + currency + '\'' +
+        return "AdvancedCommerceRequestRefundRequest{" +
+                "requestInfo=" + getRequestInfo() +
+                ", currency='" + currency + '\'' +
                 ", items=" + items +
                 ", refundRiskingPreference=" + refundRiskingPreference +
-                ", requestInfo=" + getRequestInfo() +
                 ", storefront='" + storefront + '\'' +
                 '}';
     }

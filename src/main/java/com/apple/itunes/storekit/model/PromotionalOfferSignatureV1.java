@@ -10,10 +10,10 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * The promotional offer signature you generate using an earlier signature version.
+ * The promotional-offer signature you generate using an earlier signature version.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/promotionaloffersignaturev1">promotionalOfferSignatureV1</a>
- */
+ **/
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PromotionalOfferSignatureV1 {
     private static final String SERIALIZED_NAME_ENCODED_SIGNATURE = "encodedSignature";
@@ -23,6 +23,7 @@ public class PromotionalOfferSignatureV1 {
     private static final String SERIALIZED_NAME_KEY_ID = "keyId";
     private static final String SERIALIZED_NAME_OFFER_IDENTIFIER = "offerIdentifier";
     private static final String SERIALIZED_NAME_APP_ACCOUNT_TOKEN = "appAccountToken";
+
     @JsonProperty(value = SERIALIZED_NAME_ENCODED_SIGNATURE, required = true)
     private String encodedSignature;
     @JsonProperty(value = SERIALIZED_NAME_PRODUCT_ID, required = true)
@@ -36,20 +37,21 @@ public class PromotionalOfferSignatureV1 {
     private String keyId;
     @JsonProperty(value = SERIALIZED_NAME_OFFER_IDENTIFIER, required = true)
     private String offerIdentifier;
-    @JsonProperty(value = SERIALIZED_NAME_APP_ACCOUNT_TOKEN)
+    @JsonProperty(SERIALIZED_NAME_APP_ACCOUNT_TOKEN)
     @JsonSerialize(using = UUIDLowercaseSerializer.class)
     private UUID appAccountToken;
 
-
-    private PromotionalOfferSignatureV1() {
+    protected PromotionalOfferSignatureV1() {
     }
 
-    public PromotionalOfferSignatureV1(String encodedSignature,
-                                       String productId,
-                                       UUID nonce,
-                                       Long timestamp,
-                                       String keyId,
-                                       String offerIdentifier) {
+    public PromotionalOfferSignatureV1(
+            String encodedSignature,
+            String productId,
+            UUID nonce,
+            Long timestamp,
+            String keyId,
+            String offerIdentifier
+    ) {
         this.encodedSignature = Objects.requireNonNull(encodedSignature);
         this.productId = Objects.requireNonNull(productId);
         this.nonce = Objects.requireNonNull(nonce);
@@ -67,6 +69,7 @@ public class PromotionalOfferSignatureV1 {
      * The Base64-encoded cryptographic signature you generate using the offer parameters.
      *
      * @return encodedSignature
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/promotionaloffersignaturev1">promotionalOfferSignatureV1</a>
      **/
     public String getEncodedSignature() {
         return encodedSignature;
@@ -104,6 +107,7 @@ public class PromotionalOfferSignatureV1 {
      * A one-time-use UUID antireplay value you generate.
      *
      * @return nonce
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/promotionaloffersignaturev1">promotionalOfferSignatureV1</a>
      **/
     public UUID getNonce() {
         return nonce;
@@ -122,6 +126,7 @@ public class PromotionalOfferSignatureV1 {
      * The UNIX time, in milliseconds, when you generate the signature.
      *
      * @return timestamp
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/promotionaloffersignaturev1">promotionalOfferSignatureV1</a>
      **/
     public Long getTimestamp() {
         return timestamp;
@@ -140,6 +145,7 @@ public class PromotionalOfferSignatureV1 {
      * A string that identifies the private key you use to generate the signature.
      *
      * @return keyId
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/promotionaloffersignaturev1">promotionalOfferSignatureV1</a>
      **/
     public String getKeyId() {
         return keyId;
@@ -158,6 +164,7 @@ public class PromotionalOfferSignatureV1 {
      * The subscription offer identifier that you set up in App Store Connect.
      *
      * @return offerIdentifier
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/promotionaloffersignaturev1">promotionalOfferSignatureV1</a>
      **/
     public String getOfferIdentifier() {
         return offerIdentifier;
@@ -176,6 +183,7 @@ public class PromotionalOfferSignatureV1 {
      * A UUID that you provide to associate with the transaction if the customer accepts the promotional offer.
      *
      * @return appAccountToken
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/promotionaloffersignaturev1">promotionalOfferSignatureV1</a>
      **/
     public UUID getAppAccountToken() {
         return appAccountToken;
@@ -187,16 +195,20 @@ public class PromotionalOfferSignatureV1 {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PromotionalOfferSignatureV1 that = (PromotionalOfferSignatureV1) o;
-        return Objects.equals(encodedSignature, that.encodedSignature) &&
-                Objects.equals(productId, that.productId) &&
-                Objects.equals(nonce, that.nonce) &&
-                Objects.equals(timestamp, that.timestamp) &&
-                Objects.equals(keyId, that.keyId) &&
-                Objects.equals(offerIdentifier, that.offerIdentifier) &&
-                Objects.equals(appAccountToken, that.appAccountToken);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PromotionalOfferSignatureV1 promotionalOfferSignatureV1 = (PromotionalOfferSignatureV1) o;
+        return Objects.equals(this.encodedSignature, promotionalOfferSignatureV1.encodedSignature) &&
+                Objects.equals(this.productId, promotionalOfferSignatureV1.productId) &&
+                Objects.equals(this.nonce, promotionalOfferSignatureV1.nonce) &&
+                Objects.equals(this.timestamp, promotionalOfferSignatureV1.timestamp) &&
+                Objects.equals(this.keyId, promotionalOfferSignatureV1.keyId) &&
+                Objects.equals(this.offerIdentifier, promotionalOfferSignatureV1.offerIdentifier) &&
+                Objects.equals(this.appAccountToken, promotionalOfferSignatureV1.appAccountToken);
     }
 
     @Override

@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -11,7 +12,8 @@ import java.util.UUID;
  * The metadata to include in server requests.
  *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/requestinfo">RequestInfo</a>
- */
+ **/
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdvancedCommerceRequestInfo {
     private static final String SERIALIZED_NAME_APP_ACCOUNT_TOKEN = "appAccountToken";
     private static final String SERIALIZED_NAME_CONSISTENCY_TOKEN = "consistencyToken";
@@ -24,7 +26,8 @@ public class AdvancedCommerceRequestInfo {
     @JsonProperty(value = SERIALIZED_NAME_REQUEST_REFERENCE_ID, required = true)
     private UUID requestReferenceId;
 
-    protected AdvancedCommerceRequestInfo() {}
+    protected AdvancedCommerceRequestInfo() {
+    }
 
     public AdvancedCommerceRequestInfo(UUID requestReferenceId) {
         this.requestReferenceId = Objects.requireNonNull(requestReferenceId);
@@ -37,8 +40,9 @@ public class AdvancedCommerceRequestInfo {
 
     /**
      * A UUID that represents an app account token, to associate with the transaction in the request.
-     * 
+     *
      * @return appAccountToken
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/requestinfo">RequestInfo</a>
      **/
     public UUID getAppAccountToken() {
         return appAccountToken;
@@ -54,12 +58,12 @@ public class AdvancedCommerceRequestInfo {
     }
 
     /**
-     * The value of the advancedCommerceConsistencyToken that you receive in the JWSRenewalInfo renewal information for a subscription. Don’t generate this value.
-     * 
+     * The value of the advancedCommerceConsistencyToken that you receive in the JWSRenewalInfo renewal information for a subscription.
+     *
      * @return consistencyToken
-     * @see <a href="https://developer.apple.com/documentation/AppStoreServerAPI/advancedCommerceConsistencyToken">advancedCommerceConsistencyToken</a>
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/requestinfo">RequestInfo</a>
      **/
-    public String consistencyToken() {
+    public String getConsistencyToken() {
         return consistencyToken;
     }
 
@@ -73,9 +77,10 @@ public class AdvancedCommerceRequestInfo {
     }
 
     /**
-     * A UUID that you provide to uniquely identify each request. If the request times out, you can use the same requestReferenceId value to retry the request. Otherwise, provide a unique value.
-     * 
+     * A UUID that you provide to uniquely identify each request.
+     *
      * @return requestReferenceId
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/requestinfo">RequestInfo</a>
      **/
     public UUID getRequestReferenceId() {
         return requestReferenceId;
@@ -87,10 +92,16 @@ public class AdvancedCommerceRequestInfo {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AdvancedCommerceRequestInfo that = (AdvancedCommerceRequestInfo) o;
-        return Objects.equals(appAccountToken, that.appAccountToken) && Objects.equals(consistencyToken, that.consistencyToken) && Objects.equals(requestReferenceId, that.requestReferenceId);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AdvancedCommerceRequestInfo advancedCommerceRequestInfo = (AdvancedCommerceRequestInfo) o;
+        return Objects.equals(this.appAccountToken, advancedCommerceRequestInfo.appAccountToken) &&
+                Objects.equals(this.consistencyToken, advancedCommerceRequestInfo.consistencyToken) &&
+                Objects.equals(this.requestReferenceId, advancedCommerceRequestInfo.requestReferenceId);
     }
 
     @Override
@@ -100,7 +111,7 @@ public class AdvancedCommerceRequestInfo {
 
     @Override
     public String toString() {
-        return "RequestInfo{" +
+        return "AdvancedCommerceRequestInfo{" +
                 "appAccountToken=" + appAccountToken +
                 ", consistencyToken='" + consistencyToken + '\'' +
                 ", requestReferenceId=" + requestReferenceId +

@@ -28,6 +28,15 @@ public abstract class JWSSignatureCreator {
     private final String bundleId;
 
     public JWSSignatureCreator(String audience, String signingKey, String keyId, String issuerId, String bundleId) {
+        if (keyId == null) {
+            throw new IllegalArgumentException("keyId cannot be null");
+        }
+        if (issuerId == null) {
+            throw new IllegalArgumentException("issuerId cannot be null");
+        }
+        if (bundleId == null) {
+            throw new IllegalArgumentException("bundleId cannot be null");
+        }
         this.audience = audience;
         try {
             signingKey = signingKey.replace("-----BEGIN PRIVATE KEY-----", "")

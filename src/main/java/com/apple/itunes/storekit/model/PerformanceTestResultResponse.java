@@ -3,6 +3,7 @@
 package com.apple.itunes.storekit.model;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.HashMap;
@@ -13,38 +14,79 @@ import java.util.Objects;
  * An object the API returns that describes the performance test results.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/performancetestresultresponse">PerformanceTestResultResponse</a>
- */
+ **/
 public class PerformanceTestResultResponse {
     private static final String SERIALIZED_NAME_CONFIG = "config";
-    private static final String SERIALIZED_NAME_TARGET = "target";
-    private static final String SERIALIZED_NAME_RESULT = "result";
-    private static final String SERIALIZED_NAME_SUCCESS_RATE = "successRate";
+    private static final String SERIALIZED_NAME_FAILURES = "failures";
     private static final String SERIALIZED_NAME_NUM_PENDING = "numPending";
     private static final String SERIALIZED_NAME_RESPONSE_TIMES = "responseTimes";
-    private static final String SERIALIZED_NAME_FAILURES = "failures";
-    @JsonProperty(SERIALIZED_NAME_CONFIG)
+    private static final String SERIALIZED_NAME_RESULT = "result";
+    private static final String SERIALIZED_NAME_SUCCESS_RATE = "successRate";
+    private static final String SERIALIZED_NAME_TARGET = "target";
+
+    @JsonProperty(value = SERIALIZED_NAME_CONFIG, required = true)
     private PerformanceTestConfig config;
-    @JsonProperty(SERIALIZED_NAME_TARGET)
-    private String target;
-    @JsonProperty(SERIALIZED_NAME_RESULT)
-    private String result;
-    @JsonProperty(SERIALIZED_NAME_SUCCESS_RATE)
-    private Integer successRate;
-    @JsonProperty(SERIALIZED_NAME_NUM_PENDING)
-    private Integer numPending;
-    @JsonProperty(SERIALIZED_NAME_RESPONSE_TIMES)
-    private PerformanceTestResponseTimes responseTimes;
-    @JsonProperty(SERIALIZED_NAME_FAILURES)
+    @JsonProperty(value = SERIALIZED_NAME_FAILURES, required = true)
     private Map<String, Integer> failures;
+    @JsonProperty(value = SERIALIZED_NAME_NUM_PENDING, required = true)
+    private Integer numPending;
+    @JsonProperty(value = SERIALIZED_NAME_RESPONSE_TIMES, required = true)
+    private PerformanceTestResponseTimes responseTimes;
+    @JsonProperty(value = SERIALIZED_NAME_RESULT, required = true)
+    private String result;
+    @JsonProperty(value = SERIALIZED_NAME_SUCCESS_RATE, required = true)
+    private Integer successRate;
+    @JsonProperty(value = SERIALIZED_NAME_TARGET, required = true)
+    private String target;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
+    protected PerformanceTestResultResponse() {
+    }
 
-    public PerformanceTestResultResponse() {
+    public PerformanceTestResultResponse(
+            PerformanceTestConfig config,
+            Map<SendAttemptResult, Integer> failures,
+            Integer numPending,
+            PerformanceTestResponseTimes responseTimes,
+            PerformanceTestStatus result,
+            Integer successRate,
+            String target
+    ) {
+        this.config = Objects.requireNonNull(config);
+        Objects.requireNonNull(failures);
+        this.failures = new HashMap<>();
+        for (Map.Entry<SendAttemptResult, Integer> entry : failures.entrySet()) {
+            this.failures.put(entry.getKey().getValue(), entry.getValue());
+        }
+        this.numPending = Objects.requireNonNull(numPending);
+        this.responseTimes = Objects.requireNonNull(responseTimes);
+        this.result = Objects.requireNonNull(result).getValue();
+        this.successRate = Objects.requireNonNull(successRate);
+        this.target = Objects.requireNonNull(target);
+    }
+
+    @JsonCreator
+    public PerformanceTestResultResponse(
+            @JsonProperty(value = SERIALIZED_NAME_CONFIG, required = true) PerformanceTestConfig config,
+            @JsonProperty(value = SERIALIZED_NAME_FAILURES, required = true) Map<String, Integer> rawFailures,
+            @JsonProperty(value = SERIALIZED_NAME_NUM_PENDING, required = true) Integer numPending,
+            @JsonProperty(value = SERIALIZED_NAME_RESPONSE_TIMES, required = true) PerformanceTestResponseTimes responseTimes,
+            @JsonProperty(value = SERIALIZED_NAME_RESULT, required = true) String rawResult,
+            @JsonProperty(value = SERIALIZED_NAME_SUCCESS_RATE, required = true) Integer successRate,
+            @JsonProperty(value = SERIALIZED_NAME_TARGET, required = true) String target
+    ) {
+        this.config = Objects.requireNonNull(config);
+        this.failures = Objects.requireNonNull(rawFailures);
+        this.numPending = Objects.requireNonNull(numPending);
+        this.responseTimes = Objects.requireNonNull(responseTimes);
+        this.result = Objects.requireNonNull(rawResult);
+        this.successRate = Objects.requireNonNull(successRate);
+        this.target = Objects.requireNonNull(target);
     }
 
     public PerformanceTestResultResponse config(PerformanceTestConfig config) {
-        this.config = config;
+        this.config = Objects.requireNonNull(config);
         return this;
     }
 
@@ -59,79 +101,56 @@ public class PerformanceTestResultResponse {
     }
 
     public void setConfig(PerformanceTestConfig config) {
-        this.config = config;
+        this.config = Objects.requireNonNull(config);
     }
 
-    public PerformanceTestResultResponse target(String target) {
-        this.target = target;
+    public PerformanceTestResultResponse failures(Map<SendAttemptResult, Integer> failures) {
+        Objects.requireNonNull(failures);
+        this.failures = new HashMap<>();
+        for (Map.Entry<SendAttemptResult, Integer> entry : failures.entrySet()) {
+            this.failures.put(entry.getKey().getValue(), entry.getValue());
+        }
         return this;
     }
 
     /**
-     * The target URL for the performance test.
+     * A Failures object that represents a map of server-to-server notification failure reasons and counts that represent the number of failures encountered during the performance test.
      *
-     * @return target
-     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/target">target</a>
+     * @return failures
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/failures">Failures</a>
      **/
-    public String getTarget() {
-        return target;
-    }
-
-    public void setTarget(String target) {
-        this.target = target;
-    }
-
-    public PerformanceTestResultResponse result(PerformanceTestStatus result) {
-        this.result = result != null ? result.getValue() : null;
-        return this;
-    }
-
-    /**
-     * A PerformanceTestStatus object that describes the overall result of the test.
-     *
-     * @return result
-     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/performanceteststatus">performanceTestStatus</a>
-     **/
-    public PerformanceTestStatus getResult() {
-        return result != null ? PerformanceTestStatus.fromValue(result) : null;
-    }
-
-    /**
-     * @see #getResult()
-     */
-    public String getRawResult() {
+    public Map<SendAttemptResult, Integer> getFailures() {
+        Map<SendAttemptResult, Integer> result = new HashMap<>();
+        for (Map.Entry<String, Integer> entry : failures.entrySet()) {
+            SendAttemptResult key = SendAttemptResult.fromValue(entry.getKey());
+            if (key != null) {
+                result.put(key, entry.getValue());
+            }
+        }
         return result;
     }
 
-    public void setResult(PerformanceTestStatus result) {
-        this.result = result != null ? result.getValue() : null;
-    }
-
-    public void setRawResult(String rawResult) {
-        this.result = rawResult;
-    }
-
-    public PerformanceTestResultResponse successRate(Integer successRate) {
-        this.successRate = successRate;
-        return this;
-    }
-
     /**
-     * An integer that describes he success rate percentage of the performance test.
-     *
-     * @return successRate
-     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/successrate">successRate</a>
+     * @see #getFailures()
      **/
-    public Integer getSuccessRate() {
-        return successRate;
+    public Map<String, Integer> getRawFailures() {
+        return failures;
     }
 
-    public void setSuccessRate(Integer successRate) {
-        this.successRate = successRate;
+    public void setFailures(Map<SendAttemptResult, Integer> failures) {
+        Objects.requireNonNull(failures);
+        this.failures = new HashMap<>();
+        for (Map.Entry<SendAttemptResult, Integer> entry : failures.entrySet()) {
+            this.failures.put(entry.getKey().getValue(), entry.getValue());
+        }
+    }
+
+    public void setRawFailures(Map<String, Integer> rawFailures) {
+        this.failures = Objects.requireNonNull(rawFailures);
     }
 
     public PerformanceTestResultResponse numPending(Integer numPending) {
-        this.numPending = numPending;
+        this.numPending = Objects.requireNonNull(numPending);
         return this;
     }
 
@@ -139,18 +158,18 @@ public class PerformanceTestResultResponse {
      * An integer that describes the number of pending requests in the performance test.
      *
      * @return numPending
-     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/numpending">numPending</a>
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/performancetestresultresponse">PerformanceTestResultResponse</a>
      **/
     public Integer getNumPending() {
         return numPending;
     }
 
     public void setNumPending(Integer numPending) {
-        this.numPending = numPending;
+        this.numPending = Objects.requireNonNull(numPending);
     }
 
     public PerformanceTestResultResponse responseTimes(PerformanceTestResponseTimes responseTimes) {
-        this.responseTimes = responseTimes;
+        this.responseTimes = Objects.requireNonNull(responseTimes);
         return this;
     }
 
@@ -165,63 +184,76 @@ public class PerformanceTestResultResponse {
     }
 
     public void setResponseTimes(PerformanceTestResponseTimes responseTimes) {
-        this.responseTimes = responseTimes;
+        this.responseTimes = Objects.requireNonNull(responseTimes);
     }
 
-    public PerformanceTestResultResponse failures(Map<SendAttemptResult, Integer> failures) {
-        if (failures != null) {
-            this.failures = new HashMap<>();
-            for (Map.Entry<SendAttemptResult, Integer> entry : failures.entrySet()) {
-                this.failures.put(entry.getKey().getValue(), entry.getValue());
-            }
-        } else {
-            this.failures = null;
-        }
+    public PerformanceTestResultResponse result(PerformanceTestStatus result) {
+        this.result = Objects.requireNonNull(result).getValue();
         return this;
     }
 
     /**
-     * A Failures object that represents a map of server-to-server notification failure reasons and counts that represent the number of failures encountered during the performance test.
+     * A PerformanceTestStatus object that describes the overall result of the test.
      *
-     * @return failures
-     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/failures">Failures</a>
+     * @return result
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/performanceteststatus">PerformanceTestStatus</a>
      **/
-    public Map<SendAttemptResult, Integer> getFailures() {
-        if (failures == null) {
-            return null;
-        }
-        Map<SendAttemptResult, Integer> result = new HashMap<>();
-        for (Map.Entry<String, Integer> entry : failures.entrySet()) {
-            SendAttemptResult key = SendAttemptResult.fromValue(entry.getKey());
-            if (key != null) {
-                result.put(key, entry.getValue());
-            }
-        }
-        return result;
+    public PerformanceTestStatus getResult() {
+        return PerformanceTestStatus.fromValue(result);
     }
 
     /**
-     * @see #getFailures()
-     */
-    public Map<String, Integer> getRawFailures() {
-        return failures;
+     * @see #getResult()
+     **/
+    public String getRawResult() {
+        return result;
     }
 
-    public void setFailures(Map<SendAttemptResult, Integer> failures) {
-        if (failures != null) {
-            this.failures = new HashMap<>();
-            for (Map.Entry<SendAttemptResult, Integer> entry : failures.entrySet()) {
-                this.failures.put(entry.getKey().getValue(), entry.getValue());
-            }
-        } else {
-            this.failures = null;
-        }
+    public void setResult(PerformanceTestStatus result) {
+        this.result = Objects.requireNonNull(result).getValue();
     }
 
-    public void setRawFailures(Map<String, Integer> rawFailures) {
-        this.failures = rawFailures;
+    public void setRawResult(String rawResult) {
+        this.result = Objects.requireNonNull(rawResult);
     }
 
+    public PerformanceTestResultResponse successRate(Integer successRate) {
+        this.successRate = Objects.requireNonNull(successRate);
+        return this;
+    }
+
+    /**
+     * An integer that describes the success rate percentage of the performance test.
+     *
+     * @return successRate
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/performancetestresultresponse">PerformanceTestResultResponse</a>
+     **/
+    public Integer getSuccessRate() {
+        return successRate;
+    }
+
+    public void setSuccessRate(Integer successRate) {
+        this.successRate = Objects.requireNonNull(successRate);
+    }
+
+    public PerformanceTestResultResponse target(String target) {
+        this.target = Objects.requireNonNull(target);
+        return this;
+    }
+
+    /**
+     * The target URL for the performance test.
+     *
+     * @return target
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/performancetestresultresponse">PerformanceTestResultResponse</a>
+     **/
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = Objects.requireNonNull(target);
+    }
 
     public PerformanceTestResultResponse unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
@@ -229,10 +261,10 @@ public class PerformanceTestResultResponse {
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -251,30 +283,30 @@ public class PerformanceTestResultResponse {
         }
         PerformanceTestResultResponse performanceTestResultResponse = (PerformanceTestResultResponse) o;
         return Objects.equals(this.config, performanceTestResultResponse.config) &&
-                Objects.equals(this.target, performanceTestResultResponse.target) &&
-                Objects.equals(this.result, performanceTestResultResponse.result) &&
-                Objects.equals(this.successRate, performanceTestResultResponse.successRate) &&
+                Objects.equals(this.failures, performanceTestResultResponse.failures) &&
                 Objects.equals(this.numPending, performanceTestResultResponse.numPending) &&
                 Objects.equals(this.responseTimes, performanceTestResultResponse.responseTimes) &&
-                Objects.equals(this.failures, performanceTestResultResponse.failures) &&
+                Objects.equals(this.result, performanceTestResultResponse.result) &&
+                Objects.equals(this.successRate, performanceTestResultResponse.successRate) &&
+                Objects.equals(this.target, performanceTestResultResponse.target) &&
                 Objects.equals(this.unknownFields, performanceTestResultResponse.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(config, target, result, successRate, numPending, responseTimes, failures, unknownFields);
+        return Objects.hash(config, failures, numPending, responseTimes, result, successRate, target, unknownFields);
     }
 
     @Override
     public String toString() {
         return "PerformanceTestResultResponse{" +
                 "config=" + config +
-                ", target='" + target + '\'' +
-                ", result='" + result + '\'' +
-                ", successRate=" + successRate +
+                ", failures=" + failures +
                 ", numPending=" + numPending +
                 ", responseTimes=" + responseTimes +
-                ", failures=" + failures +
+                ", result='" + result + '\'' +
+                ", successRate=" + successRate +
+                ", target='" + target + '\'' +
                 ", unknownFields=" + unknownFields +
                 '}';
     }

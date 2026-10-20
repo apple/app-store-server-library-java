@@ -173,19 +173,19 @@ public class SignedDataVerifier {
     }
 
     protected void validateAppAppleId(Long appAppleId) throws VerificationException {
-        if (this.environment.equals(Environment.PRODUCTION) && !this.appAppleId.equals(appAppleId)) {
+        if (Environment.PRODUCTION.equals(this.environment) && !this.appAppleId.equals(appAppleId)) {
             throw new VerificationException(VerificationStatus.INVALID_APP_IDENTIFIER);
         }
     }
 
     protected void validateBundleId(String bundleId) throws VerificationException {
-        if (!this.bundleId.equals(bundleId)) {
+        if (this.bundleId == null || !this.bundleId.equals(bundleId)) {
             throw new VerificationException(VerificationStatus.INVALID_APP_IDENTIFIER);
         }
     }
 
     protected void validateEnvironment(Environment environment) throws VerificationException {
-        if (!this.environment.equals(environment)) {
+        if (this.environment == null || !this.environment.equals(environment)) {
             throw new VerificationException(VerificationStatus.INVALID_ENVIRONMENT);
         }
     }
@@ -208,7 +208,7 @@ public class SignedDataVerifier {
             if ("ES256".equals(unverifiedJWT.getAlgorithm())) {
                 JWT.require(Algorithm.ECDSA256((ECPublicKey) signingKey)).build().verify(unverifiedJWT);
             } else {
-                throw new VerificationException(VerificationStatus.VERIFICATION_FAILURE, "Unrecognized JWT algorithm + " + unverifiedJWT.getAlgorithm());
+                throw new VerificationException(VerificationStatus.VERIFICATION_FAILURE, "Unrecognized JWT algorithm: " + unverifiedJWT.getAlgorithm());
             }
             return decodedData;
         } catch (VerificationException e) {

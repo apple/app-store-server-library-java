@@ -5,6 +5,7 @@ package com.apple.itunes.storekit.model;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -13,14 +14,14 @@ import java.util.Objects;
  * A response that contains status information for all messages.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/getmessagelistresponse">GetMessageListResponse</a>
- */
+ **/
 public class GetMessageListResponse {
     private static final String SERIALIZED_NAME_MESSAGE_IDENTIFIERS = "messageIdentifiers";
+
     @JsonProperty(SERIALIZED_NAME_MESSAGE_IDENTIFIERS)
     private List<GetMessageListResponseItem> messageIdentifiers;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
-
 
     public GetMessageListResponse() {
     }
@@ -30,11 +31,20 @@ public class GetMessageListResponse {
         return this;
     }
 
+    public GetMessageListResponse addMessageIdentifier(GetMessageListResponseItem messageIdentifier) {
+        Objects.requireNonNull(messageIdentifier);
+        if (this.messageIdentifiers == null) {
+            this.messageIdentifiers = new ArrayList<>();
+        }
+        this.messageIdentifiers.add(messageIdentifier);
+        return this;
+    }
+
     /**
-     * An array of all message identifiers and their message state.
+     * An array of all message identifiers and their message states.
      *
      * @return messageIdentifiers
-     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/getmessagelistresponseitem">messageIdentifiers</a>
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/getmessagelistresponseitem">GetMessageListResponseItem</a>
      **/
     public List<GetMessageListResponseItem> getMessageIdentifiers() {
         return messageIdentifiers;
@@ -50,10 +60,10 @@ public class GetMessageListResponse {
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -88,4 +98,3 @@ public class GetMessageListResponse {
                 '}';
     }
 }
-

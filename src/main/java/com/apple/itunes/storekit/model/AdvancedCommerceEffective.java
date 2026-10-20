@@ -8,10 +8,16 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * A string value that indicates when a requested change to an auto-renewable subscription goes into effect.
  *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/effective">effective</a>
- */
+ **/
 public enum AdvancedCommerceEffective {
 
+    /**
+     * The requested change goes into effect immediately.
+     **/
     IMMEDIATELY("IMMEDIATELY"),
+    /**
+     * The requested change goes into effect at the start of the next billing cycle.
+     **/
     NEXT_BILL_CYCLE("NEXT_BILL_CYCLE");
 
     private final String value;

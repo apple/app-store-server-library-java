@@ -2,10 +2,12 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class AbstractAdvancedCommerceInAppRequest<T extends AbstractAdvancedCommerceInAppRequest<T>> extends AdvancedCommerceRequest<T> implements AdvancedCommerceInAppRequest {
 
     private static final String SERIALIZED_NAME_OPERATION = "operation";
@@ -25,6 +27,25 @@ public abstract class AbstractAdvancedCommerceInAppRequest<T extends AbstractAdv
         super(requestInfo);
         this.operation = Objects.requireNonNull(operation);
         this.version = Objects.requireNonNull(version);
+    }
+
+    /**
+     * The constant that represents the operation of this request.
+     *
+     * @return operation
+     **/
+    public String getOperation() {
+        return operation;
+    }
+
+    /**
+     * A number that represents the version of the data structure or Advanced Commerce API.
+     *
+     * @return version
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/version">version</a>
+     **/
+    public String getVersion() {
+        return version;
     }
 
     @Override

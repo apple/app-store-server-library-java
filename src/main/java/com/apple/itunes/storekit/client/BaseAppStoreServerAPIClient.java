@@ -24,6 +24,8 @@ import com.apple.itunes.storekit.model.Environment;
 import com.apple.itunes.storekit.model.ErrorPayload;
 import com.apple.itunes.storekit.model.ExtendRenewalDateRequest;
 import com.apple.itunes.storekit.model.ExtendRenewalDateResponse;
+import com.apple.itunes.storekit.model.GetCustomerGroupsResponse;
+import com.apple.itunes.storekit.model.GetGroupMembersResponse;
 import com.apple.itunes.storekit.model.GetImageListResponse;
 import com.apple.itunes.storekit.model.GetMessageListResponse;
 import com.apple.itunes.storekit.model.HistoryResponse;
@@ -54,11 +56,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -170,6 +174,9 @@ public abstract class BaseAppStoreServerAPIClient {
                             // If we cannot parse the body, then simply return the status code
                             throw new APIException(r.statusCode(), responseHeaders);
                         }
+                        if (errorPayload == null) {
+                            throw new APIException(r.statusCode(), responseHeaders);
+                        }
                         throw new APIException(r.statusCode(), errorPayload.getErrorCode(), errorPayload.getErrorMessage(), responseHeaders);
                     }
                 } catch (APIException e) {
@@ -182,6 +189,26 @@ public abstract class BaseAppStoreServerAPIClient {
         }
     }
 
+    private static String path(String template, String... pathParameters) {
+        String[] parts = template.split("\\{\\}", -1);
+        if (parts.length != pathParameters.length + 1) {
+            throw new IllegalArgumentException();
+        }
+        StringBuilder path = new StringBuilder(parts[0]);
+        for (int i = 0; i < pathParameters.length; i++) {
+            path.append(encodePathSegment(pathParameters[i])).append(parts[i + 1]);
+        }
+        return path.toString();
+    }
+
+    private static String encodePathSegment(String pathSegment) {
+        String encoded = URLEncoder.encode(String.valueOf(pathSegment), StandardCharsets.UTF_8).replace("+", "%20");
+        if (encoded.isEmpty() || encoded.equals(".") || encoded.equals("..")) {
+            throw new IllegalArgumentException();
+        }
+        return encoded;
+    }
+
     /**
      * Uses a subscription’s product identifier to extend the renewal date for all of its eligible active subscribers.
      *
@@ -189,7 +216,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @return A response that indicates the server successfully received the subscription-renewal-date extension request.
      * @throws APIException If a response was returned indicating the request could not be processed
      * @throws IOException  If an exception was thrown while making the request
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/extend_subscription_renewal_dates_for_all_active_subscribers">Extend Subscription Renewal Dates for All Active Subscribers</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/extend-subscription-renewal-dates-for-all-active-subscribers">Extend Subscription Renewal Dates for All Active Subscribers</a>
      */
     public MassExtendRenewalDateResponse extendRenewalDateForAllActiveSubscribers(MassExtendRenewalDateRequest massExtendRenewalDateRequest) throws APIException, IOException {
         return makeHttpCall("/inApps/v1/subscriptions/extend/mass", "POST", Map.of(), massExtendRenewalDateRequest, MassExtendRenewalDateResponse.class, JSON);
@@ -203,10 +230,10 @@ public abstract class BaseAppStoreServerAPIClient {
      * @return A response that indicates whether an individual renewal-date extension succeeded, and related details.
      * @throws APIException If a response was returned indicating the request could not be processed
      * @throws IOException  If an exception was thrown while making the request
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/extend_a_subscription_renewal_date">Extend a Subscription Renewal Date</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/extend-a-subscription-renewal-date">Extend a Subscription Renewal Date</a>
      */
     public ExtendRenewalDateResponse extendSubscriptionRenewalDate(String originalTransactionId, ExtendRenewalDateRequest extendRenewalDateRequest) throws APIException, IOException {
-        return makeHttpCall("/inApps/v1/subscriptions/extend/" + originalTransactionId, "PUT", Map.of(), extendRenewalDateRequest, ExtendRenewalDateResponse.class, JSON);
+        return makeHttpCall(path("/inApps/v1/subscriptions/extend/{}", originalTransactionId), "PUT", Map.of(), extendRenewalDateRequest, ExtendRenewalDateResponse.class, JSON);
     }
 
     /**
@@ -217,14 +244,14 @@ public abstract class BaseAppStoreServerAPIClient {
      * @return A response that contains status information for all of a customer’s auto-renewable subscriptions in your app.
      * @throws APIException If a response was returned indicating the request could not be processed
      * @throws IOException  If an exception was thrown while making the request
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get_all_subscription_statuses">Get All Subscription Statuses</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get-all-subscription-statuses">Get All Subscription Statuses</a>
      */
     public StatusResponse getAllSubscriptionStatuses(String anyTransactionId, Status[] status) throws APIException, IOException {
         Map<String, List<String>> queryParameters = new HashMap<>();
         if (status != null) {
             queryParameters.put("status", Arrays.stream(status).map(s -> s.getValue().toString()).collect(Collectors.toList()));
         }
-        return makeHttpCall("/inApps/v1/subscriptions/" + anyTransactionId, "GET", queryParameters, null, StatusResponse.class, null);
+        return makeHttpCall(path("/inApps/v1/subscriptions/{}", anyTransactionId), "GET", queryParameters, null, StatusResponse.class, null);
     }
 
     /**
@@ -232,17 +259,17 @@ public abstract class BaseAppStoreServerAPIClient {
      *
      * @param anyTransactionId Any transactionId, originalTransactionId, or appTransactionId that belongs to the customer for your app.
      * @param revision              A token you provide to get the next set of up to 20 transactions. All responses include a revision token. Use the revision token from the previous RefundHistoryResponse.
-     * @return A response that contains status information for all of a customer’s auto-renewable subscriptions in your app.
+     * @return A response that contains an array of signed JSON Web Signature (JWS) refunded transactions, and paging information.
      * @throws APIException If a response was returned indicating the request could not be processed
      * @throws IOException  If an exception was thrown while making the request
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get_refund_history">Get Refund History</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get-refund-history">Get Refund History</a>
      */
     public RefundHistoryResponse getRefundHistory(String anyTransactionId, String revision) throws APIException, IOException {
         Map<String, List<String>> queryParameters = new HashMap<>();
         if (revision != null) {
             queryParameters.put("revision", List.of(revision));
         }
-        return makeHttpCall("/inApps/v2/refund/lookup/" + anyTransactionId, "GET", queryParameters, null, RefundHistoryResponse.class, null);
+        return makeHttpCall(path("/inApps/v2/refund/lookup/{}", anyTransactionId), "GET", queryParameters, null, RefundHistoryResponse.class, null);
     }
 
     /**
@@ -253,10 +280,10 @@ public abstract class BaseAppStoreServerAPIClient {
      * @return A response that indicates the current status of a request to extend the subscription renewal date to all eligible subscribers.
      * @throws APIException If a response was returned indicating the request could not be processed
      * @throws IOException  If an exception was thrown while making the request
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get_status_of_subscription_renewal_date_extensions">Get Status of Subscription Renewal Date Extensions</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get-status-of-subscription-renewal-date-extensions">Get Status of Subscription Renewal Date Extensions</a>
      */
     public MassExtendRenewalDateStatusResponse getStatusOfSubscriptionRenewalDateExtensions(String requestIdentifier, String productId) throws APIException, IOException {
-        return makeHttpCall("/inApps/v1/subscriptions/extend/mass/" + productId + "/" + requestIdentifier, "GET", Map.of(), null, MassExtendRenewalDateStatusResponse.class, null);
+        return makeHttpCall(path("/inApps/v1/subscriptions/extend/mass/{}/{}", productId, requestIdentifier), "GET", Map.of(), null, MassExtendRenewalDateStatusResponse.class, null);
     }
 
     /**
@@ -266,10 +293,10 @@ public abstract class BaseAppStoreServerAPIClient {
      * @return A response that contains the contents of the test notification sent by the App Store server and the result from your server.
      * @throws APIException If a response was returned indicating the request could not be processed
      * @throws IOException  If an exception was thrown while making the request
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get_test_notification_status">Get Test Notification Status</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get-test-notification-status">Get Test Notification Status</a>
      */
     public CheckTestNotificationResponse getTestNotificationStatus(String testNotificationToken) throws APIException, IOException {
-        return makeHttpCall("/inApps/v1/notifications/test/" + testNotificationToken, "GET", Map.of(), null, CheckTestNotificationResponse.class, null);
+        return makeHttpCall(path("/inApps/v1/notifications/test/{}", testNotificationToken), "GET", Map.of(), null, CheckTestNotificationResponse.class, null);
     }
 
     /**
@@ -280,7 +307,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @return A response that contains the App Store Server Notifications history for your app.
      * @throws APIException If a response was returned indicating the request could not be processed
      * @throws IOException  If an exception was thrown while making the request
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get_notification_history">Get Notification History</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get-notification-history">Get Notification History</a>
      */
     public NotificationHistoryResponse getNotificationHistory(String paginationToken, NotificationHistoryRequest notificationHistoryRequest) throws APIException, IOException {
         Map<String, List<String>> queryParameters = new HashMap<>();
@@ -292,6 +319,7 @@ public abstract class BaseAppStoreServerAPIClient {
 
     /**
      * @see #getTransactionHistory(String, String, TransactionHistoryRequest, GetTransactionHistoryVersion)
+     * @deprecated Use {@link #getTransactionHistory(String, String, TransactionHistoryRequest, GetTransactionHistoryVersion)} instead
      */
     @Deprecated(since = "2.2.0")
     public HistoryResponse getTransactionHistory(String anyTransactionId, String revision, TransactionHistoryRequest transactionHistoryRequest) throws APIException, IOException {
@@ -307,9 +335,10 @@ public abstract class BaseAppStoreServerAPIClient {
      * @return A response that contains the customer’s transaction history for an app.
      * @throws APIException If a response was returned indicating the request could not be processed
      * @throws IOException  If an exception was thrown while making the request
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get_transaction_history">Get Transaction History</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get-transaction-history">Get Transaction History</a>
      */
     public HistoryResponse getTransactionHistory(String anyTransactionId, String revision, TransactionHistoryRequest transactionHistoryRequest, GetTransactionHistoryVersion version) throws APIException, IOException {
+        Objects.requireNonNull(transactionHistoryRequest, "transactionHistoryRequest cannot be null");
         Map<String, List<String>> queryParameters = new HashMap<>();
         if (revision != null) {
             queryParameters.put("revision", List.of(revision));
@@ -332,13 +361,13 @@ public abstract class BaseAppStoreServerAPIClient {
         if (transactionHistoryRequest.getSubscriptionGroupIdentifiers() != null) {
             queryParameters.put("subscriptionGroupIdentifier", transactionHistoryRequest.getSubscriptionGroupIdentifiers());
         }
-        if (transactionHistoryRequest.getInAppOwnershipType() != null) {
-            queryParameters.put("inAppOwnershipType", List.of(transactionHistoryRequest.getInAppOwnershipType().name()));
+        if (transactionHistoryRequest.getRawInAppOwnershipType() != null) {
+            queryParameters.put("inAppOwnershipType", List.of(transactionHistoryRequest.getRawInAppOwnershipType()));
         }
         if (transactionHistoryRequest.getRevoked() != null) {
             queryParameters.put("revoked", List.of(transactionHistoryRequest.getRevoked().toString()));
         }
-        return makeHttpCall("/inApps/" + version.getUrlVersion() + "/history/" + anyTransactionId, "GET", queryParameters, null, HistoryResponse.class, null);
+        return makeHttpCall(path("/inApps/{}/history/{}", version.getUrlVersion(), anyTransactionId), "GET", queryParameters, null, HistoryResponse.class, null);
     }
 
     /**
@@ -348,10 +377,10 @@ public abstract class BaseAppStoreServerAPIClient {
      * @return A response that contains signed transaction information for a single transaction.
      * @throws APIException If a response was returned indicating the request could not be processed
      * @throws IOException If an exception was thrown while making the request
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get_transaction_info">Get Transaction Info</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get-transaction-info">Get Transaction Info</a>
      */
     public TransactionInfoResponse getTransactionInfo(String transactionId) throws APIException, IOException {
-        return makeHttpCall("/inApps/v1/transactions/" + transactionId, "GET", Map.of(), null, TransactionInfoResponse.class, null);
+        return makeHttpCall(path("/inApps/v1/transactions/{}", transactionId), "GET", Map.of(), null, TransactionInfoResponse.class, null);
     }
 
     /**
@@ -361,10 +390,10 @@ public abstract class BaseAppStoreServerAPIClient {
      * @return A response that includes the order lookup status and an array of signed transactions for the in-app purchases in the order.
      * @throws APIException If a response was returned indicating the request could not be processed
      * @throws IOException If an exception was thrown while making the request
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/look_up_order_id">Look Up Order ID</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/look-up-order-id">Look Up Order ID</a>
      */
     public OrderLookupResponse lookUpOrderId(String orderId) throws APIException, IOException {
-        return makeHttpCall("/inApps/v1/lookup/" + orderId, "GET", Map.of(), null, OrderLookupResponse.class, null);
+        return makeHttpCall(path("/inApps/v1/lookup/{}", orderId), "GET", Map.of(), null, OrderLookupResponse.class, null);
     }
 
     /**
@@ -373,7 +402,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @return A response that contains the test notification token.
      * @throws APIException If a response was returned indicating the request could not be processed
      * @throws IOException  If an exception was thrown while making the request
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/request_a_test_notification">Request a Test Notification</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/request-a-test-notification">Request a Test Notification</a>
      */
     public SendTestNotificationResponse requestTestNotification() throws APIException, IOException {
         return makeHttpCall("/inApps/v1/notifications/test", "POST", Map.of(), null, SendTestNotificationResponse.class, null);
@@ -391,7 +420,7 @@ public abstract class BaseAppStoreServerAPIClient {
      */
     @Deprecated
     public void sendConsumptionData(String transactionId, ConsumptionRequestV1 consumptionRequest) throws APIException, IOException {
-        makeHttpCall("/inApps/v1/transactions/consumption/" + transactionId, "PUT", Map.of(), consumptionRequest, Void.class, JSON);
+        makeHttpCall(path("/inApps/v1/transactions/consumption/{}", transactionId), "PUT", Map.of(), consumptionRequest, Void.class, JSON);
     }
 
     /**
@@ -404,7 +433,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/send-consumption-information">Send Consumption Information</a>
      */
     public void sendConsumptionInformation(String transactionId, ConsumptionRequest consumptionRequest) throws APIException, IOException {
-        makeHttpCall("/inApps/v2/transactions/consumption/" + transactionId, "PUT", Map.of(), consumptionRequest, Void.class, JSON);
+        makeHttpCall(path("/inApps/v2/transactions/consumption/{}", transactionId), "PUT", Map.of(), consumptionRequest, Void.class, JSON);
     }
 
 
@@ -418,15 +447,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/set-app-account-token">Set App Account Token</a>
      */
     public void setAppAccountToken(String originalTransactionId, UpdateAppAccountTokenRequest updateAppAccountTokenRequest) throws APIException, IOException {
-        makeHttpCall("/inApps/v1/transactions/" + originalTransactionId + "/appAccountToken", "PUT", Map.of(), updateAppAccountTokenRequest, Void.class, JSON);
-    }
-
-    /**
-     * @see #uploadImage(UUID, byte[], ImageSize)
-     */
-    @Deprecated(since = "5.1.0")
-    public void uploadImage(UUID imageIdentifier, byte[] image) throws APIException, IOException {
-        uploadImage(imageIdentifier, image, null);
+        makeHttpCall(path("/inApps/v1/transactions/{}/appAccountToken", originalTransactionId), "PUT", Map.of(), updateAppAccountTokenRequest, Void.class, JSON);
     }
 
     /**
@@ -444,7 +465,7 @@ public abstract class BaseAppStoreServerAPIClient {
         if (imageSize != null) {
             queryParameters.put("imageSize", List.of(imageSize.name()));
         }
-        makeHttpCall("/inApps/v1/messaging/image/" + imageIdentifier, "PUT", queryParameters, image, Void.class, PNG);
+        makeHttpCall(path("/inApps/v1/messaging/image/{}", imageIdentifier.toString()), "PUT", queryParameters, image, Void.class, PNG);
     }
 
     /**
@@ -456,7 +477,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/retentionmessaging/delete-image">Delete Image</a>
      */
     public void deleteImage(UUID imageIdentifier) throws APIException, IOException {
-        makeHttpCall("/inApps/v1/messaging/image/" + imageIdentifier, "DELETE", Map.of(), null, Void.class, null);
+        makeHttpCall(path("/inApps/v1/messaging/image/{}", imageIdentifier.toString()), "DELETE", Map.of(), null, Void.class, null);
     }
 
     /**
@@ -481,7 +502,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/retentionmessaging/upload-message">Upload Message</a>
      */
     public void uploadMessage(UUID messageIdentifier, UploadMessageRequestBody uploadMessageRequestBody) throws APIException, IOException {
-        makeHttpCall("/inApps/v1/messaging/message/" + messageIdentifier, "PUT", Map.of(), uploadMessageRequestBody, Void.class, JSON);
+        makeHttpCall(path("/inApps/v1/messaging/message/{}", messageIdentifier.toString()), "PUT", Map.of(), uploadMessageRequestBody, Void.class, JSON);
     }
 
     /**
@@ -493,7 +514,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/retentionmessaging/delete-message">Delete Message</a>
      */
     public void deleteMessage(UUID messageIdentifier) throws APIException, IOException {
-        makeHttpCall("/inApps/v1/messaging/message/" + messageIdentifier, "DELETE", Map.of(), null, Void.class, null);
+        makeHttpCall(path("/inApps/v1/messaging/message/{}", messageIdentifier.toString()), "DELETE", Map.of(), null, Void.class, null);
     }
 
     /**
@@ -519,7 +540,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/retentionmessaging/configure-default-message">Configure Default Message</a>
      */
     public void configureDefaultMessage(String productId, String locale, DefaultConfigurationRequest defaultConfigurationRequest) throws APIException, IOException {
-        makeHttpCall("/inApps/v1/messaging/default/" + productId + "/" + locale, "PUT", Map.of(), defaultConfigurationRequest, Void.class, JSON);
+        makeHttpCall(path("/inApps/v1/messaging/default/{}/{}", productId, locale), "PUT", Map.of(), defaultConfigurationRequest, Void.class, JSON);
     }
 
     /**
@@ -532,7 +553,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/retentionmessaging/delete-default-message">Delete Default Message</a>
      */
     public void deleteDefaultMessage(String productId, String locale) throws APIException, IOException {
-        makeHttpCall("/inApps/v1/messaging/default/" + productId + "/" + locale, "DELETE", Map.of(), null, Void.class, null);
+        makeHttpCall(path("/inApps/v1/messaging/default/{}/{}", productId, locale), "DELETE", Map.of(), null, Void.class, null);
     }
 
     /**
@@ -546,7 +567,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/retentionmessaging/get-default-message">Get Default Message</a>
      */
     public DefaultConfigurationResponse getDefaultMessage(String productId, String locale) throws APIException, IOException {
-        return makeHttpCall("/inApps/v1/messaging/default/" + productId + "/" + locale, "GET", Map.of(), null, DefaultConfigurationResponse.class, null);
+        return makeHttpCall(path("/inApps/v1/messaging/default/{}/{}", productId, locale), "GET", Map.of(), null, DefaultConfigurationResponse.class, null);
     }
 
     /**
@@ -606,8 +627,8 @@ public abstract class BaseAppStoreServerAPIClient {
      * @throws IOException  If an exception was thrown while making the request
      * @see <a href="https://developer.apple.com/documentation/retentionmessaging/get-performance-test-results">Get Performance Test Results</a>
      */
-    public PerformanceTestResultResponse getPerformanceTestResults(String requestId) throws APIException, IOException {
-        return makeHttpCall("/inApps/v1/messaging/performanceTest/result/" + requestId, "GET", Map.of(), null, PerformanceTestResultResponse.class, null);
+    public PerformanceTestResultResponse getPerformanceTestResults(UUID requestId) throws APIException, IOException {
+        return makeHttpCall(path("/inApps/v1/messaging/performanceTest/result/{}", requestId.toString()), "GET", Map.of(), null, PerformanceTestResultResponse.class, null);
     }
 
     /**
@@ -620,7 +641,7 @@ public abstract class BaseAppStoreServerAPIClient {
       * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get-app-transaction-info">Get App Transaction Info</a>
       */
      public AppTransactionInfoResponse getAppTransactionInfo(String anyTransactionId) throws APIException, IOException {
-         return makeHttpCall("/inApps/v1/transactions/appTransactions/" + anyTransactionId, "GET", Map.of(), null, AppTransactionInfoResponse.class, null);
+         return makeHttpCall(path("/inApps/v1/transactions/appTransactions/{}", anyTransactionId), "GET", Map.of(), null, AppTransactionInfoResponse.class, null);
      }
 
     /**
@@ -632,7 +653,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/finish-transaction">Finish Transaction</a>
      */
     public void finishTransaction(String transactionId) throws APIException, IOException {
-        makeHttpCall("/inApps/v1/transactions/" + transactionId + "/finish", "POST", Map.of(), null, Void.class, null);
+        makeHttpCall(path("/inApps/v1/transactions/{}/finish", transactionId), "POST", Map.of(), null, Void.class, null);
     }
 
     /**
@@ -646,7 +667,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/change-subscription-price">Change Subscription Price</a>
      */
     public AdvancedCommerceSubscriptionPriceChangeResponse changeSubscriptionPrice(String transactionId, AdvancedCommerceSubscriptionPriceChangeRequest subscriptionPriceChangeRequest) throws APIException, IOException {
-        return makeHttpCall("/advancedCommerce/v1/subscription/changePrice/" + transactionId, "POST", Map.of(), subscriptionPriceChangeRequest, AdvancedCommerceSubscriptionPriceChangeResponse.class, JSON);
+        return makeHttpCall(path("/advancedCommerce/v1/subscription/changePrice/{}", transactionId), "POST", Map.of(), subscriptionPriceChangeRequest, AdvancedCommerceSubscriptionPriceChangeResponse.class, JSON);
     }
 
     /**
@@ -660,7 +681,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/cancel-a-subscription">Cancel a Subscription</a>
      */
     public AdvancedCommerceSubscriptionCancelResponse cancelSubscription(String transactionId, AdvancedCommerceSubscriptionCancelRequest subscriptionCancelRequest) throws APIException, IOException {
-        return makeHttpCall("/advancedCommerce/v1/subscription/cancel/" + transactionId, "POST", Map.of(), subscriptionCancelRequest, AdvancedCommerceSubscriptionCancelResponse.class, JSON);
+        return makeHttpCall(path("/advancedCommerce/v1/subscription/cancel/{}", transactionId), "POST", Map.of(), subscriptionCancelRequest, AdvancedCommerceSubscriptionCancelResponse.class, JSON);
     }
 
     /**
@@ -674,7 +695,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/revoke-subscription">Revoke Subscription</a>
      */
     public AdvancedCommerceSubscriptionRevokeResponse revokeSubscription(String transactionId, AdvancedCommerceSubscriptionRevokeRequest subscriptionRevokeRequest) throws APIException, IOException {
-        return makeHttpCall("/advancedCommerce/v1/subscription/revoke/" + transactionId, "POST", Map.of(), subscriptionRevokeRequest, AdvancedCommerceSubscriptionRevokeResponse.class, JSON);
+        return makeHttpCall(path("/advancedCommerce/v1/subscription/revoke/{}", transactionId), "POST", Map.of(), subscriptionRevokeRequest, AdvancedCommerceSubscriptionRevokeResponse.class, JSON);
     }
 
     /**
@@ -688,7 +709,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/request-transaction-refund">Request Transaction Refund</a>
      */
     public AdvancedCommerceRequestRefundResponse requestTransactionRefund(String transactionId, AdvancedCommerceRequestRefundRequest requestRefundRequest) throws APIException, IOException {
-        return makeHttpCall("/advancedCommerce/v1/transaction/requestRefund/" + transactionId, "POST", Map.of(), requestRefundRequest, AdvancedCommerceRequestRefundResponse.class, JSON);
+        return makeHttpCall(path("/advancedCommerce/v1/transaction/requestRefund/{}", transactionId), "POST", Map.of(), requestRefundRequest, AdvancedCommerceRequestRefundResponse.class, JSON);
     }
 
     /**
@@ -702,7 +723,7 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/change-subscription-metadata">Change Subscription Metadata</a>
      */
     public AdvancedCommerceSubscriptionChangeMetadataResponse changeSubscriptionMetadata(String transactionId, AdvancedCommerceSubscriptionChangeMetadataRequest subscriptionChangeMetadataRequest) throws APIException, IOException {
-        return makeHttpCall("/advancedCommerce/v1/subscription/changeMetadata/" + transactionId, "POST", Map.of(), subscriptionChangeMetadataRequest, AdvancedCommerceSubscriptionChangeMetadataResponse.class, JSON);
+        return makeHttpCall(path("/advancedCommerce/v1/subscription/changeMetadata/{}", transactionId), "POST", Map.of(), subscriptionChangeMetadataRequest, AdvancedCommerceSubscriptionChangeMetadataResponse.class, JSON);
     }
 
     /**
@@ -716,7 +737,42 @@ public abstract class BaseAppStoreServerAPIClient {
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/migrate-subscription-to-advanced-commerce-api">Migrate a Subscription to Advanced Commerce API</a>
      */
     public AdvancedCommerceSubscriptionMigrateResponse migrateSubscriptionToAdvancedCommerceAPI(String transactionId, AdvancedCommerceSubscriptionMigrateRequest subscriptionMigrateRequest) throws APIException, IOException {
-        return makeHttpCall("/advancedCommerce/v1/subscription/migrate/" + transactionId, "POST", Map.of(), subscriptionMigrateRequest, AdvancedCommerceSubscriptionMigrateResponse.class, JSON);
+        return makeHttpCall(path("/advancedCommerce/v1/subscription/migrate/{}", transactionId), "POST", Map.of(), subscriptionMigrateRequest, AdvancedCommerceSubscriptionMigrateResponse.class, JSON);
+    }
+
+    /**
+     * Get the groups that a customer belongs to, and their role in each group.
+     *
+     * @param anyTransactionId Any originalTransactionId, transactionId, or appTransactionId that belongs to the customer for your app.
+     * @return A response that contains the groups a customer belongs to, and their role in each group.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get-customer-groups">Get Customer Groups</a>
+     */
+    public GetCustomerGroupsResponse getCustomerGroups(String anyTransactionId) throws APIException, IOException {
+        return makeHttpCall(path("/groups/v1/currentGroups/{}", anyTransactionId), "GET", Map.of(), null, GetCustomerGroupsResponse.class, null);
+    }
+
+    /**
+     * Get a paginated list of the customers that belong to a group.
+     *
+     * @param groupId The identifier of a group in your app, which the Get Customer Groups endpoint returns.
+     * @param paginationToken An optional token you use to get the next set of members. Responses that have more members available include a paginationToken. Omit this parameter the first time you call this endpoint.
+     * @param limit An optional maximum number of members to return in a single response.
+     * @return A response that contains a page of the customers that belong to a group.
+     * @throws APIException If a response was returned indicating the request could not be processed
+     * @throws IOException  If an exception was thrown while making the request
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/get-group-members">Get Group Members</a>
+     */
+    public GetGroupMembersResponse getGroupMembers(String groupId, String paginationToken, Integer limit) throws APIException, IOException {
+        Map<String, List<String>> queryParameters = new HashMap<>();
+        if (paginationToken != null) {
+            queryParameters.put("paginationToken", List.of(paginationToken));
+        }
+        if (limit != null) {
+            queryParameters.put("limit", List.of(limit.toString()));
+        }
+        return makeHttpCall(path("/groups/v1/group/{}", groupId), "GET", queryParameters, null, GetGroupMembersResponse.class, null);
     }
 
     protected interface HttpResponseInterface extends Closeable {

@@ -13,10 +13,11 @@ import java.util.UUID;
  * A message identifier and status information for a message.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/getmessagelistresponseitem">GetMessageListResponseItem</a>
- */
+ **/
 public class GetMessageListResponseItem {
     private static final String SERIALIZED_NAME_MESSAGE_IDENTIFIER = "messageIdentifier";
     private static final String SERIALIZED_NAME_MESSAGE_STATE = "messageState";
+
     @JsonProperty(SERIALIZED_NAME_MESSAGE_IDENTIFIER)
     private UUID messageIdentifier;
     @JsonProperty(SERIALIZED_NAME_MESSAGE_STATE)
@@ -55,15 +56,15 @@ public class GetMessageListResponseItem {
      * The current state of the message.
      *
      * @return messageState
-     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/messageState">messageState</a>
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/messagestate">messageState</a>
      **/
     public MessageState getMessageState() {
-        return messageState != null ? MessageState.fromValue(messageState) : null;
+        return MessageState.fromValue(messageState);
     }
 
     /**
      * @see #getMessageState()
-     */
+     **/
     public String getRawMessageState() {
         return messageState;
     }
@@ -76,17 +77,16 @@ public class GetMessageListResponseItem {
         this.messageState = rawMessageState;
     }
 
-
     public GetMessageListResponseItem unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
         return this;
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -103,10 +103,10 @@ public class GetMessageListResponseItem {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        GetMessageListResponseItem sendAttemptItem = (GetMessageListResponseItem) o;
-        return Objects.equals(this.messageIdentifier, sendAttemptItem.messageIdentifier) &&
-                Objects.equals(this.messageState, sendAttemptItem.messageState) &&
-                Objects.equals(this.unknownFields, sendAttemptItem.unknownFields);
+        GetMessageListResponseItem getMessageListResponseItem = (GetMessageListResponseItem) o;
+        return Objects.equals(this.messageIdentifier, getMessageListResponseItem.messageIdentifier) &&
+                Objects.equals(this.messageState, getMessageListResponseItem.messageState) &&
+                Objects.equals(this.unknownFields, getMessageListResponseItem.unknownFields);
     }
 
     @Override
@@ -123,4 +123,3 @@ public class GetMessageListResponseItem {
                 '}';
     }
 }
-

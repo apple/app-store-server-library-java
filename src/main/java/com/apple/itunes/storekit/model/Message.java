@@ -12,13 +12,13 @@ import java.util.UUID;
  * A message identifier you provide in a real-time response to your Get Retention Message endpoint.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/message">message</a>
- */
+ **/
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Message {
     private static final String SERIALIZED_NAME_MESSAGE_IDENTIFIER = "messageIdentifier";
-    @JsonProperty(value = SERIALIZED_NAME_MESSAGE_IDENTIFIER)
-    private UUID messageIdentifier;
 
+    @JsonProperty(SERIALIZED_NAME_MESSAGE_IDENTIFIER)
+    private UUID messageIdentifier;
 
     public Message() {
     }
@@ -44,10 +44,14 @@ public class Message {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Message that = (Message) o;
-        return Objects.equals(messageIdentifier, that.messageIdentifier);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Message message = (Message) o;
+        return Objects.equals(this.messageIdentifier, message.messageIdentifier);
     }
 
     @Override

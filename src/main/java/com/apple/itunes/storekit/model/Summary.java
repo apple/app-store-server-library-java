@@ -4,26 +4,31 @@ package com.apple.itunes.storekit.model;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * The payload data for a subscription-renewal-date extension notification.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/summary">summary</a>
- */
+ **/
 public class Summary {
+    private static final String SERIALIZED_NAME_REQUEST_IDENTIFIER = "requestIdentifier";
     private static final String SERIALIZED_NAME_ENVIRONMENT = "environment";
     private static final String SERIALIZED_NAME_APP_APPLE_ID = "appAppleId";
     private static final String SERIALIZED_NAME_BUNDLE_ID = "bundleId";
     private static final String SERIALIZED_NAME_PRODUCT_ID = "productId";
-    private static final String SERIALIZED_NAME_REQUEST_IDENTIFIER = "requestIdentifier";
     private static final String SERIALIZED_NAME_STOREFRONT_COUNTRY_CODES = "storefrontCountryCodes";
-    private static final String SERIALIZED_NAME_SUCCEEDED_COUNT = "succeededCount";
     private static final String SERIALIZED_NAME_FAILED_COUNT = "failedCount";
+    private static final String SERIALIZED_NAME_SUCCEEDED_COUNT = "succeededCount";
+
+    @JsonProperty(SERIALIZED_NAME_REQUEST_IDENTIFIER)
+    private UUID requestIdentifier;
     @JsonProperty(SERIALIZED_NAME_ENVIRONMENT)
     private String environment;
     @JsonProperty(SERIALIZED_NAME_APP_APPLE_ID)
@@ -32,19 +37,37 @@ public class Summary {
     private String bundleId;
     @JsonProperty(SERIALIZED_NAME_PRODUCT_ID)
     private String productId;
-    @JsonProperty(SERIALIZED_NAME_REQUEST_IDENTIFIER)
-    private String requestIdentifier;
     @JsonProperty(SERIALIZED_NAME_STOREFRONT_COUNTRY_CODES)
     private List<String> storefrontCountryCodes;
-    @JsonProperty(SERIALIZED_NAME_SUCCEEDED_COUNT)
-    private Long succeededCount;
     @JsonProperty(SERIALIZED_NAME_FAILED_COUNT)
     private Long failedCount;
+    @JsonProperty(SERIALIZED_NAME_SUCCEEDED_COUNT)
+    private Long succeededCount;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
+    private static final int MAXIMUM_STOREFRONT_COUNTRY_CODE_LENGTH = 3;
 
     public Summary() {
+    }
+
+    public Summary requestIdentifier(UUID requestIdentifier) {
+        this.requestIdentifier = requestIdentifier;
+        return this;
+    }
+
+    /**
+     * The UUID that represents a specific request to extend a subscription renewal date.
+     *
+     * @return requestIdentifier
+     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/requestidentifier">requestIdentifier</a>
+     **/
+    public UUID getRequestIdentifier() {
+        return requestIdentifier;
+    }
+
+    public void setRequestIdentifier(UUID requestIdentifier) {
+        this.requestIdentifier = requestIdentifier;
     }
 
     public Summary environment(Environment environment) {
@@ -59,12 +82,12 @@ public class Summary {
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/environment">environment</a>
      **/
     public Environment getEnvironment() {
-        return environment != null ? Environment.fromValue(environment) : null;
+        return Environment.fromValue(environment);
     }
 
     /**
      * @see #getEnvironment()
-     */
+     **/
     public String getRawEnvironment() {
         return environment;
     }
@@ -83,7 +106,7 @@ public class Summary {
     }
 
     /**
-     * The unique identifier of an app in the App Store.
+     * The unique identifier of the app that the notification applies to.
      *
      * @return appAppleId
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/appappleid">appAppleId</a>
@@ -102,10 +125,10 @@ public class Summary {
     }
 
     /**
-     * The bundle identifier of an app.
+     * The bundle identifier of the app.
      *
      * @return bundleId
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/bundleid">bundleId</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/bundleid">bundleId</a>
      **/
     public String getBundleId() {
         return bundleId;
@@ -121,10 +144,10 @@ public class Summary {
     }
 
     /**
-     * The unique identifier for the product, that you create in App Store Connect.
+     * The product identifier of the auto-renewable subscription that the subscription-renewal-date extension applies to.
      *
      * @return productId
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/productid">productId</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/productid">productId</a>
      **/
     public String getProductId() {
         return productId;
@@ -134,69 +157,50 @@ public class Summary {
         this.productId = productId;
     }
 
-    public Summary requestIdentifier(String requestIdentifier) {
-        this.requestIdentifier = requestIdentifier;
-        return this;
-    }
-
-    /**
-     * A string that contains a unique identifier you provide to track each subscription-renewal-date extension request.
-     *
-     * @return requestIdentifier
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/requestidentifier">requestIdentifier</a>
-     **/
-    public String getRequestIdentifier() {
-        return requestIdentifier;
-    }
-
-    public void setRequestIdentifier(String requestIdentifier) {
-        this.requestIdentifier = requestIdentifier;
-    }
-
     public Summary storefrontCountryCodes(List<String> storefrontCountryCodes) {
+        validateStorefrontCountryCodes(storefrontCountryCodes);
         this.storefrontCountryCodes = storefrontCountryCodes;
         return this;
     }
 
-    public Summary addStorefrontCountryCodesItem(String storefrontCountryCodesItem) {
+    public Summary addStorefrontCountryCode(String storefrontCountryCode) {
+        Objects.requireNonNull(storefrontCountryCode);
+        validateStorefrontCountryCode(storefrontCountryCode);
         if (this.storefrontCountryCodes == null) {
             this.storefrontCountryCodes = new ArrayList<>();
         }
-        this.storefrontCountryCodes.add(storefrontCountryCodesItem);
+        this.storefrontCountryCodes.add(storefrontCountryCode);
         return this;
     }
 
     /**
-     * A list of storefront country codes you provide to limit the storefronts for a subscription-renewal-date extension.
+     * A list of country codes that limits the App Store’s attempt to apply the subscription-renewal-date extension.
      *
      * @return storefrontCountryCodes
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/storefrontcountrycodes">storefrontCountryCodes</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/storefrontcountrycodes">storefrontCountryCodes</a>
      **/
     public List<String> getStorefrontCountryCodes() {
         return storefrontCountryCodes;
     }
 
+    @JsonSetter(SERIALIZED_NAME_STOREFRONT_COUNTRY_CODES)
     public void setStorefrontCountryCodes(List<String> storefrontCountryCodes) {
+        validateStorefrontCountryCodes(storefrontCountryCodes);
         this.storefrontCountryCodes = storefrontCountryCodes;
     }
 
-    public Summary succeededCount(Long succeededCount) {
-        this.succeededCount = succeededCount;
-        return this;
+    private void validateStorefrontCountryCodes(List<String> storefrontCountryCodes) {
+        if (storefrontCountryCodes != null) {
+            for (String storefrontCountryCode : storefrontCountryCodes) {
+                validateStorefrontCountryCode(storefrontCountryCode);
+            }
+        }
     }
 
-    /**
-     * The count of subscriptions that successfully receive a subscription-renewal-date extension.
-     *
-     * @return succeededCount
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/succeededcount">succeededCount</a>
-     **/
-    public Long getSucceededCount() {
-        return succeededCount;
-    }
-
-    public void setSucceededCount(Long succeededCount) {
-        this.succeededCount = succeededCount;
+    private void validateStorefrontCountryCode(String storefrontCountryCode) {
+        if (storefrontCountryCode != null && storefrontCountryCode.length() > MAXIMUM_STOREFRONT_COUNTRY_CODE_LENGTH) {
+            throw new IllegalArgumentException("storefrontCountryCode length longer than maximum allowed");
+        }
     }
 
     public Summary failedCount(Long failedCount) {
@@ -205,10 +209,10 @@ public class Summary {
     }
 
     /**
-     * The count of subscriptions that fail to receive a subscription-renewal-date extension.
+     * The final count of subscriptions that fail to receive a subscription-renewal-date extension.
      *
      * @return failedCount
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/failedcount">failedCount</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/failedcount">failedCount</a>
      **/
     public Long getFailedCount() {
         return failedCount;
@@ -218,6 +222,24 @@ public class Summary {
         this.failedCount = failedCount;
     }
 
+    public Summary succeededCount(Long succeededCount) {
+        this.succeededCount = succeededCount;
+        return this;
+    }
+
+    /**
+     * The final count of subscriptions that successfully receive a subscription-renewal-date extension.
+     *
+     * @return succeededCount
+     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/succeededcount">succeededCount</a>
+     **/
+    public Long getSucceededCount() {
+        return succeededCount;
+    }
+
+    public void setSucceededCount(Long succeededCount) {
+        this.succeededCount = succeededCount;
+    }
 
     public Summary unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
@@ -225,10 +247,10 @@ public class Summary {
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -246,35 +268,34 @@ public class Summary {
             return false;
         }
         Summary summary = (Summary) o;
-        return Objects.equals(this.environment, summary.environment) &&
+        return Objects.equals(this.requestIdentifier, summary.requestIdentifier) &&
+                Objects.equals(this.environment, summary.environment) &&
                 Objects.equals(this.appAppleId, summary.appAppleId) &&
                 Objects.equals(this.bundleId, summary.bundleId) &&
                 Objects.equals(this.productId, summary.productId) &&
-                Objects.equals(this.requestIdentifier, summary.requestIdentifier) &&
                 Objects.equals(this.storefrontCountryCodes, summary.storefrontCountryCodes) &&
-                Objects.equals(this.succeededCount, summary.succeededCount) &&
                 Objects.equals(this.failedCount, summary.failedCount) &&
+                Objects.equals(this.succeededCount, summary.succeededCount) &&
                 Objects.equals(this.unknownFields, summary.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(environment, appAppleId, bundleId, productId, requestIdentifier, storefrontCountryCodes, succeededCount, failedCount, unknownFields);
+        return Objects.hash(requestIdentifier, environment, appAppleId, bundleId, productId, storefrontCountryCodes, failedCount, succeededCount, unknownFields);
     }
 
     @Override
     public String toString() {
         return "Summary{" +
-                "environment='" + environment + '\'' +
+                "requestIdentifier=" + requestIdentifier +
+                ", environment='" + environment + '\'' +
                 ", appAppleId=" + appAppleId +
                 ", bundleId='" + bundleId + '\'' +
                 ", productId='" + productId + '\'' +
-                ", requestIdentifier='" + requestIdentifier + '\'' +
                 ", storefrontCountryCodes=" + storefrontCountryCodes +
-                ", succeededCount=" + succeededCount +
                 ", failedCount=" + failedCount +
+                ", succeededCount=" + succeededCount +
                 ", unknownFields=" + unknownFields +
                 '}';
     }
 }
-

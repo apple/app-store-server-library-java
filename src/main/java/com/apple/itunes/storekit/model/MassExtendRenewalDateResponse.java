@@ -4,6 +4,7 @@ package com.apple.itunes.storekit.model;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 import java.util.Map;
 import java.util.Objects;
@@ -12,25 +13,27 @@ import java.util.Objects;
  * A response that indicates the server successfully received the subscription-renewal-date extension request.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/massextendrenewaldateresponse">MassExtendRenewalDateResponse</a>
- */
+ **/
 public class MassExtendRenewalDateResponse {
     private static final String SERIALIZED_NAME_REQUEST_IDENTIFIER = "requestIdentifier";
+
     @JsonProperty(SERIALIZED_NAME_REQUEST_IDENTIFIER)
     private String requestIdentifier;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
+    private static final int MAXIMUM_REQUEST_IDENTIFIER_LENGTH = 128;
 
     public MassExtendRenewalDateResponse() {
     }
 
     public MassExtendRenewalDateResponse requestIdentifier(String requestIdentifier) {
-        this.requestIdentifier = requestIdentifier;
+        this.requestIdentifier = validateRequestIdentifier(requestIdentifier);
         return this;
     }
 
     /**
-     * A string that contains a unique identifier you provide to track each subscription-renewal-date extension request.
+     * A string that contains the UUID that identifies the subscription-renewal-date extension request.
      *
      * @return requestIdentifier
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/requestidentifier">requestIdentifier</a>
@@ -39,10 +42,17 @@ public class MassExtendRenewalDateResponse {
         return requestIdentifier;
     }
 
+    @JsonSetter(SERIALIZED_NAME_REQUEST_IDENTIFIER)
     public void setRequestIdentifier(String requestIdentifier) {
-        this.requestIdentifier = requestIdentifier;
+        this.requestIdentifier = validateRequestIdentifier(requestIdentifier);
     }
 
+    private String validateRequestIdentifier(String requestIdentifier) {
+        if (requestIdentifier != null && requestIdentifier.length() > MAXIMUM_REQUEST_IDENTIFIER_LENGTH) {
+            throw new IllegalArgumentException("requestIdentifier length longer than maximum allowed");
+        }
+        return requestIdentifier;
+    }
 
     public MassExtendRenewalDateResponse unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
@@ -50,10 +60,10 @@ public class MassExtendRenewalDateResponse {
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -88,4 +98,3 @@ public class MassExtendRenewalDateResponse {
                 '}';
     }
 }
-

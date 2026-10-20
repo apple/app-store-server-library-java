@@ -39,8 +39,13 @@ import com.apple.itunes.storekit.model.Environment;
 import com.apple.itunes.storekit.model.ExtendReasonCode;
 import com.apple.itunes.storekit.model.ExtendRenewalDateRequest;
 import com.apple.itunes.storekit.model.ExtendRenewalDateResponse;
+import com.apple.itunes.storekit.model.GetCustomerGroupsResponse;
+import com.apple.itunes.storekit.model.GetGroupMembersResponse;
 import com.apple.itunes.storekit.model.GetImageListResponse;
 import com.apple.itunes.storekit.model.GetMessageListResponse;
+import com.apple.itunes.storekit.model.GroupEntry;
+import com.apple.itunes.storekit.model.GroupMemberEntry;
+import com.apple.itunes.storekit.model.GroupType;
 import com.apple.itunes.storekit.model.HeaderPosition;
 import com.apple.itunes.storekit.model.HistoryResponse;
 import com.apple.itunes.storekit.model.ImageSize;
@@ -72,6 +77,8 @@ import com.apple.itunes.storekit.model.RealtimeUrlResponse;
 import com.apple.itunes.storekit.model.RefundHistoryResponse;
 import com.apple.itunes.storekit.model.RefundPreference;
 import com.apple.itunes.storekit.model.RefundPreferenceV1;
+import com.apple.itunes.storekit.model.Role;
+import com.apple.itunes.storekit.model.RoleEntry;
 import com.apple.itunes.storekit.model.SendAttemptItem;
 import com.apple.itunes.storekit.model.SendAttemptResult;
 import com.apple.itunes.storekit.model.SendTestNotificationResponse;
@@ -90,6 +97,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import okhttp3.MediaType;
 import okhttp3.Protocol;
 import okhttp3.Request;
@@ -138,12 +147,12 @@ public class AppStoreServerAPIClientTest {
             Assertions.assertEquals("com.example.productId", root.get("productId"));
         });
 
-        MassExtendRenewalDateRequest extendRenewalDateRequest = new MassExtendRenewalDateRequest()
-                .extendByDays(45)
-                .extendReasonCode(ExtendReasonCode.CUSTOMER_SATISFACTION)
-                .requestIdentifier("fdf964a4-233b-486c-aac1-97d8d52688ac")
-                .storefrontCountryCodes(List.of("USA", "MEX"))
-                .productId("com.example.productId");
+        MassExtendRenewalDateRequest extendRenewalDateRequest = new MassExtendRenewalDateRequest(
+                "fdf964a4-233b-486c-aac1-97d8d52688ac",
+                45,
+                ExtendReasonCode.CUSTOMER_SATISFACTION,
+                "com.example.productId")
+                .storefrontCountryCodes(List.of("USA", "MEX"));
 
         MassExtendRenewalDateResponse massExtendRenewalDateResponse = client.extendRenewalDateForAllActiveSubscribers(extendRenewalDateRequest);
 
@@ -176,10 +185,10 @@ public class AppStoreServerAPIClientTest {
             Assertions.assertEquals("fdf964a4-233b-486c-aac1-97d8d52688ac", root.get("requestIdentifier"));
         });
 
-        ExtendRenewalDateRequest extendRenewalDateRequest = new ExtendRenewalDateRequest()
-                .extendByDays(45)
-                .extendReasonCode(ExtendReasonCode.CUSTOMER_SATISFACTION)
-                .requestIdentifier("fdf964a4-233b-486c-aac1-97d8d52688ac");
+        ExtendRenewalDateRequest extendRenewalDateRequest = new ExtendRenewalDateRequest(
+                45,
+                ExtendReasonCode.CUSTOMER_SATISFACTION,
+                "fdf964a4-233b-486c-aac1-97d8d52688ac");
 
         ExtendRenewalDateResponse extendRenewalDateResponse = client.extendSubscriptionRenewalDate("4124214", extendRenewalDateRequest);
 
@@ -254,11 +263,11 @@ public class AppStoreServerAPIClientTest {
     public void testGetStatusOfSubscriptionRenewalDateExtensions() throws APIException, IOException {
         AppStoreServerAPIClient client = getClientWithBody("models/getStatusOfSubscriptionRenewalDateExtensionsResponse.json", request -> {
             Assertions.assertEquals("GET", request.method());
-            Assertions.assertEquals("/inApps/v1/subscriptions/extend/mass/20fba8a0-2b80-4a7d-a17f-85c1854727f8/com.example.product", request.url().encodedPath());
+            Assertions.assertEquals("/inApps/v1/subscriptions/extend/mass/com.example.product/20fba8a0-2b80-4a7d-a17f-85c1854727f8", request.url().encodedPath());
             Assertions.assertNull(request.body());
         });
 
-        MassExtendRenewalDateStatusResponse massExtendRenewalDateStatusResponse = client.getStatusOfSubscriptionRenewalDateExtensions("com.example.product", "20fba8a0-2b80-4a7d-a17f-85c1854727f8");
+        MassExtendRenewalDateStatusResponse massExtendRenewalDateStatusResponse = client.getStatusOfSubscriptionRenewalDateExtensions("20fba8a0-2b80-4a7d-a17f-85c1854727f8", "com.example.product");
 
         Assertions.assertNotNull(massExtendRenewalDateStatusResponse);
         Assertions.assertEquals("20fba8a0-2b80-4a7d-a17f-85c1854727f8", massExtendRenewalDateStatusResponse.getRequestIdentifier());
@@ -320,9 +329,7 @@ public class AppStoreServerAPIClientTest {
             Assertions.assertTrue((Boolean) root.get("onlyFailures"));
         });
 
-        NotificationHistoryRequest notificationHistoryRequest = new NotificationHistoryRequest()
-                .startDate(1698148900000L)
-                .endDate(1698148950000L)
+        NotificationHistoryRequest notificationHistoryRequest = new NotificationHistoryRequest(1698148900000L, 1698148950000L)
                 .notificationType(NotificationTypeV2.SUBSCRIBED)
                 .notificationSubtype(Subtype.INITIAL_BUY)
                 .transactionId("999733843")
@@ -518,18 +525,18 @@ public class AppStoreServerAPIClientTest {
             Assertions.assertEquals(3, ((Number) root.get("refundPreference")).intValue());
         });
 
-        ConsumptionRequestV1 consumptionRequest = new ConsumptionRequestV1()
-                .customerConsented(true)
-                .consumptionStatus(ConsumptionStatus.NOT_CONSUMED)
-                .platform(Platform.NON_APPLE)
-                .sampleContentProvided(false)
-                .deliveryStatus(DeliveryStatusV1.DID_NOT_DELIVER_DUE_TO_SERVER_OUTAGE)
-                .appAccountToken(UUID.fromString("7389a31a-fb6d-4569-a2a6-db7d85d84813"))
-                .accountTenure(AccountTenure.THIRTY_DAYS_TO_NINETY_DAYS)
-                .playTime(PlayTime.ONE_DAY_TO_FOUR_DAYS)
-                .lifetimeDollarsRefunded(LifetimeDollarsRefunded.ONE_THOUSAND_DOLLARS_TO_ONE_THOUSAND_NINE_HUNDRED_NINETY_NINE_DOLLARS_AND_NINETY_NINE_CENTS)
-                .lifetimeDollarsPurchased(LifetimeDollarsPurchased.TWO_THOUSAND_DOLLARS_OR_GREATER)
-                .userStatus(UserStatus.LIMITED_ACCESS)
+        ConsumptionRequestV1 consumptionRequest = new ConsumptionRequestV1(
+                AccountTenure.THIRTY_DAYS_TO_NINETY_DAYS,
+                UUID.fromString("7389a31a-fb6d-4569-a2a6-db7d85d84813"),
+                ConsumptionStatus.NOT_CONSUMED,
+                true,
+                DeliveryStatusV1.DID_NOT_DELIVER_DUE_TO_SERVER_OUTAGE,
+                LifetimeDollarsPurchased.TWO_THOUSAND_DOLLARS_OR_GREATER,
+                LifetimeDollarsRefunded.ONE_THOUSAND_DOLLARS_TO_ONE_THOUSAND_NINE_HUNDRED_NINETY_NINE_DOLLARS_AND_NINETY_NINE_CENTS,
+                Platform.NON_APPLE,
+                PlayTime.ONE_DAY_TO_FOUR_DAYS,
+                false,
+                UserStatus.LIMITED_ACCESS)
                 .refundPreference(RefundPreferenceV1.NO_PREFERENCE);
 
         client.sendConsumptionData("49571273", consumptionRequest);
@@ -569,17 +576,18 @@ public class AppStoreServerAPIClientTest {
             Assertions.assertEquals(3, ((Number) root.get("refundPreference")).intValue());
         });
 
-        ConsumptionRequestV1 consumptionRequest = new ConsumptionRequestV1()
-                .customerConsented(true)
-                .consumptionStatus(ConsumptionStatus.NOT_CONSUMED)
-                .platform(Platform.NON_APPLE)
-                .sampleContentProvided(false)
-                .deliveryStatus(DeliveryStatusV1.DID_NOT_DELIVER_DUE_TO_SERVER_OUTAGE)
-                .accountTenure(AccountTenure.THIRTY_DAYS_TO_NINETY_DAYS)
-                .playTime(PlayTime.ONE_DAY_TO_FOUR_DAYS)
-                .lifetimeDollarsRefunded(LifetimeDollarsRefunded.ONE_THOUSAND_DOLLARS_TO_ONE_THOUSAND_NINE_HUNDRED_NINETY_NINE_DOLLARS_AND_NINETY_NINE_CENTS)
-                .lifetimeDollarsPurchased(LifetimeDollarsPurchased.TWO_THOUSAND_DOLLARS_OR_GREATER)
-                .userStatus(UserStatus.LIMITED_ACCESS)
+        ConsumptionRequestV1 consumptionRequest = new ConsumptionRequestV1(
+                AccountTenure.THIRTY_DAYS_TO_NINETY_DAYS,
+                null,
+                ConsumptionStatus.NOT_CONSUMED,
+                true,
+                DeliveryStatusV1.DID_NOT_DELIVER_DUE_TO_SERVER_OUTAGE,
+                LifetimeDollarsPurchased.TWO_THOUSAND_DOLLARS_OR_GREATER,
+                LifetimeDollarsRefunded.ONE_THOUSAND_DOLLARS_TO_ONE_THOUSAND_NINE_HUNDRED_NINETY_NINE_DOLLARS_AND_NINETY_NINE_CENTS,
+                Platform.NON_APPLE,
+                PlayTime.ONE_DAY_TO_FOUR_DAYS,
+                false,
+                UserStatus.LIMITED_ACCESS)
                 .refundPreference(RefundPreferenceV1.NO_PREFERENCE);
 
         client.sendConsumptionData("49571273", consumptionRequest);
@@ -603,7 +611,7 @@ public class AppStoreServerAPIClientTest {
             Assertions.assertArrayEquals(new byte[]{1, 2, 3}, bytes);
         });
 
-        client.uploadImage(UUID.fromString("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890"), new byte[]{1, 2, 3});
+        client.uploadImage(UUID.fromString("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890"), new byte[]{1, 2, 3}, null);
     }
 
     @Test
@@ -737,8 +745,7 @@ public class AppStoreServerAPIClientTest {
             Assertions.assertEquals("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890", root.get("messageIdentifier"));
         });
 
-        DefaultConfigurationRequest defaultConfigurationRequest = new DefaultConfigurationRequest()
-                .messageIdentifier(UUID.fromString("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890"));
+        DefaultConfigurationRequest defaultConfigurationRequest = new DefaultConfigurationRequest(UUID.fromString("a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890"));
         client.configureDefaultMessage("com.example.product", "en-US", defaultConfigurationRequest);
     }
 
@@ -894,6 +901,8 @@ public class AppStoreServerAPIClientTest {
             Assertions.assertEquals("keyId", token.getKeyId());
             Assertions.assertEquals("com.example", token.getClaim("bid").asString());
             Assertions.assertEquals("ES256", token.getAlgorithm());
+            Assertions.assertNotNull(token.getIssuedAtAsInstant());
+            Assertions.assertTrue(token.getExpiresAtAsInstant().isAfter(token.getIssuedAtAsInstant()));
         });
 
         client.getTransactionInfo("1234");
@@ -1095,7 +1104,7 @@ public class AppStoreServerAPIClientTest {
             client.setAppAccountToken("1234", updateAppAccountTokenRequest);
         } catch (APIException e) {
             Assertions.assertEquals(400, e.getHttpStatusCode());
-            Assertions.assertEquals(APIError.FAMILY_TRANSACTION_NOT_SUPPORTED_ERROR, e.getApiError());
+            Assertions.assertEquals(APIError.FAMILY_TRANSACTION_NOT_SUPPORTED, e.getApiError());
             return;
         }
         Assertions.fail();
@@ -1110,7 +1119,7 @@ public class AppStoreServerAPIClientTest {
             client.setAppAccountToken("1234", updateAppAccountTokenRequest);
         } catch (APIException e) {
             Assertions.assertEquals(400, e.getHttpStatusCode());
-            Assertions.assertEquals(APIError.TRANSACTION_ID_IS_NOT_ORIGINAL_TRANSACTION_ID_ERROR, e.getApiError());
+            Assertions.assertEquals(APIError.TRANSACTION_ID_IS_NOT_ORIGINAL_TRANSACTION_ID, e.getApiError());
             return;
         }
         Assertions.fail();
@@ -1154,7 +1163,7 @@ public class AppStoreServerAPIClientTest {
              client.getAppTransactionInfo("nonexistent_transaction_id");
          } catch (APIException e) {
              Assertions.assertEquals(404, e.getHttpStatusCode());
-             Assertions.assertEquals(APIError.APP_TRANSACTION_DOES_NOT_EXIST_ERROR, e.getApiError());
+             Assertions.assertEquals(APIError.APP_TRANSACTION_DOES_NOT_EXIST, e.getApiError());
              Assertions.assertEquals(4040019L, e.getRawApiError());
              Assertions.assertEquals("No AppTransaction exists for the customer.", e.getApiErrorMessage());
              return;
@@ -1291,7 +1300,7 @@ public class AppStoreServerAPIClientTest {
         PerformanceTestResponse response = client.initiatePerformanceTest(performanceTestRequest);
 
         Assertions.assertNotNull(response);
-        Assertions.assertEquals("c4b87a1d-2e3f-4a5b-9c6d-7e8f9a0b1c2d", response.getRequestId());
+        Assertions.assertEquals(UUID.fromString("c4b87a1d-2e3f-4a5b-9c6d-7e8f9a0b1c2d"), response.getRequestId());
         PerformanceTestConfig config = response.getConfig();
         Assertions.assertNotNull(config);
         Assertions.assertEquals(10L, config.getMaxConcurrentRequests());
@@ -1309,7 +1318,7 @@ public class AppStoreServerAPIClientTest {
             Assertions.assertNull(request.body());
         });
 
-        PerformanceTestResultResponse response = client.getPerformanceTestResults("c4b87a1d-2e3f-4a5b-9c6d-7e8f9a0b1c2d");
+        PerformanceTestResultResponse response = client.getPerformanceTestResults(UUID.fromString("C4B87A1D-2E3F-4A5B-9C6D-7E8F9A0B1C2D"));
 
         Assertions.assertNotNull(response);
         PerformanceTestConfig config = response.getConfig();
@@ -1333,6 +1342,42 @@ public class AppStoreServerAPIClientTest {
         Assertions.assertEquals(400L, responseTimes.getP99());
         Assertions.assertEquals(Map.of(SendAttemptResult.TIMED_OUT, 1, SendAttemptResult.NO_RESPONSE, 1), response.getFailures());
         Assertions.assertEquals(Map.of("TIMED_OUT", 1, "NO_RESPONSE", 1), response.getRawFailures());
+    }
+
+    @Test
+    public void testGetPerformanceTestResultsWithMissingRequiredField() throws IOException {
+        ObjectNode body = (ObjectNode) new ObjectMapper().readTree(TestingUtility.readFile("models/performanceTestResultResponse.json"));
+        body.remove("target");
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient(body.toString(), request -> {});
+
+        APIException e = Assertions.assertThrows(APIException.class, () -> client.getPerformanceTestResults(UUID.fromString("c4b87a1d-2e3f-4a5b-9c6d-7e8f9a0b1c2d")));
+
+        Assertions.assertEquals(200, e.getHttpStatusCode());
+        Assertions.assertInstanceOf(MismatchedInputException.class, e.getCause());
+        Assertions.assertTrue(e.getCause().getMessage().contains("'target'"), e.getCause().getMessage());
+    }
+
+    @Test
+    public void testGetDefaultMessageWithMissingRequiredField() throws IOException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("{}", request -> {});
+
+        APIException e = Assertions.assertThrows(APIException.class, () -> client.getDefaultMessage("com.example.product", "en-US"));
+
+        Assertions.assertEquals(200, e.getHttpStatusCode());
+        Assertions.assertInstanceOf(MismatchedInputException.class, e.getCause());
+    }
+
+    @Test
+    public void testCancelSubscriptionWithMissingRequiredField() throws IOException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("{\"signedTransactionInfo\": \"signed_transaction_info\"}", request -> {});
+        AdvancedCommerceSubscriptionCancelRequest cancelRequest = new AdvancedCommerceSubscriptionCancelRequest(
+                new AdvancedCommerceRequestInfo(UUID.fromString("932c6903-0ab8-4469-9f21-015f6fab013c")));
+
+        APIException e = Assertions.assertThrows(APIException.class, () -> client.cancelSubscription("4124214", cancelRequest));
+
+        Assertions.assertEquals(200, e.getHttpStatusCode());
+        Assertions.assertInstanceOf(MismatchedInputException.class, e.getCause());
+        Assertions.assertTrue(e.getCause().getMessage().contains("'signedRenewalInfo'"), e.getCause().getMessage());
     }
 
     @Test
@@ -1442,9 +1487,9 @@ public class AppStoreServerAPIClientTest {
 
         AdvancedCommerceSubscriptionRevokeRequest revokeRequest = new AdvancedCommerceSubscriptionRevokeRequest(
                 new AdvancedCommerceRequestInfo(UUID.fromString("932c6903-0ab8-4469-9f21-015f6fab013c")),
-                true,
                 AdvancedCommerceRefundReason.UNINTENDED_PURCHASE,
-                AdvancedCommerceRefundType.PRORATED.getValue())
+                true,
+                AdvancedCommerceRefundType.PRORATED)
                 .storefront("USA");
 
         AdvancedCommerceSubscriptionRevokeResponse response = client.revokeSubscription("4124214", revokeRequest);
@@ -1486,9 +1531,9 @@ public class AppStoreServerAPIClientTest {
         });
 
         AdvancedCommerceRequestRefundRequest requestRefundRequest = new AdvancedCommerceRequestRefundRequest(
+                new AdvancedCommerceRequestInfo(UUID.fromString("932c6903-0ab8-4469-9f21-015f6fab013c")),
                 List.of(new AdvancedCommerceRequestRefundItem("AD_FREE_1M", AdvancedCommerceRefundReason.UNSATISFIED_WITH_PURCHASE, AdvancedCommerceRefundType.FULL, true)),
-                true,
-                new AdvancedCommerceRequestInfo(UUID.fromString("932c6903-0ab8-4469-9f21-015f6fab013c")))
+                true)
                 .currency("USD")
                 .storefront("USA");
 
@@ -1594,6 +1639,408 @@ public class AppStoreServerAPIClientTest {
         Assertions.assertNotNull(response);
         Assertions.assertEquals("signed_renewal_info_value", response.getSignedRenewalInfo());
         Assertions.assertEquals("signed_transaction_info_value", response.getSignedTransactionInfo());
+    }
+
+    @Test
+    public void testPathParametersArePercentEncoded() throws IOException, APIException {
+        AppStoreServerAPIClient client = getClientWithBody("models/transactionInfoResponse.json", request -> {
+            Assertions.assertEquals("GET", request.method());
+            Assertions.assertEquals("/inApps/v1/transactions/..%2F..%2Fv1%2Fnotifications%2Ftest%3Ffoo%3Dbar%23fragment", request.url().encodedPath());
+            Assertions.assertNull(request.url().query());
+            Assertions.assertNull(request.url().fragment());
+        });
+
+        client.getTransactionInfo("../../v1/notifications/test?foo=bar#fragment");
+    }
+
+    @Test
+    public void testDotAndEmptyPathParametersAreRejected() throws IOException {
+        AppStoreServerAPIClient client = getClientWithBody("models/transactionInfoResponse.json", request -> Assertions.fail());
+
+        for (String pathParameter : List.of("..", ".", "")) {
+            Assertions.assertThrows(IllegalArgumentException.class, () -> client.getTransactionInfo(pathParameter));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> client.getDefaultMessage("com.example", pathParameter));
+        }
+    }
+
+    @Test
+    public void testMultiplePathParametersArePercentEncoded() throws IOException, APIException {
+        AppStoreServerAPIClient client = getClientWithBody("models/getDefaultMessageResponse.json", request -> {
+            Assertions.assertEquals("GET", request.method());
+            Assertions.assertEquals("/inApps/v1/messaging/default/com.example%2Fproduct/en%20US", request.url().encodedPath());
+        });
+
+        client.getDefaultMessage("com.example/product", "en US");
+    }
+
+    @Test
+    public void testGetTransactionHistoryWithNullRequest() throws IOException {
+        AppStoreServerAPIClient client = getClientWithBody("models/transactionHistoryResponse.json", request -> Assertions.fail());
+
+        NullPointerException exception = Assertions.assertThrows(NullPointerException.class, () -> client.getTransactionHistory("1234", null, null, GetTransactionHistoryVersion.V2));
+        Assertions.assertEquals("transactionHistoryRequest cannot be null", exception.getMessage());
+    }
+
+    @Test
+    public void testAPIErrorWithUnknownFields() throws IOException {
+        String body = "{\"errorCode\": 4040010, \"errorMessage\": \"Transaction id not found.\", \"newField\": {\"key\": \"value\"}}";
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 404);
+        try {
+            client.getTransactionInfo("1234");
+        } catch (APIException e) {
+            Assertions.assertEquals(404, e.getHttpStatusCode());
+            Assertions.assertEquals(APIError.TRANSACTION_ID_NOT_FOUND, e.getApiError());
+            Assertions.assertEquals(4040010L, e.getRawApiError());
+            Assertions.assertEquals("Transaction id not found.", e.getApiErrorMessage());
+            return;
+        }
+        Assertions.fail();
+    }
+
+    @Test
+    public void testAPIErrorWithoutErrorCode() throws IOException {
+        String body = "{\"errorMessage\": \"Testing error.\"}";
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 400);
+        try {
+            client.getTransactionInfo("1234");
+        } catch (APIException e) {
+            Assertions.assertEquals(400, e.getHttpStatusCode());
+            Assertions.assertNull(e.getApiError());
+            Assertions.assertNull(e.getRawApiError());
+            Assertions.assertEquals("Testing error.", e.getApiErrorMessage());
+            return;
+        }
+        Assertions.fail();
+    }
+
+    @Test
+    public void testAPIErrorWithEmptyBody() throws IOException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("", request -> {}, 500);
+        try {
+            client.getTransactionInfo("1234");
+        } catch (APIException e) {
+            Assertions.assertEquals(500, e.getHttpStatusCode());
+            Assertions.assertNull(e.getApiError());
+            Assertions.assertNull(e.getRawApiError());
+            Assertions.assertNull(e.getApiErrorMessage());
+            Assertions.assertNull(e.getCause());
+            return;
+        }
+        Assertions.fail();
+    }
+
+    @Test
+    public void testAPIErrorWithNullBody() throws IOException {
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient("null", request -> {}, 500);
+        try {
+            client.getTransactionInfo("1234");
+        } catch (APIException e) {
+            Assertions.assertEquals(500, e.getHttpStatusCode());
+            Assertions.assertNull(e.getApiError());
+            Assertions.assertNull(e.getRawApiError());
+            Assertions.assertNull(e.getApiErrorMessage());
+            Assertions.assertNull(e.getCause());
+            return;
+        }
+        Assertions.fail();
+    }
+
+    @Test
+    public void testConsumptionPercentageOutOfRangeError() throws IOException {
+        String body = TestingUtility.readFile("models/consumptionPercentageOutOfRangeError.json");
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 400);
+        try {
+            ConsumptionRequest consumptionRequest = new ConsumptionRequest(true, DeliveryStatus.DELIVERED, false)
+                    .consumptionPercentage(100000);
+            client.sendConsumptionInformation("49571273", consumptionRequest);
+        } catch (APIException e) {
+            Assertions.assertEquals(400, e.getHttpStatusCode());
+            Assertions.assertEquals(APIError.CONSUMPTION_PERCENTAGE_OUT_OF_RANGE, e.getApiError());
+            Assertions.assertEquals(4000207L, e.getRawApiError());
+            Assertions.assertEquals("Invalid request. The consumption percentage is outside the valid range.", e.getApiErrorMessage());
+            return;
+        }
+        Assertions.fail();
+    }
+
+    @Test
+    public void testAdvancedCommerceSubscriptionDoesNotExistError() throws IOException {
+        String body = TestingUtility.readFile("models/subscriptionDoesNotExistError.json");
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {
+            Assertions.assertEquals("/advancedCommerce/v1/subscription/cancel/4124214", request.url().encodedPath());
+        }, 403);
+        try {
+            AdvancedCommerceSubscriptionCancelRequest cancelRequest = new AdvancedCommerceSubscriptionCancelRequest(
+                    new AdvancedCommerceRequestInfo(UUID.fromString("932c6903-0ab8-4469-9f21-015f6fab013c")));
+            client.cancelSubscription("4124214", cancelRequest);
+        } catch (APIException e) {
+            Assertions.assertEquals(403, e.getHttpStatusCode());
+            Assertions.assertEquals(APIError.SUBSCRIPTION_DOES_NOT_EXIST, e.getApiError());
+            Assertions.assertEquals(4030008L, e.getRawApiError());
+            Assertions.assertEquals("The subscription doesn't exist.", e.getApiErrorMessage());
+            return;
+        }
+        Assertions.fail();
+    }
+
+    @Test
+    public void testAdvancedCommerceRepeatedRequestReferenceIdError() throws IOException {
+        String body = "{\"errorCode\": 4000097, \"errorMessage\": \"The requestReferenceId was repeated.\"}";
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {
+            Assertions.assertEquals("/advancedCommerce/v1/subscription/revoke/4124214", request.url().encodedPath());
+        }, 400);
+        try {
+            AdvancedCommerceSubscriptionRevokeRequest revokeRequest = new AdvancedCommerceSubscriptionRevokeRequest(
+                    new AdvancedCommerceRequestInfo(UUID.fromString("932c6903-0ab8-4469-9f21-015f6fab013c")),
+                    AdvancedCommerceRefundReason.UNINTENDED_PURCHASE,
+                    true,
+                    AdvancedCommerceRefundType.PRORATED);
+            client.revokeSubscription("4124214", revokeRequest);
+        } catch (APIException e) {
+            Assertions.assertEquals(400, e.getHttpStatusCode());
+            Assertions.assertEquals(APIError.REPEATED_REQUEST_REFERENCE_ID, e.getApiError());
+            Assertions.assertEquals(4000097L, e.getRawApiError());
+            Assertions.assertEquals("The requestReferenceId was repeated.", e.getApiErrorMessage());
+            return;
+        }
+        Assertions.fail();
+    }
+
+    @Test
+    public void testProductionAndSandboxBaseUrls() throws IOException, APIException {
+        Map<Environment, String> expectedHosts = Map.of(
+                Environment.PRODUCTION, "api.storekit.apple.com",
+                Environment.SANDBOX, "api.storekit-sandbox.apple.com");
+        String body = TestingUtility.readFile("models/transactionInfoResponse.json");
+        for (Map.Entry<Environment, String> expectedHost : expectedHosts.entrySet()) {
+            try (InputStream key = this.getClass().getClassLoader().getResourceAsStream("certs/testSigningKey.p8")) {
+                Assertions.assertNotNull(key);
+                AppStoreServerAPIClient client = new AppStoreServerAPIClient(new String(key.readAllBytes()), "keyId", "issuerId", "com.example", expectedHost.getKey()) {
+                    @Override
+                    protected Response getResponse(Request request) {
+                        Assertions.assertEquals("https", request.url().scheme());
+                        Assertions.assertEquals(expectedHost.getValue(), request.url().host());
+                        Assertions.assertEquals("/inApps/v1/transactions/1234", request.url().encodedPath());
+                        return new Response.Builder()
+                                .body(ResponseBody.create(body, MediaType.parse("application/json")))
+                                .code(200)
+                                .request(request)
+                                .protocol(Protocol.HTTP_1_1)
+                                .message("")
+                                .build();
+                    }
+                };
+                Assertions.assertNotNull(client.getTransactionInfo("1234"));
+            }
+        }
+    }
+
+    @Test
+    public void testGetCustomerGroups() throws APIException, IOException {
+        AppStoreServerAPIClient client = getClientWithBody("models/getCustomerGroupsResponse.json", request -> {
+            Assertions.assertEquals("GET", request.method());
+            Assertions.assertEquals("/groups/v1/currentGroups/1234", request.url().encodedPath());
+            Assertions.assertEquals(0, request.url().querySize());
+            Assertions.assertNull(request.body());
+        });
+
+        GetCustomerGroupsResponse getCustomerGroupsResponse = client.getCustomerGroups("1234");
+
+        Assertions.assertNotNull(getCustomerGroupsResponse);
+        GetCustomerGroupsResponse expectedGetCustomerGroupsResponse = new GetCustomerGroupsResponse()
+                .groups(List.of(
+                        new GroupEntry()
+                                .groupId("900000000000000000")
+                                .groupType(GroupType.ORGANIZATION)
+                                .roles(List.of(
+                                        new RoleEntry()
+                                                .productId("example.productId.one")
+                                                .role(Role.ADMIN),
+                                        new RoleEntry()
+                                                .productId("example.productId.two")
+                                                .role(Role.NONE)
+                                )),
+                        new GroupEntry()
+                                .groupId("900000000000000001")
+                                .groupType(GroupType.CONSUMER)
+                ));
+        Assertions.assertEquals(expectedGetCustomerGroupsResponse, getCustomerGroupsResponse);
+        GroupEntry organizationGroup = getCustomerGroupsResponse.getGroups().get(0);
+        Assertions.assertEquals("900000000000000000", organizationGroup.getGroupId());
+        Assertions.assertEquals(GroupType.ORGANIZATION, organizationGroup.getGroupType());
+        Assertions.assertEquals("ORGANIZATION", organizationGroup.getRawGroupType());
+        Assertions.assertEquals("example.productId.one", organizationGroup.getRoles().get(0).getProductId());
+        Assertions.assertEquals(Role.ADMIN, organizationGroup.getRoles().get(0).getRole());
+        Assertions.assertEquals("ADMIN", organizationGroup.getRoles().get(0).getRawRole());
+        Assertions.assertEquals("example.productId.two", organizationGroup.getRoles().get(1).getProductId());
+        Assertions.assertEquals(Role.NONE, organizationGroup.getRoles().get(1).getRole());
+        Assertions.assertEquals("NONE", organizationGroup.getRoles().get(1).getRawRole());
+        GroupEntry consumerGroup = getCustomerGroupsResponse.getGroups().get(1);
+        Assertions.assertEquals("900000000000000001", consumerGroup.getGroupId());
+        Assertions.assertEquals(GroupType.CONSUMER, consumerGroup.getGroupType());
+        Assertions.assertEquals("CONSUMER", consumerGroup.getRawGroupType());
+        Assertions.assertNull(consumerGroup.getRoles());
+    }
+
+    @Test
+    public void testGetCustomerGroupsWithUnknownValues() throws APIException, IOException {
+        AppStoreServerAPIClient client = getClientWithBody("models/getCustomerGroupsResponseWithUnknownValues.json", request -> {});
+
+        GetCustomerGroupsResponse getCustomerGroupsResponse = client.getCustomerGroups("1234");
+
+        Assertions.assertNotNull(getCustomerGroupsResponse);
+        Assertions.assertEquals(Map.of("unknownField", "unknown_value"), getCustomerGroupsResponse.getUnknownFields());
+        GroupEntry groupEntry = getCustomerGroupsResponse.getGroups().get(0);
+        Assertions.assertEquals("900000000000000002", groupEntry.getGroupId());
+        Assertions.assertNull(groupEntry.getGroupType());
+        Assertions.assertEquals("UNKNOWN_GROUP_TYPE", groupEntry.getRawGroupType());
+        Assertions.assertEquals(Map.of("unknownGroupField", "unknown_group_value"), groupEntry.getUnknownFields());
+        RoleEntry roleEntry = groupEntry.getRoles().get(0);
+        Assertions.assertEquals("example.productId.three", roleEntry.getProductId());
+        Assertions.assertNull(roleEntry.getRole());
+        Assertions.assertEquals("UNKNOWN_ROLE", roleEntry.getRawRole());
+        Assertions.assertEquals(Map.of("unknownRoleField", "unknown_role_value"), roleEntry.getUnknownFields());
+    }
+
+    @Test
+    public void testGetCustomerGroupsInvalidTransactionIdError() throws IOException {
+        String body = TestingUtility.readFile("models/invalidTransactionIdError.json");
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 400);
+        try {
+            client.getCustomerGroups("invalid_transaction_id");
+        } catch (APIException e) {
+            Assertions.assertEquals(400, e.getHttpStatusCode());
+            Assertions.assertEquals(APIError.INVALID_TRANSACTION_ID, e.getApiError());
+            Assertions.assertEquals(4000006L, e.getRawApiError());
+            Assertions.assertEquals("Invalid transaction id.", e.getApiErrorMessage());
+            return;
+        }
+        Assertions.fail();
+    }
+
+    @Test
+    public void testGetCustomerGroupsTransactionIdNotFoundError() throws IOException {
+        String body = TestingUtility.readFile("models/transactionIdNotFoundError.json");
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 404);
+        try {
+            client.getCustomerGroups("not_found_transaction_id");
+        } catch (APIException e) {
+            Assertions.assertEquals(404, e.getHttpStatusCode());
+            Assertions.assertEquals(APIError.TRANSACTION_ID_NOT_FOUND, e.getApiError());
+            Assertions.assertEquals(4040010L, e.getRawApiError());
+            Assertions.assertEquals("Transaction id not found.", e.getApiErrorMessage());
+            return;
+        }
+        Assertions.fail();
+    }
+
+    @Test
+    public void testGetGroupMembers() throws APIException, IOException {
+        AppStoreServerAPIClient client = getClientWithBody("models/getGroupMembersResponse.json", request -> {
+            Assertions.assertEquals("GET", request.method());
+            Assertions.assertEquals("/groups/v1/group/900000000000000000", request.url().encodedPath());
+            Assertions.assertEquals(2, request.url().querySize());
+            Assertions.assertEquals("pagination_token_input", request.url().queryParameter("paginationToken"));
+            Assertions.assertEquals("50", request.url().queryParameter("limit"));
+            Assertions.assertNull(request.body());
+        });
+
+        GetGroupMembersResponse getGroupMembersResponse = client.getGroupMembers("900000000000000000", "pagination_token_input", 50);
+
+        Assertions.assertNotNull(getGroupMembersResponse);
+        GetGroupMembersResponse expectedGetGroupMembersResponse = new GetGroupMembersResponse()
+                .members(List.of(
+                        new GroupMemberEntry()
+                                .appTransactionId("700000000000000000"),
+                        new GroupMemberEntry()
+                                .appTransactionId("700000000000000001")
+                ))
+                .paginationToken("pagination_token_output")
+                .hasMore(true);
+        Assertions.assertEquals(expectedGetGroupMembersResponse, getGroupMembersResponse);
+        Assertions.assertEquals("700000000000000000", getGroupMembersResponse.getMembers().get(0).getAppTransactionId());
+        Assertions.assertEquals("700000000000000001", getGroupMembersResponse.getMembers().get(1).getAppTransactionId());
+        Assertions.assertEquals("pagination_token_output", getGroupMembersResponse.getPaginationToken());
+        Assertions.assertTrue(getGroupMembersResponse.getHasMore());
+    }
+
+    @Test
+    public void testGetGroupMembersWithoutOptionalParameters() throws APIException, IOException {
+        AppStoreServerAPIClient client = getClientWithBody("models/getGroupMembersResponse.json", request -> {
+            Assertions.assertEquals("GET", request.method());
+            Assertions.assertEquals("/groups/v1/group/900000000000000000", request.url().encodedPath());
+            Assertions.assertEquals(0, request.url().querySize());
+            Assertions.assertNull(request.body());
+        });
+
+        GetGroupMembersResponse getGroupMembersResponse = client.getGroupMembers("900000000000000000", null, null);
+
+        Assertions.assertNotNull(getGroupMembersResponse);
+        Assertions.assertEquals(2, getGroupMembersResponse.getMembers().size());
+    }
+
+    @Test
+    public void testGetGroupMembersInvalidGroupIdError() throws IOException {
+        String body = TestingUtility.readFile("models/invalidGroupIdError.json");
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 400);
+        try {
+            client.getGroupMembers("invalid_group_id", null, null);
+        } catch (APIException e) {
+            Assertions.assertEquals(400, e.getHttpStatusCode());
+            Assertions.assertEquals(APIError.INVALID_GROUP_ID, e.getApiError());
+            Assertions.assertEquals(4000225L, e.getRawApiError());
+            Assertions.assertEquals("Invalid request. The group ID is invalid.", e.getApiErrorMessage());
+            return;
+        }
+        Assertions.fail();
+    }
+
+    @Test
+    public void testGetGroupMembersInvalidLimitError() throws IOException {
+        String body = TestingUtility.readFile("models/invalidLimitError.json");
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 400);
+        try {
+            client.getGroupMembers("900000000000000000", null, 101);
+        } catch (APIException e) {
+            Assertions.assertEquals(400, e.getHttpStatusCode());
+            Assertions.assertEquals(APIError.INVALID_LIMIT, e.getApiError());
+            Assertions.assertEquals(4000004L, e.getRawApiError());
+            Assertions.assertEquals("Invalid request limit.", e.getApiErrorMessage());
+            return;
+        }
+        Assertions.fail();
+    }
+
+    @Test
+    public void testGetGroupMembersGroupNotFoundError() throws IOException {
+        String body = TestingUtility.readFile("models/groupNotFoundError.json");
+        AppStoreServerAPIClient client = getAppStoreServerAPIClient(body, request -> {}, 404);
+        try {
+            client.getGroupMembers("900000000000000009", null, null);
+        } catch (APIException e) {
+            Assertions.assertEquals(404, e.getHttpStatusCode());
+            Assertions.assertEquals(APIError.GROUP_NOT_FOUND, e.getApiError());
+            Assertions.assertEquals(4040022L, e.getRawApiError());
+            Assertions.assertEquals("Group not found.", e.getApiErrorMessage());
+            return;
+        }
+        Assertions.fail();
+    }
+
+    @Test
+    public void testGroupPathParametersArePercentEncoded() throws IOException, APIException {
+        AppStoreServerAPIClient customerGroupsClient = getClientWithBody("models/getCustomerGroupsResponse.json", request -> {
+            Assertions.assertEquals("/groups/v1/currentGroups/..%2F1234%3Ffoo%3Dbar", request.url().encodedPath());
+            Assertions.assertNull(request.url().query());
+        });
+        customerGroupsClient.getCustomerGroups("../1234?foo=bar");
+
+        AppStoreServerAPIClient groupMembersClient = getClientWithBody("models/getGroupMembersResponse.json", request -> {
+            Assertions.assertEquals("/groups/v1/group/..%2F9000%23fragment", request.url().encodedPath());
+            Assertions.assertNull(request.url().query());
+            Assertions.assertNull(request.url().fragment());
+        });
+        groupMembersClient.getGroupMembers("../9000#fragment", null, null);
     }
 
    public AppStoreServerAPIClient getClientWithBody(String path, Consumer<Request> requestVerifier) throws IOException {

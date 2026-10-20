@@ -8,10 +8,16 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * The renewal status for an auto-renewable subscription.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/autorenewstatus">autoRenewStatus</a>
- */
+ **/
 public enum AutoRenewStatus {
 
+    /**
+     * Automatic renewal is off.
+     **/
     OFF(0),
+    /**
+     * Automatic renewal is on.
+     **/
     ON(1);
 
     private final Integer value;
@@ -39,4 +45,3 @@ public enum AutoRenewStatus {
         return String.valueOf(value);
     }
 }
-

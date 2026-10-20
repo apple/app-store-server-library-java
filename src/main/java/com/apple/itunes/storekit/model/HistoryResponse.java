@@ -14,69 +14,50 @@ import java.util.Objects;
  * A response that contains the customer’s transaction history for an app.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/historyresponse">HistoryResponse</a>
- */
+ **/
 public class HistoryResponse {
-    private static final String SERIALIZED_NAME_REVISION = "revision";
-    private static final String SERIALIZED_NAME_HAS_MORE = "hasMore";
-    private static final String SERIALIZED_NAME_BUNDLE_ID = "bundleId";
     private static final String SERIALIZED_NAME_APP_APPLE_ID = "appAppleId";
+    private static final String SERIALIZED_NAME_BUNDLE_ID = "bundleId";
     private static final String SERIALIZED_NAME_ENVIRONMENT = "environment";
+    private static final String SERIALIZED_NAME_HAS_MORE = "hasMore";
+    private static final String SERIALIZED_NAME_REVISION = "revision";
     private static final String SERIALIZED_NAME_SIGNED_TRANSACTIONS = "signedTransactions";
-    @JsonProperty(SERIALIZED_NAME_REVISION)
-    private String revision;
-    @JsonProperty(SERIALIZED_NAME_HAS_MORE)
-    private Boolean hasMore;
-    @JsonProperty(SERIALIZED_NAME_BUNDLE_ID)
-    private String bundleId;
+
     @JsonProperty(SERIALIZED_NAME_APP_APPLE_ID)
     private Long appAppleId;
+    @JsonProperty(SERIALIZED_NAME_BUNDLE_ID)
+    private String bundleId;
     @JsonProperty(SERIALIZED_NAME_ENVIRONMENT)
     private String environment;
+    @JsonProperty(SERIALIZED_NAME_HAS_MORE)
+    private Boolean hasMore;
+    @JsonProperty(SERIALIZED_NAME_REVISION)
+    private String revision;
     @JsonProperty(SERIALIZED_NAME_SIGNED_TRANSACTIONS)
-    private List<String> signedTransactions = null;
+    private List<String> signedTransactions;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
-
 
     public HistoryResponse() {
     }
 
-    public HistoryResponse revision(String revision) {
-        this.revision = revision;
+    public HistoryResponse appAppleId(Long appAppleId) {
+        this.appAppleId = appAppleId;
         return this;
     }
 
     /**
-     * A token you use in a query to request the next set of transactions for the customer.
+     * The app’s identifier in the App Store.
      *
-     * @return revision
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/revision">revision</a>
+     * @return appAppleId
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/appappleid">appAppleId</a>
      **/
-    public String getRevision() {
-        return revision;
+    public Long getAppAppleId() {
+        return appAppleId;
     }
 
-    public void setRevision(String revision) {
-        this.revision = revision;
-    }
-
-    public HistoryResponse hasMore(Boolean hasMore) {
-        this.hasMore = hasMore;
-        return this;
-    }
-
-    /**
-     * A Boolean value indicating whether the App Store has more transaction data.
-     *
-     * @return hasMore
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/hasmore">hasMore</a>
-     **/
-    public Boolean getHasMore() {
-        return hasMore;
-    }
-
-    public void setHasMore(Boolean hasMore) {
-        this.hasMore = hasMore;
+    public void setAppAppleId(Long appAppleId) {
+        this.appAppleId = appAppleId;
     }
 
     public HistoryResponse bundleId(String bundleId) {
@@ -85,7 +66,7 @@ public class HistoryResponse {
     }
 
     /**
-     * The bundle identifier of an app.
+     * The bundle identifier of the app.
      *
      * @return bundleId
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/bundleid">bundleId</a>
@@ -96,25 +77,6 @@ public class HistoryResponse {
 
     public void setBundleId(String bundleId) {
         this.bundleId = bundleId;
-    }
-
-    public HistoryResponse appAppleId(Long appAppleId) {
-        this.appAppleId = appAppleId;
-        return this;
-    }
-
-    /**
-     * The unique identifier of an app in the App Store.
-     *
-     * @return appAppleId
-     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/appappleid">appAppleId</a>
-     **/
-    public Long getAppAppleId() {
-        return appAppleId;
-    }
-
-    public void setAppAppleId(Long appAppleId) {
-        this.appAppleId = appAppleId;
     }
 
     public HistoryResponse environment(Environment environment) {
@@ -129,12 +91,12 @@ public class HistoryResponse {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/environment">environment</a>
      **/
     public Environment getEnvironment() {
-        return environment != null ? Environment.fromValue(environment) : null;
+        return Environment.fromValue(environment);
     }
 
     /**
      * @see #getEnvironment()
-     */
+     **/
     public String getRawEnvironment() {
         return environment;
     }
@@ -147,21 +109,60 @@ public class HistoryResponse {
         this.environment = rawEnvironment;
     }
 
+    public HistoryResponse hasMore(Boolean hasMore) {
+        this.hasMore = hasMore;
+        return this;
+    }
+
+    /**
+     * A Boolean value that indicates whether the App Store has more transactions than it returns in this response.
+     *
+     * @return hasMore
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/hasmore">hasMore</a>
+     **/
+    public Boolean getHasMore() {
+        return hasMore;
+    }
+
+    public void setHasMore(Boolean hasMore) {
+        this.hasMore = hasMore;
+    }
+
+    public HistoryResponse revision(String revision) {
+        this.revision = revision;
+        return this;
+    }
+
+    /**
+     * A token you use in a query to request the next set of transactions from the endpoint.
+     *
+     * @return revision
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/revision">revision</a>
+     **/
+    public String getRevision() {
+        return revision;
+    }
+
+    public void setRevision(String revision) {
+        this.revision = revision;
+    }
+
     public HistoryResponse signedTransactions(List<String> signedTransactions) {
         this.signedTransactions = signedTransactions;
         return this;
     }
 
-    public HistoryResponse addSignedTransactionsItem(String signedTransactionsItem) {
+    public HistoryResponse addSignedTransaction(String signedTransaction) {
+        Objects.requireNonNull(signedTransaction);
         if (this.signedTransactions == null) {
             this.signedTransactions = new ArrayList<>();
         }
-        this.signedTransactions.add(signedTransactionsItem);
+        this.signedTransactions.add(signedTransaction);
         return this;
     }
 
     /**
-     * An array of in-app purchase transactions for the customer, signed by Apple, in JSON Web Signature format.
+     * An array of in-app purchase transactions for the customer, signed by Apple, in JSON Web Signature (JWS) format.
      *
      * @return signedTransactions
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/jwstransaction">JWSTransaction</a>
@@ -180,10 +181,10 @@ public class HistoryResponse {
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -201,31 +202,30 @@ public class HistoryResponse {
             return false;
         }
         HistoryResponse historyResponse = (HistoryResponse) o;
-        return Objects.equals(this.revision, historyResponse.revision) &&
-                Objects.equals(this.hasMore, historyResponse.hasMore) &&
+        return Objects.equals(this.appAppleId, historyResponse.appAppleId) &&
                 Objects.equals(this.bundleId, historyResponse.bundleId) &&
-                Objects.equals(this.appAppleId, historyResponse.appAppleId) &&
                 Objects.equals(this.environment, historyResponse.environment) &&
+                Objects.equals(this.hasMore, historyResponse.hasMore) &&
+                Objects.equals(this.revision, historyResponse.revision) &&
                 Objects.equals(this.signedTransactions, historyResponse.signedTransactions) &&
                 Objects.equals(this.unknownFields, historyResponse.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(revision, hasMore, bundleId, appAppleId, environment, signedTransactions, unknownFields);
+        return Objects.hash(appAppleId, bundleId, environment, hasMore, revision, signedTransactions, unknownFields);
     }
 
     @Override
     public String toString() {
         return "HistoryResponse{" +
-                "revision='" + revision + '\'' +
-                ", hasMore=" + hasMore +
+                "appAppleId=" + appAppleId +
                 ", bundleId='" + bundleId + '\'' +
-                ", appAppleId=" + appAppleId +
                 ", environment='" + environment + '\'' +
+                ", hasMore=" + hasMore +
+                ", revision='" + revision + '\'' +
                 ", signedTransactions=" + signedTransactions +
                 ", unknownFields=" + unknownFields +
                 '}';
     }
 }
-

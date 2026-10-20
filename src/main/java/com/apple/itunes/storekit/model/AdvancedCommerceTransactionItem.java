@@ -5,15 +5,15 @@ package com.apple.itunes.storekit.model;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 /**
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/advancedcommercetransactionitem">advancedCommerceTransactionItem</a>
- */
+ **/
 public class AdvancedCommerceTransactionItem {
-
     private static final String SERIALIZED_NAME_SKU = "SKU";
     private static final String SERIALIZED_NAME_DESCRIPTION = "description";
     private static final String SERIALIZED_NAME_DISPLAY_NAME = "displayName";
@@ -48,7 +48,7 @@ public class AdvancedCommerceTransactionItem {
     }
 
     /**
-     * @return sku
+     * @return SKU
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/advancedcommercesku">advancedCommerceSKU</a>
      **/
     public String getSku() {
@@ -132,6 +132,15 @@ public class AdvancedCommerceTransactionItem {
         return this;
     }
 
+    public AdvancedCommerceTransactionItem addRefund(AdvancedCommerceRefund refund) {
+        Objects.requireNonNull(refund);
+        if (this.refunds == null) {
+            this.refunds = new ArrayList<>();
+        }
+        this.refunds.add(refund);
+        return this;
+    }
+
     /**
      * @return refunds
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/advancedcommercerefunds">advancedCommerceRefunds</a>
@@ -150,6 +159,8 @@ public class AdvancedCommerceTransactionItem {
     }
 
     /**
+     * The UNIX time, in milliseconds, that the App Store refunded the transaction or revoked it from Family Sharing.
+     *
      * @return revocationDate
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/revocationdate">revocationDate</a>
      **/
@@ -166,6 +177,11 @@ public class AdvancedCommerceTransactionItem {
         return this;
     }
 
+    /**
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -176,10 +192,21 @@ public class AdvancedCommerceTransactionItem {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AdvancedCommerceTransactionItem that = (AdvancedCommerceTransactionItem) o;
-        return Objects.equals(sku, that.sku) && Objects.equals(description, that.description) && Objects.equals(displayName, that.displayName) && Objects.equals(offer, that.offer) && Objects.equals(price, that.price) && Objects.equals(refunds, that.refunds) && Objects.equals(revocationDate, that.revocationDate) && Objects.equals(unknownFields, that.unknownFields);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AdvancedCommerceTransactionItem advancedCommerceTransactionItem = (AdvancedCommerceTransactionItem) o;
+        return Objects.equals(this.sku, advancedCommerceTransactionItem.sku) &&
+                Objects.equals(this.description, advancedCommerceTransactionItem.description) &&
+                Objects.equals(this.displayName, advancedCommerceTransactionItem.displayName) &&
+                Objects.equals(this.offer, advancedCommerceTransactionItem.offer) &&
+                Objects.equals(this.price, advancedCommerceTransactionItem.price) &&
+                Objects.equals(this.refunds, advancedCommerceTransactionItem.refunds) &&
+                Objects.equals(this.revocationDate, advancedCommerceTransactionItem.revocationDate) &&
+                Objects.equals(this.unknownFields, advancedCommerceTransactionItem.unknownFields);
     }
 
     @Override

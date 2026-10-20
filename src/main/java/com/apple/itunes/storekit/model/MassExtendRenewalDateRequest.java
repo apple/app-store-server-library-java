@@ -13,31 +13,87 @@ import java.util.Objects;
  * The request body that contains subscription-renewal-extension data to apply for all eligible active subscribers.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/massextendrenewaldaterequest">MassExtendRenewalDateRequest</a>
- */
+ **/
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MassExtendRenewalDateRequest {
+    private static final String SERIALIZED_NAME_REQUEST_IDENTIFIER = "requestIdentifier";
     private static final String SERIALIZED_NAME_EXTEND_BY_DAYS = "extendByDays";
     private static final String SERIALIZED_NAME_EXTEND_REASON_CODE = "extendReasonCode";
-    private static final String SERIALIZED_NAME_REQUEST_IDENTIFIER = "requestIdentifier";
-    private static final String SERIALIZED_NAME_STOREFRONT_COUNTRY_CODES = "storefrontCountryCodes";
     private static final String SERIALIZED_NAME_PRODUCT_ID = "productId";
-    @JsonProperty(SERIALIZED_NAME_EXTEND_BY_DAYS)
-    private Integer extendByDays;
-    @JsonProperty(SERIALIZED_NAME_EXTEND_REASON_CODE)
-    private ExtendReasonCode extendReasonCode;
-    @JsonProperty(SERIALIZED_NAME_REQUEST_IDENTIFIER)
+    private static final String SERIALIZED_NAME_STOREFRONT_COUNTRY_CODES = "storefrontCountryCodes";
+
+    @JsonProperty(value = SERIALIZED_NAME_REQUEST_IDENTIFIER, required = true)
     private String requestIdentifier;
-    @JsonProperty(SERIALIZED_NAME_STOREFRONT_COUNTRY_CODES)
-    private List<String> storefrontCountryCodes = null;
-    @JsonProperty(SERIALIZED_NAME_PRODUCT_ID)
+    @JsonProperty(value = SERIALIZED_NAME_EXTEND_BY_DAYS, required = true)
+    private Integer extendByDays;
+    @JsonProperty(value = SERIALIZED_NAME_EXTEND_REASON_CODE, required = true)
+    private Integer extendReasonCode;
+    @JsonProperty(value = SERIALIZED_NAME_PRODUCT_ID, required = true)
     private String productId;
+    @JsonProperty(SERIALIZED_NAME_STOREFRONT_COUNTRY_CODES)
+    private List<String> storefrontCountryCodes;
 
+    private static final int MAXIMUM_REQUEST_IDENTIFIER_LENGTH = 128;
+    private static final int MINIMUM_EXTEND_BY_DAYS = 1;
+    private static final int MAXIMUM_EXTEND_BY_DAYS = 90;
+    private static final int MAXIMUM_STOREFRONT_COUNTRY_CODE_LENGTH = 3;
 
-    public MassExtendRenewalDateRequest() {
+    protected MassExtendRenewalDateRequest() {
+    }
+
+    public MassExtendRenewalDateRequest(
+            String requestIdentifier,
+            Integer extendByDays,
+            ExtendReasonCode extendReasonCode,
+            String productId
+    ) {
+        this.requestIdentifier = validateRequestIdentifier(requestIdentifier);
+        this.extendByDays = validateExtendByDays(extendByDays);
+        this.extendReasonCode = Objects.requireNonNull(extendReasonCode).getValue();
+        this.productId = Objects.requireNonNull(productId);
+    }
+
+    public MassExtendRenewalDateRequest(
+            String requestIdentifier,
+            Integer extendByDays,
+            Integer rawExtendReasonCode,
+            String productId
+    ) {
+        this.requestIdentifier = validateRequestIdentifier(requestIdentifier);
+        this.extendByDays = validateExtendByDays(extendByDays);
+        this.extendReasonCode = Objects.requireNonNull(rawExtendReasonCode);
+        this.productId = Objects.requireNonNull(productId);
+    }
+
+    public MassExtendRenewalDateRequest requestIdentifier(String requestIdentifier) {
+        this.requestIdentifier = validateRequestIdentifier(requestIdentifier);
+        return this;
+    }
+
+    /**
+     * A string that contains a one-time UUID value you provide to identify this subscription-renewal-date extension request.
+     *
+     * @return requestIdentifier
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/requestidentifier">requestIdentifier</a>
+     **/
+    public String getRequestIdentifier() {
+        return requestIdentifier;
+    }
+
+    public void setRequestIdentifier(String requestIdentifier) {
+        this.requestIdentifier = validateRequestIdentifier(requestIdentifier);
+    }
+
+    private String validateRequestIdentifier(String requestIdentifier) {
+        Objects.requireNonNull(requestIdentifier);
+        if (requestIdentifier.length() > MAXIMUM_REQUEST_IDENTIFIER_LENGTH) {
+            throw new IllegalArgumentException("requestIdentifier length longer than maximum allowed");
+        }
+        return requestIdentifier;
     }
 
     public MassExtendRenewalDateRequest extendByDays(Integer extendByDays) {
-        this.extendByDays = extendByDays;
+        this.extendByDays = validateExtendByDays(extendByDays);
         return this;
     }
 
@@ -46,18 +102,25 @@ public class MassExtendRenewalDateRequest {
      *
      * @return extendByDays
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/extendbydays">extendByDays</a>
-     * maximum: 90
      **/
     public Integer getExtendByDays() {
         return extendByDays;
     }
 
     public void setExtendByDays(Integer extendByDays) {
-        this.extendByDays = extendByDays;
+        this.extendByDays = validateExtendByDays(extendByDays);
+    }
+
+    private Integer validateExtendByDays(Integer extendByDays) {
+        Objects.requireNonNull(extendByDays);
+        if (extendByDays < MINIMUM_EXTEND_BY_DAYS || extendByDays > MAXIMUM_EXTEND_BY_DAYS) {
+            throw new IllegalArgumentException("extendByDays must be between " + MINIMUM_EXTEND_BY_DAYS + " and " + MAXIMUM_EXTEND_BY_DAYS);
+        }
+        return extendByDays;
     }
 
     public MassExtendRenewalDateRequest extendReasonCode(ExtendReasonCode extendReasonCode) {
-        this.extendReasonCode = extendReasonCode;
+        this.extendReasonCode = Objects.requireNonNull(extendReasonCode).getValue();
         return this;
     }
 
@@ -68,66 +131,31 @@ public class MassExtendRenewalDateRequest {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/extendreasoncode">extendReasonCode</a>
      **/
     public ExtendReasonCode getExtendReasonCode() {
+        return ExtendReasonCode.fromValue(extendReasonCode);
+    }
+
+    /**
+     * @see #getExtendReasonCode()
+     **/
+    public Integer getRawExtendReasonCode() {
         return extendReasonCode;
     }
 
     public void setExtendReasonCode(ExtendReasonCode extendReasonCode) {
-        this.extendReasonCode = extendReasonCode;
+        this.extendReasonCode = Objects.requireNonNull(extendReasonCode).getValue();
     }
 
-    public MassExtendRenewalDateRequest requestIdentifier(String requestIdentifier) {
-        this.requestIdentifier = requestIdentifier;
-        return this;
-    }
-
-    /**
-     * A string that contains a unique identifier you provide to track each subscription-renewal-date extension request.
-     *
-     * @return requestIdentifier
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/requestidentifier">requestIdentifier</a>
-     **/
-    public String getRequestIdentifier() {
-        return requestIdentifier;
-    }
-
-    public void setRequestIdentifier(String requestIdentifier) {
-        this.requestIdentifier = requestIdentifier;
-    }
-
-    public MassExtendRenewalDateRequest storefrontCountryCodes(List<String> storefrontCountryCodes) {
-        this.storefrontCountryCodes = storefrontCountryCodes;
-        return this;
-    }
-
-    public MassExtendRenewalDateRequest addStorefrontCountryCodesItem(String storefrontCountryCodesItem) {
-        if (this.storefrontCountryCodes == null) {
-            this.storefrontCountryCodes = new ArrayList<>();
-        }
-        this.storefrontCountryCodes.add(storefrontCountryCodesItem);
-        return this;
-    }
-
-    /**
-     * A list of storefront country codes you provide to limit the storefronts for a subscription-renewal-date extension.
-     *
-     * @return storefrontCountryCodes
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/storefrontcountrycodes">storefrontCountryCodes</a>
-     **/
-    public List<String> getStorefrontCountryCodes() {
-        return storefrontCountryCodes;
-    }
-
-    public void setStorefrontCountryCodes(List<String> storefrontCountryCodes) {
-        this.storefrontCountryCodes = storefrontCountryCodes;
+    public void setRawExtendReasonCode(Integer rawExtendReasonCode) {
+        this.extendReasonCode = Objects.requireNonNull(rawExtendReasonCode);
     }
 
     public MassExtendRenewalDateRequest productId(String productId) {
-        this.productId = productId;
+        this.productId = Objects.requireNonNull(productId);
         return this;
     }
 
     /**
-     * The unique identifier for the product, that you create in App Store Connect.
+     * The product identifier of the auto-renewable subscription that you’re requesting the renewal-date extension for.
      *
      * @return productId
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/productid">productId</a>
@@ -137,7 +165,52 @@ public class MassExtendRenewalDateRequest {
     }
 
     public void setProductId(String productId) {
-        this.productId = productId;
+        this.productId = Objects.requireNonNull(productId);
+    }
+
+    public MassExtendRenewalDateRequest storefrontCountryCodes(List<String> storefrontCountryCodes) {
+        validateStorefrontCountryCodes(storefrontCountryCodes);
+        this.storefrontCountryCodes = storefrontCountryCodes;
+        return this;
+    }
+
+    public MassExtendRenewalDateRequest addStorefrontCountryCode(String storefrontCountryCode) {
+        Objects.requireNonNull(storefrontCountryCode);
+        validateStorefrontCountryCode(storefrontCountryCode);
+        if (this.storefrontCountryCodes == null) {
+            this.storefrontCountryCodes = new ArrayList<>();
+        }
+        this.storefrontCountryCodes.add(storefrontCountryCode);
+        return this;
+    }
+
+    /**
+     * A list of storefront country codes you provide to limit the storefronts that are eligible to receive the subscription-renewal-date extension.
+     *
+     * @return storefrontCountryCodes
+     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/storefrontcountrycodes">storefrontCountryCodes</a>
+     **/
+    public List<String> getStorefrontCountryCodes() {
+        return storefrontCountryCodes;
+    }
+
+    public void setStorefrontCountryCodes(List<String> storefrontCountryCodes) {
+        validateStorefrontCountryCodes(storefrontCountryCodes);
+        this.storefrontCountryCodes = storefrontCountryCodes;
+    }
+
+    private void validateStorefrontCountryCodes(List<String> storefrontCountryCodes) {
+        if (storefrontCountryCodes != null) {
+            for (String storefrontCountryCode : storefrontCountryCodes) {
+                validateStorefrontCountryCode(storefrontCountryCode);
+            }
+        }
+    }
+
+    private void validateStorefrontCountryCode(String storefrontCountryCode) {
+        if (storefrontCountryCode != null && storefrontCountryCode.length() > MAXIMUM_STOREFRONT_COUNTRY_CODE_LENGTH) {
+            throw new IllegalArgumentException("storefrontCountryCode length longer than maximum allowed");
+        }
     }
 
     @Override
@@ -149,27 +222,26 @@ public class MassExtendRenewalDateRequest {
             return false;
         }
         MassExtendRenewalDateRequest massExtendRenewalDateRequest = (MassExtendRenewalDateRequest) o;
-        return Objects.equals(this.extendByDays, massExtendRenewalDateRequest.extendByDays) &&
+        return Objects.equals(this.requestIdentifier, massExtendRenewalDateRequest.requestIdentifier) &&
+                Objects.equals(this.extendByDays, massExtendRenewalDateRequest.extendByDays) &&
                 Objects.equals(this.extendReasonCode, massExtendRenewalDateRequest.extendReasonCode) &&
-                Objects.equals(this.requestIdentifier, massExtendRenewalDateRequest.requestIdentifier) &&
-                Objects.equals(this.storefrontCountryCodes, massExtendRenewalDateRequest.storefrontCountryCodes) &&
-                Objects.equals(this.productId, massExtendRenewalDateRequest.productId);
+                Objects.equals(this.productId, massExtendRenewalDateRequest.productId) &&
+                Objects.equals(this.storefrontCountryCodes, massExtendRenewalDateRequest.storefrontCountryCodes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(extendByDays, extendReasonCode, requestIdentifier, storefrontCountryCodes, productId);
+        return Objects.hash(requestIdentifier, extendByDays, extendReasonCode, productId, storefrontCountryCodes);
     }
 
     @Override
     public String toString() {
         return "MassExtendRenewalDateRequest{" +
-                "extendByDays=" + extendByDays +
+                "requestIdentifier='" + requestIdentifier + '\'' +
+                ", extendByDays=" + extendByDays +
                 ", extendReasonCode=" + extendReasonCode +
-                ", requestIdentifier='" + requestIdentifier + '\'' +
-                ", storefrontCountryCodes=" + storefrontCountryCodes +
                 ", productId='" + productId + '\'' +
+                ", storefrontCountryCodes=" + storefrontCountryCodes +
                 '}';
     }
 }
-

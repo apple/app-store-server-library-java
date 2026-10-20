@@ -8,11 +8,21 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * The type of an external purchase custom link token.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/tokentype">tokenType</a>
- */
+ **/
 public enum TokenType {
 
+    /**
+     * A token type that indicates an initial acquisition.
+     **/
+    ACQUISITION("ACQUISITION"),
+    /**
+     * A token type that indicates usage of App Store services.
+     **/
     SERVICES("SERVICES"),
-    ACQUISITION("ACQUISITION");
+    /**
+     * A token type an app receives from the MarketplaceKit token(for:) API.
+     **/
+    CORE_TECHNOLOGY("CORE_TECHNOLOGY");
 
     private final String value;
 

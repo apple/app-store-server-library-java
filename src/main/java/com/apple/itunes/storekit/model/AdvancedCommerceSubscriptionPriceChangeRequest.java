@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -11,7 +12,8 @@ import java.util.Objects;
  * The request body you use to change the price of an auto-renewable subscription.
  *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionpricechangerequest">SubscriptionPriceChangeRequest</a>
- */
+ **/
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdvancedCommerceSubscriptionPriceChangeRequest extends AdvancedCommerceRequest<AdvancedCommerceSubscriptionPriceChangeRequest> {
     private static final String SERIALIZED_NAME_CURRENCY = "currency";
     private static final String SERIALIZED_NAME_ITEMS = "items";
@@ -23,19 +25,33 @@ public class AdvancedCommerceSubscriptionPriceChangeRequest extends AdvancedComm
     private List<AdvancedCommerceSubscriptionPriceChangeItem> items;
     @JsonProperty(SERIALIZED_NAME_STOREFRONT)
     private String storefront;
-    public AdvancedCommerceSubscriptionPriceChangeRequest() {}
+
+    protected AdvancedCommerceSubscriptionPriceChangeRequest() {
+        super();
+    }
 
     public AdvancedCommerceSubscriptionPriceChangeRequest(
             AdvancedCommerceRequestInfo requestInfo,
             List<AdvancedCommerceSubscriptionPriceChangeItem> items
     ) {
         super(requestInfo);
-        this.items = Objects.requireNonNull(items);
+        this.items = HelperValidationUtils.validateItems(items);
     }
 
     @Override
     protected AdvancedCommerceSubscriptionPriceChangeRequest self() {
         return this;
+    }
+
+    /**
+     * Metadata that identifies the request.
+     *
+     * @return requestInfo
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/requestinfo">RequestInfo</a>
+     **/
+    @Override
+    public AdvancedCommerceRequestInfo getRequestInfo() {
+        return super.getRequestInfo();
     }
 
     public AdvancedCommerceSubscriptionPriceChangeRequest currency(String currency) {
@@ -58,7 +74,7 @@ public class AdvancedCommerceSubscriptionPriceChangeRequest extends AdvancedComm
     }
 
     public AdvancedCommerceSubscriptionPriceChangeRequest items(List<AdvancedCommerceSubscriptionPriceChangeItem> items) {
-        this.items = Objects.requireNonNull(items);
+        this.items = HelperValidationUtils.validateItems(items);
         return this;
     }
 
@@ -79,7 +95,7 @@ public class AdvancedCommerceSubscriptionPriceChangeRequest extends AdvancedComm
     }
 
     public void setItems(List<AdvancedCommerceSubscriptionPriceChangeItem> items) {
-        this.items = Objects.requireNonNull(items);
+        this.items = HelperValidationUtils.validateItems(items);
     }
 
     public AdvancedCommerceSubscriptionPriceChangeRequest storefront(String storefront) {
@@ -89,7 +105,7 @@ public class AdvancedCommerceSubscriptionPriceChangeRequest extends AdvancedComm
 
     /**
      * The App Store storefront of the subscription.
-     * 
+     *
      * @return storefront
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/storefront">storefront</a>
      **/
@@ -103,13 +119,19 @@ public class AdvancedCommerceSubscriptionPriceChangeRequest extends AdvancedComm
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        AdvancedCommerceSubscriptionPriceChangeRequest that = (AdvancedCommerceSubscriptionPriceChangeRequest) o;
-        return Objects.equals(currency, that.currency) && 
-            Objects.equals(items, that.items) &&
-            Objects.equals(storefront, that.storefront);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        AdvancedCommerceSubscriptionPriceChangeRequest advancedCommerceSubscriptionPriceChangeRequest = (AdvancedCommerceSubscriptionPriceChangeRequest) o;
+        return Objects.equals(this.currency, advancedCommerceSubscriptionPriceChangeRequest.currency) &&
+                Objects.equals(this.items, advancedCommerceSubscriptionPriceChangeRequest.items) &&
+                Objects.equals(this.storefront, advancedCommerceSubscriptionPriceChangeRequest.storefront);
     }
 
     @Override
@@ -119,10 +141,10 @@ public class AdvancedCommerceSubscriptionPriceChangeRequest extends AdvancedComm
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" +
-                "currency='" + currency + '\'' +
+        return "AdvancedCommerceSubscriptionPriceChangeRequest{" +
+                "requestInfo=" + getRequestInfo() +
+                ", currency='" + currency + '\'' +
                 ", items=" + items +
-                ", requestInfo=" + getRequestInfo() +
                 ", storefront='" + storefront + '\'' +
                 '}';
     }

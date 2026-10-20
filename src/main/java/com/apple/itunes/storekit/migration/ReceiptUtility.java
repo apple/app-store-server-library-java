@@ -15,6 +15,9 @@ import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.SignedData;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
@@ -26,6 +29,7 @@ public class ReceiptUtility {
     private static final int IN_APP_TYPE_ID = 17;
     private static final int TRANSACTION_IDENTIFIER_TYPE_ID = 1703;
     private static final int ORIGINAL_TRANSACTION_IDENTIFIER_TYPE_ID = 1705;
+    private static final Pattern BASE64_PATTERN = Pattern.compile("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$");
 
     /**
      * Extracts a transaction id from an encoded App Receipt. Throws if the receipt does not match the expected format.
@@ -33,12 +37,23 @@ public class ReceiptUtility {
      *
      * @param appReceipt The unmodified app receipt
      * @return A transaction id from the array of in-app purchases, null if the receipt contains no in-app purchases.
-     * @throws IOException              If the receipt was malformed
+     * @throws IOException              Not thrown for a malformed receipt, which throws IllegalArgumentException; declared for source compatibility
      * @throws IllegalArgumentException If the receipt could not be parsed or did not match the expected format
      */
     public String extractTransactionIdFromAppReceipt(String appReceipt) throws IOException {
+        byte[] decodedAppReceipt = decodeBase64(appReceipt, "Invalid App Receipt");
+        try {
+            return extractTransactionIdFromDecodedAppReceipt(decodedAppReceipt);
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (IOException | RuntimeException e) {
+            throw new IllegalArgumentException("Invalid App Receipt", e);
+        }
+    }
+
+    private String extractTransactionIdFromDecodedAppReceipt(byte[] decodedAppReceipt) throws IOException {
         // PKCS#7
-        try (ASN1InputStream in = new ASN1InputStream(Base64.getDecoder().decode(appReceipt))) {
+        try (ASN1InputStream in = new ASN1InputStream(decodedAppReceipt)) {
             ASN1Primitive root = in.readObject();
             if (root instanceof ASN1Sequence) {
                 ASN1Sequence seq = (ASN1Sequence) root;
@@ -95,7 +110,7 @@ public class ReceiptUtility {
             }
         }
 
-        return null;
+        throw new IllegalArgumentException("Invalid App Receipt");
     }
 
     /**
@@ -107,16 +122,35 @@ public class ReceiptUtility {
      * @throws IllegalArgumentException If the receipt could not be parsed or did not match the expected format
      */
     public String extractTransactionIdFromTransactionReceipt(String transactionReceipt) {
-        byte[] decodedTopLevelContainer = Base64.getDecoder().decode(transactionReceipt);
-        String topLevel = new String(decodedTopLevelContainer, StandardCharsets.UTF_8);
+        byte[] decodedTopLevelContainer = decodeBase64(transactionReceipt, null);
+        String topLevel = decodeUTF8(decodedTopLevelContainer, null);
         Matcher topLevelMatcher = Pattern.compile("\"purchase-info\"\\s+=\\s+\"([a-zA-Z0-9+/=]+)\";").matcher(topLevel);
         String encodedPurchaseInfo = topLevelMatcher.find() && topLevelMatcher.groupCount() == 1 ? topLevelMatcher.group(1) : null;
         if (encodedPurchaseInfo == null) {
             throw new IllegalArgumentException("Invalid purchase-info");
         }
-        byte[] decodedPurchaseInfoContainer = Base64.getDecoder().decode(encodedPurchaseInfo);
-        String purchaseInfo = new String(decodedPurchaseInfoContainer, StandardCharsets.UTF_8);
+        byte[] decodedPurchaseInfoContainer = decodeBase64(encodedPurchaseInfo, "Invalid purchase-info");
+        String purchaseInfo = decodeUTF8(decodedPurchaseInfoContainer, "Invalid purchase-info");
         Matcher purchaseInfoMatcher = Pattern.compile("\"transaction-id\"\\s+=\\s+\"([a-zA-Z0-9+/=]+)\";").matcher(purchaseInfo);
         return purchaseInfoMatcher.find() && purchaseInfoMatcher.groupCount() == 1 ? purchaseInfoMatcher.group(1) : null;
+    }
+
+    private static byte[] decodeBase64(String value, String errorMessage) {
+        if (!BASE64_PATTERN.matcher(value).matches()) {
+            throw new IllegalArgumentException(errorMessage);
+        }
+        return Base64.getDecoder().decode(value);
+    }
+
+    private static String decodeUTF8(byte[] value, String errorMessage) {
+        try {
+            return StandardCharsets.UTF_8.newDecoder()
+                    .onMalformedInput(CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(CodingErrorAction.REPORT)
+                    .decode(ByteBuffer.wrap(value))
+                    .toString();
+        } catch (CharacterCodingException e) {
+            throw new IllegalArgumentException(errorMessage, e);
+        }
     }
 }

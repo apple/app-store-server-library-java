@@ -8,11 +8,20 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * The approval state of an image.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/imagestate">imageState</a>
- */
+ **/
 public enum ImageState {
 
+    /**
+     * The image is awaiting approval.
+     **/
     PENDING("PENDING"),
+    /**
+     * The image is approved.
+     **/
     APPROVED("APPROVED"),
+    /**
+     * The image is rejected.
+     **/
     REJECTED("REJECTED");
 
     private final String value;
@@ -40,4 +49,3 @@ public enum ImageState {
         return String.valueOf(value);
     }
 }
-

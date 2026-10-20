@@ -9,41 +9,41 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * A decoded payload containing the version 2 notification data.
+ * A decoded payload that contains the version 2 notification data.
  *
- * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/responsebodyv2decodedpayload"></a>
- */
+ * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/responsebodyv2decodedpayload">responseBodyV2DecodedPayload</a>
+ **/
 public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
     private static final String SERIALIZED_NAME_NOTIFICATION_TYPE = "notificationType";
     private static final String SERIALIZED_NAME_SUBTYPE = "subtype";
-    private static final String SERIALIZED_NAME_NOTIFICATION_U_U_I_D = "notificationUUID";
     private static final String SERIALIZED_NAME_DATA = "data";
-    private static final String SERIALIZED_NAME_VERSION = "version";
-    private static final String SERIALIZED_NAME_SIGNED_DATE = "signedDate";
     private static final String SERIALIZED_NAME_SUMMARY = "summary";
     private static final String SERIALIZED_NAME_EXTERNAL_PURCHASE_TOKEN = "externalPurchaseToken";
     private static final String SERIALIZED_NAME_APP_DATA = "appData";
+    private static final String SERIALIZED_NAME_VERSION = "version";
+    private static final String SERIALIZED_NAME_SIGNED_DATE = "signedDate";
+    private static final String SERIALIZED_NAME_NOTIFICATION_UUID = "notificationUUID";
+
     @JsonProperty(SERIALIZED_NAME_NOTIFICATION_TYPE)
     private String notificationType;
     @JsonProperty(SERIALIZED_NAME_SUBTYPE)
     private String subtype;
-    @JsonProperty(SERIALIZED_NAME_NOTIFICATION_U_U_I_D)
-    private String notificationUUID;
     @JsonProperty(SERIALIZED_NAME_DATA)
     private Data data;
-    @JsonProperty(SERIALIZED_NAME_VERSION)
-    private String version;
-    @JsonProperty(SERIALIZED_NAME_SIGNED_DATE)
-    private Long signedDate;
     @JsonProperty(SERIALIZED_NAME_SUMMARY)
     private Summary summary;
     @JsonProperty(SERIALIZED_NAME_EXTERNAL_PURCHASE_TOKEN)
     private ExternalPurchaseToken externalPurchaseToken;
     @JsonProperty(SERIALIZED_NAME_APP_DATA)
     private AppData appData;
+    @JsonProperty(SERIALIZED_NAME_VERSION)
+    private String version;
+    @JsonProperty(SERIALIZED_NAME_SIGNED_DATE)
+    private Long signedDate;
+    @JsonProperty(SERIALIZED_NAME_NOTIFICATION_UUID)
+    private String notificationUUID;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
-
 
     public ResponseBodyV2DecodedPayload() {
     }
@@ -60,12 +60,12 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/notificationtype">notificationType</a>
      **/
     public NotificationTypeV2 getNotificationType() {
-        return notificationType != null ? NotificationTypeV2.fromValue(notificationType) : null;
+        return NotificationTypeV2.fromValue(notificationType);
     }
 
     /**
      * @see #getNotificationType()
-     */
+     **/
     public String getRawNotificationType() {
         return notificationType;
     }
@@ -84,18 +84,18 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
     }
 
     /**
-     * Additional information that identifies the notification event. The subtype field is present only for specific version 2 notifications.
+     * Additional information that identifies the notification event.
      *
      * @return subtype
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/subtype">subtype</a>
      **/
     public Subtype getSubtype() {
-        return subtype != null ? Subtype.fromValue(subtype) : null;
+        return Subtype.fromValue(subtype);
     }
 
     /**
      * @see #getSubtype()
-     */
+     **/
     public String getRawSubtype() {
         return subtype;
     }
@@ -108,25 +108,6 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
         this.subtype = rawSubtype;
     }
 
-    public ResponseBodyV2DecodedPayload notificationUUID(String notificationUUID) {
-        this.notificationUUID = notificationUUID;
-        return this;
-    }
-
-    /**
-     * A unique identifier for the notification.
-     *
-     * @return notificationUUID
-     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/notificationuuid">notificationUUID</a>
-     **/
-    public String getNotificationUUID() {
-        return notificationUUID;
-    }
-
-    public void setNotificationUUID(String notificationUUID) {
-        this.notificationUUID = notificationUUID;
-    }
-
     public ResponseBodyV2DecodedPayload data(Data data) {
         this.data = data;
         return this;
@@ -134,7 +115,6 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
 
     /**
      * The object that contains the app metadata and signed renewal and transaction information.
-     * The data, summary, and externalPurchaseToken fields are mutually exclusive. The payload contains only one of these fields.
      *
      * @return data
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/data">data</a>
@@ -147,13 +127,70 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
         this.data = data;
     }
 
+    public ResponseBodyV2DecodedPayload summary(Summary summary) {
+        this.summary = summary;
+        return this;
+    }
+
+    /**
+     * The summary data that appears when the App Store server completes your request to extend a subscription renewal date for eligible subscribers.
+     *
+     * @return summary
+     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/summary">summary</a>
+     **/
+    public Summary getSummary() {
+        return summary;
+    }
+
+    public void setSummary(Summary summary) {
+        this.summary = summary;
+    }
+
+    public ResponseBodyV2DecodedPayload externalPurchaseToken(ExternalPurchaseToken externalPurchaseToken) {
+        this.externalPurchaseToken = externalPurchaseToken;
+        return this;
+    }
+
+    /**
+     * This field appears when the notificationType is EXTERNAL_PURCHASE_TOKEN.
+     *
+     * @return externalPurchaseToken
+     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/externalpurchasetoken">externalPurchaseToken</a>
+     **/
+    public ExternalPurchaseToken getExternalPurchaseToken() {
+        return externalPurchaseToken;
+    }
+
+    public void setExternalPurchaseToken(ExternalPurchaseToken externalPurchaseToken) {
+        this.externalPurchaseToken = externalPurchaseToken;
+    }
+
+    public ResponseBodyV2DecodedPayload appData(AppData appData) {
+        this.appData = appData;
+        return this;
+    }
+
+    /**
+     * The object that contains the app metadata and signed app transaction information.
+     *
+     * @return appData
+     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/appdata">appData</a>
+     **/
+    public AppData getAppData() {
+        return appData;
+    }
+
+    public void setAppData(AppData appData) {
+        this.appData = appData;
+    }
+
     public ResponseBodyV2DecodedPayload version(String version) {
         this.version = version;
         return this;
     }
 
     /**
-     * A string that indicates the notification’s App Store Server Notifications version number.
+     * The App Store Server Notification version number, "2.0".
      *
      * @return version
      * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/version">version</a>
@@ -175,7 +212,7 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
      * The UNIX time, in milliseconds, that the App Store signed the JSON Web Signature data.
      *
      * @return signedDate
-     * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/signeddate">signedDate</a>
+     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/signeddate">signedDate</a>
      **/
     public Long getSignedDate() {
         return signedDate;
@@ -185,63 +222,23 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
         this.signedDate = signedDate;
     }
 
-    public ResponseBodyV2DecodedPayload summary(Summary summary) {
-        this.summary = summary;
+    public ResponseBodyV2DecodedPayload notificationUUID(String notificationUUID) {
+        this.notificationUUID = notificationUUID;
         return this;
     }
 
     /**
-     * The summary data that appears when the App Store server completes your request to extend a subscription renewal date for eligible subscribers.
-     * The data, summary, and externalPurchaseToken fields are mutually exclusive. The payload contains only one of these fields.
+     * A unique identifier for the notification.
      *
-     * @return summary
-     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/summary">summary</a>
+     * @return notificationUUID
+     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/notificationuuid">notificationUUID</a>
      **/
-    public Summary getSummary() {
-        return summary;
+    public String getNotificationUUID() {
+        return notificationUUID;
     }
 
-    public void setSummary(Summary summary) {
-        this.summary = summary;
-    }
-
-    public ResponseBodyV2DecodedPayload externalPurchaseToken(ExternalPurchaseToken externalPurchaseToken) {
-        this.externalPurchaseToken = externalPurchaseToken;
-        return this;
-    }
-
-    /**
-     * This field appears when the notificationType is EXTERNAL_PURCHASE_TOKEN.
-     * The data, summary, and externalPurchaseToken fields are mutually exclusive. The payload contains only one of these fields.
-     *
-     * @return externalPurchaseToken
-     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/externalpurchasetoken">externalPurchaseToken</a>
-     **/
-    public ExternalPurchaseToken getExternalPurchaseToken() {
-        return externalPurchaseToken;
-    }
-
-    public void setExternalPurchaseToken(ExternalPurchaseToken externalPurchaseToken) {
-        this.externalPurchaseToken = externalPurchaseToken;
-    }
-
-    public ResponseBodyV2DecodedPayload appData(AppData appData) {
-        this.appData = appData;
-        return this;
-    }
-
-    /**
-     * The object that contains the app metadata and signed app transaction information. This field appears when the notificationType is RESCIND_CONSENT.
-     *
-     * @return appData
-     * @see <a href="https://developer.apple.com/documentation/appstoreservernotifications/appdata">appData</a>
-     **/
-    public AppData getAppData() {
-        return appData;
-    }
-
-    public void setAppData(AppData appData) {
-        this.appData = appData;
+    public void setNotificationUUID(String notificationUUID) {
+        this.notificationUUID = notificationUUID;
     }
 
     public ResponseBodyV2DecodedPayload unknownFields(Map<String, Object> unknownFields) {
@@ -250,10 +247,10 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -273,19 +270,19 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
         ResponseBodyV2DecodedPayload responseBodyV2DecodedPayload = (ResponseBodyV2DecodedPayload) o;
         return Objects.equals(this.notificationType, responseBodyV2DecodedPayload.notificationType) &&
                 Objects.equals(this.subtype, responseBodyV2DecodedPayload.subtype) &&
-                Objects.equals(this.notificationUUID, responseBodyV2DecodedPayload.notificationUUID) &&
                 Objects.equals(this.data, responseBodyV2DecodedPayload.data) &&
-                Objects.equals(this.version, responseBodyV2DecodedPayload.version) &&
-                Objects.equals(this.signedDate, responseBodyV2DecodedPayload.signedDate) &&
                 Objects.equals(this.summary, responseBodyV2DecodedPayload.summary) &&
                 Objects.equals(this.externalPurchaseToken, responseBodyV2DecodedPayload.externalPurchaseToken) &&
                 Objects.equals(this.appData, responseBodyV2DecodedPayload.appData) &&
+                Objects.equals(this.version, responseBodyV2DecodedPayload.version) &&
+                Objects.equals(this.signedDate, responseBodyV2DecodedPayload.signedDate) &&
+                Objects.equals(this.notificationUUID, responseBodyV2DecodedPayload.notificationUUID) &&
                 Objects.equals(this.unknownFields, responseBodyV2DecodedPayload.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(notificationType, subtype, notificationUUID, data, version, signedDate, summary, externalPurchaseToken, appData, unknownFields);
+        return Objects.hash(notificationType, subtype, data, summary, externalPurchaseToken, appData, version, signedDate, notificationUUID, unknownFields);
     }
 
     @Override
@@ -293,15 +290,14 @@ public class ResponseBodyV2DecodedPayload implements DecodedSignedData {
         return "ResponseBodyV2DecodedPayload{" +
                 "notificationType='" + notificationType + '\'' +
                 ", subtype='" + subtype + '\'' +
-                ", notificationUUID='" + notificationUUID + '\'' +
                 ", data=" + data +
-                ", version='" + version + '\'' +
-                ", signedDate=" + signedDate +
                 ", summary=" + summary +
                 ", externalPurchaseToken=" + externalPurchaseToken +
                 ", appData=" + appData +
+                ", version='" + version + '\'' +
+                ", signedDate=" + signedDate +
+                ", notificationUUID='" + notificationUUID + '\'' +
                 ", unknownFields=" + unknownFields +
                 '}';
     }
 }
-

@@ -8,10 +8,16 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * The size of an image.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/imagesize">imageSize</a>
- */
+ **/
 public enum ImageSize {
 
+    /**
+     * 3840 pixels in width, and from 160 to 2160 pixels in height, inclusive.
+     **/
     FULL_SIZE("FULL_SIZE"),
+    /**
+     * 1024 by 1024 pixels, to use for bullet points only.
+     **/
     BULLET_POINT("BULLET_POINT");
 
     private final String value;
@@ -39,4 +45,3 @@ public enum ImageSize {
         return String.valueOf(value);
     }
 }
-

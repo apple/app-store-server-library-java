@@ -16,6 +16,7 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UpdateAppAccountTokenRequest {
     private static final String SERIALIZED_NAME_APP_ACCOUNT_TOKEN = "appAccountToken";
+
     @JsonProperty(value = SERIALIZED_NAME_APP_ACCOUNT_TOKEN, required = true)
     private UUID appAccountToken;
 
@@ -32,7 +33,7 @@ public class UpdateAppAccountTokenRequest {
     }
 
     /**
-     * The UUID that an app optionally generates to map a customer’s in-app purchase with its resulting App Store transaction.
+     * A UUID value to associate with the transaction you indicate in the endpoint parameter.
      *
      * @return appAccountToken
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/appaccounttoken">appAccountToken</a>
@@ -47,14 +48,19 @@ public class UpdateAppAccountTokenRequest {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof UpdateAppAccountTokenRequest)) return false;
-        UpdateAppAccountTokenRequest that = (UpdateAppAccountTokenRequest) o;
-        return Objects.equals(getAppAccountToken(), that.getAppAccountToken());
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UpdateAppAccountTokenRequest updateAppAccountTokenRequest = (UpdateAppAccountTokenRequest) o;
+        return Objects.equals(this.appAccountToken, updateAppAccountTokenRequest.appAccountToken);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getAppAccountToken());
+        return Objects.hash(appAccountToken);
     }
 
     @Override

@@ -12,25 +12,30 @@ import java.util.UUID;
  * A switch-plan message and product ID you provide in a real-time response to your Get Retention Message endpoint.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/alternateproduct">alternateProduct</a>
- */
+ **/
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AlternateProduct {
     private static final String SERIALIZED_NAME_MESSAGE_IDENTIFIER = "messageIdentifier";
     private static final String SERIALIZED_NAME_PRODUCT_ID = "productId";
     private static final String SERIALIZED_NAME_BILLING_PLAN_TYPE = "billingPlanType";
-    @JsonProperty(value = SERIALIZED_NAME_MESSAGE_IDENTIFIER)
+
+    @JsonProperty(value = SERIALIZED_NAME_MESSAGE_IDENTIFIER, required = true)
     private UUID messageIdentifier;
-    @JsonProperty(value = SERIALIZED_NAME_PRODUCT_ID)
+    @JsonProperty(value = SERIALIZED_NAME_PRODUCT_ID, required = true)
     private String productId;
-    @JsonProperty(value = SERIALIZED_NAME_BILLING_PLAN_TYPE)
+    @JsonProperty(SERIALIZED_NAME_BILLING_PLAN_TYPE)
     private String billingPlanType;
 
+    protected AlternateProduct() {
+    }
 
-    public AlternateProduct() {
+    public AlternateProduct(UUID messageIdentifier, String productId) {
+        this.messageIdentifier = Objects.requireNonNull(messageIdentifier);
+        this.productId = Objects.requireNonNull(productId);
     }
 
     public AlternateProduct messageIdentifier(UUID messageIdentifier) {
-        this.messageIdentifier = messageIdentifier;
+        this.messageIdentifier = Objects.requireNonNull(messageIdentifier);
         return this;
     }
 
@@ -45,11 +50,11 @@ public class AlternateProduct {
     }
 
     public void setMessageIdentifier(UUID messageIdentifier) {
-        this.messageIdentifier = messageIdentifier;
+        this.messageIdentifier = Objects.requireNonNull(messageIdentifier);
     }
 
     public AlternateProduct productId(String productId) {
-        this.productId = productId;
+        this.productId = Objects.requireNonNull(productId);
         return this;
     }
 
@@ -64,7 +69,7 @@ public class AlternateProduct {
     }
 
     public void setProductId(String productId) {
-        this.productId = productId;
+        this.productId = Objects.requireNonNull(productId);
     }
 
     public AlternateProduct billingPlanType(BillingPlanType billingPlanType) {
@@ -77,12 +82,12 @@ public class AlternateProduct {
      * @see <a href="https://developer.apple.com/documentation/retentionmessaging/billingplantype">billingPlanType</a>
      **/
     public BillingPlanType getBillingPlanType() {
-        return billingPlanType != null ? BillingPlanType.fromValue(billingPlanType) : null;
+        return BillingPlanType.fromValue(billingPlanType);
     }
 
     /**
      * @see #getBillingPlanType()
-     */
+     **/
     public String getRawBillingPlanType() {
         return billingPlanType;
     }
@@ -97,12 +102,16 @@ public class AlternateProduct {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AlternateProduct that = (AlternateProduct) o;
-        return Objects.equals(messageIdentifier, that.messageIdentifier) &&
-                Objects.equals(productId, that.productId) &&
-                Objects.equals(billingPlanType, that.billingPlanType);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AlternateProduct alternateProduct = (AlternateProduct) o;
+        return Objects.equals(this.messageIdentifier, alternateProduct.messageIdentifier) &&
+                Objects.equals(this.productId, alternateProduct.productId) &&
+                Objects.equals(this.billingPlanType, alternateProduct.billingPlanType);
     }
 
     @Override

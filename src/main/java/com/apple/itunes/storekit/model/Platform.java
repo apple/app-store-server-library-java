@@ -8,11 +8,20 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * The platform on which the customer consumed the in-app purchase.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/platform">platform</a>
- */
+ **/
 public enum Platform {
 
+    /**
+     * The platform is undeclared.
+     **/
     UNDECLARED(0),
+    /**
+     * An Apple platform.
+     **/
     APPLE(1),
+    /**
+     * Non-Apple platform.
+     **/
     NON_APPLE(2);
 
     private final Integer value;
@@ -40,4 +49,3 @@ public enum Platform {
         return String.valueOf(value);
     }
 }
-

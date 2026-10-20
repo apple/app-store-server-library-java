@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * The reason for the offer.
  *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/offer">Offer</a>
- */
+ **/
 public enum AdvancedCommerceOfferReason {
 
     ACQUISITION("ACQUISITION"),

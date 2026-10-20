@@ -1,3 +1,5 @@
+// Copyright (c) 2024 Apple Inc. Licensed under MIT License.
+
 package com.apple.itunes.storekit.model;
 
 import com.fasterxml.jackson.core.JsonGenerator;

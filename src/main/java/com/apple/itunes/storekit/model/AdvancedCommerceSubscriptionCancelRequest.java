@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -10,7 +11,8 @@ import java.util.Objects;
  * The request body for turning off automatic renewal of a subscription.
  *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptioncancelrequest">SubscriptionCancelRequest</a>
- */
+ **/
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdvancedCommerceSubscriptionCancelRequest extends AdvancedCommerceRequest<AdvancedCommerceSubscriptionCancelRequest> {
     private static final String SERIALIZED_NAME_STOREFRONT = "storefront";
 
@@ -25,12 +27,30 @@ public class AdvancedCommerceSubscriptionCancelRequest extends AdvancedCommerceR
         super(requestInfo);
     }
 
+    @Override
+    protected AdvancedCommerceSubscriptionCancelRequest self() {
+        return this;
+    }
+
+    /**
+     * The metadata to include in server requests.
+     *
+     * @return requestInfo
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/requestinfo">RequestInfo</a>
+     **/
+    @Override
+    public AdvancedCommerceRequestInfo getRequestInfo() {
+        return super.getRequestInfo();
+    }
+
     public AdvancedCommerceSubscriptionCancelRequest storefront(String storefront) {
         this.storefront = storefront;
         return this;
     }
 
     /**
+     * A three-letter code that represents the country or region associated with the App Store storefront.
+     *
      * @return storefront
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/storefront">storefront</a>
      **/
@@ -43,20 +63,18 @@ public class AdvancedCommerceSubscriptionCancelRequest extends AdvancedCommerceR
     }
 
     @Override
-    protected AdvancedCommerceSubscriptionCancelRequest self() {
-        return this;
-    }
-
-    @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
-        if (!super.equals(o))
+        }
+        if (!super.equals(o)) {
             return false;
-        AdvancedCommerceSubscriptionCancelRequest that = (AdvancedCommerceSubscriptionCancelRequest) o;
-        return Objects.equals(storefront, that.storefront);
+        }
+        AdvancedCommerceSubscriptionCancelRequest advancedCommerceSubscriptionCancelRequest = (AdvancedCommerceSubscriptionCancelRequest) o;
+        return Objects.equals(this.storefront, advancedCommerceSubscriptionCancelRequest.storefront);
     }
 
     @Override

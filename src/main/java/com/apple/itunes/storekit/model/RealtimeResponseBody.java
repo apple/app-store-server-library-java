@@ -11,22 +11,22 @@ import java.util.Objects;
  * A response you provide to choose, in real time, a retention message the system displays to the customer.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/realtimeresponsebody">RealtimeResponseBody</a>
- */
+ **/
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RealtimeResponseBody {
     private static final String SERIALIZED_NAME_MESSAGE = "message";
     private static final String SERIALIZED_NAME_ALTERNATE_PRODUCT = "alternateProduct";
     private static final String SERIALIZED_NAME_PROMOTIONAL_OFFER = "promotionalOffer";
     private static final String SERIALIZED_NAME_ADVANCED_COMMERCE_INFO = "advancedCommerceInfo";
-    @JsonProperty(value = SERIALIZED_NAME_MESSAGE)
-    private Message message;
-    @JsonProperty(value = SERIALIZED_NAME_ALTERNATE_PRODUCT)
-    private AlternateProduct alternateProduct;
-    @JsonProperty(value = SERIALIZED_NAME_PROMOTIONAL_OFFER)
-    private PromotionalOffer promotionalOffer;
-    @JsonProperty(value = SERIALIZED_NAME_ADVANCED_COMMERCE_INFO)
-    private AdvancedCommerceInfo advancedCommerceInfo;
 
+    @JsonProperty(SERIALIZED_NAME_MESSAGE)
+    private Message message;
+    @JsonProperty(SERIALIZED_NAME_ALTERNATE_PRODUCT)
+    private AlternateProduct alternateProduct;
+    @JsonProperty(SERIALIZED_NAME_PROMOTIONAL_OFFER)
+    private PromotionalOffer promotionalOffer;
+    @JsonProperty(SERIALIZED_NAME_ADVANCED_COMMERCE_INFO)
+    private AdvancedCommerceInfo advancedCommerceInfo;
 
     public RealtimeResponseBody() {
     }
@@ -109,13 +109,17 @@ public class RealtimeResponseBody {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RealtimeResponseBody that = (RealtimeResponseBody) o;
-        return Objects.equals(message, that.message) &&
-               Objects.equals(alternateProduct, that.alternateProduct) &&
-               Objects.equals(promotionalOffer, that.promotionalOffer) &&
-               Objects.equals(advancedCommerceInfo, that.advancedCommerceInfo);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        RealtimeResponseBody realtimeResponseBody = (RealtimeResponseBody) o;
+        return Objects.equals(this.message, realtimeResponseBody.message) &&
+                Objects.equals(this.alternateProduct, realtimeResponseBody.alternateProduct) &&
+                Objects.equals(this.promotionalOffer, realtimeResponseBody.promotionalOffer) &&
+                Objects.equals(this.advancedCommerceInfo, realtimeResponseBody.advancedCommerceInfo);
     }
 
     @Override

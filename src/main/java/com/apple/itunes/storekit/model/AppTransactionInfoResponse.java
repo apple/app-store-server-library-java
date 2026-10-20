@@ -12,7 +12,7 @@ import java.util.Objects;
  * A response that contains signed app transaction information for a customer.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/apptransactioninforesponse">AppTransactionInfoResponse</a>
- */
+ **/
 public class AppTransactionInfoResponse {
     private static final String SERIALIZED_NAME_SIGNED_APP_TRANSACTION_INFO = "signedAppTransactionInfo";
 
@@ -31,7 +31,7 @@ public class AppTransactionInfoResponse {
 
     /**
      * A customer’s app transaction information, signed by Apple, in JSON Web Signature (JWS) format.
-     * 
+     *
      * @return signedAppTransactionInfo
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/jwsapptransaction">JWSAppTransaction</a>
      **/
@@ -49,10 +49,10 @@ public class AppTransactionInfoResponse {
     }
 
     /**
-     * Fields that are not recognized for this object.
-     * 
-     * @return A map of JSON keys to objects.
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -69,9 +69,9 @@ public class AppTransactionInfoResponse {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        AppTransactionInfoResponse that = (AppTransactionInfoResponse) o;
-        return Objects.equals(this.signedAppTransactionInfo, that.signedAppTransactionInfo) &&
-                Objects.equals(this.unknownFields, that.unknownFields);
+        AppTransactionInfoResponse appTransactionInfoResponse = (AppTransactionInfoResponse) o;
+        return Objects.equals(this.signedAppTransactionInfo, appTransactionInfoResponse.signedAppTransactionInfo) &&
+                Objects.equals(this.unknownFields, appTransactionInfoResponse.unknownFields);
     }
 
     @Override

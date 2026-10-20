@@ -92,6 +92,8 @@ public class JWSTransactionDecodedPayloadTest {
         Assertions.assertEquals(1698150000000L, commitment.getCommitmentExpiresDate());
         Assertions.assertEquals(119880L, commitment.getCommitmentPrice());
         Assertions.assertEquals(12, commitment.getTotalBillingPeriods());
+        Assertions.assertEquals("11111", transaction.getPreviousOriginalTransactionId());
+        Assertions.assertNull(transaction.getUnknownFields());
     }
 
     @Test
@@ -138,5 +140,25 @@ public class JWSTransactionDecodedPayloadTest {
         Assertions.assertEquals(RevocationType.REFUND_PRORATED, transaction.getRevocationType());
         Assertions.assertEquals("REFUND_PRORATED", transaction.getRawRevocationType());
         Assertions.assertEquals(50000, transaction.getRevocationPercentage());
+        Assertions.assertNull(transaction.getPreviousOriginalTransactionId());
+    }
+
+    @Test
+    public void testTransactionWithAssignmentRevocationDecoding() throws IOException, NoSuchAlgorithmException, VerificationException {
+        String signedTransaction = SignedDataCreator.createSignedDataFromJson("models/signedTransactionWithAssignmentRevocation.json");
+
+        JWSTransactionDecodedPayload transaction = TestingUtility.getSignedPayloadVerifier().verifyAndDecodeTransaction(signedTransaction);
+
+        Assertions.assertEquals("12345", transaction.getOriginalTransactionId());
+        Assertions.assertEquals("23456", transaction.getTransactionId());
+        Assertions.assertEquals(5, transaction.getQuantity());
+        Assertions.assertEquals(InAppOwnershipType.ASSIGNED, transaction.getInAppOwnershipType());
+        Assertions.assertEquals("ASSIGNED", transaction.getRawInAppOwnershipType());
+        Assertions.assertEquals(1698148950000L, transaction.getRevocationDate());
+        Assertions.assertEquals(RevocationType.ASSIGNMENT_REVOKE, transaction.getRevocationType());
+        Assertions.assertEquals("ASSIGNMENT_REVOKE", transaction.getRawRevocationType());
+        Assertions.assertNull(transaction.getRevocationReason());
+        Assertions.assertNull(transaction.getRevocationPercentage());
+        Assertions.assertNull(transaction.getUnknownFields());
     }
 }

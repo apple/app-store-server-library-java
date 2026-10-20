@@ -3,6 +3,8 @@
 package com.apple.itunes.storekit.model;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
@@ -10,23 +12,29 @@ import java.util.Objects;
 
 /**
  * The display name and description of a subscription product.
- * 
+ *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/descriptors">Descriptors</a>
- */
+ **/
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdvancedCommerceDescriptors {
     private static final String SERIALIZED_NAME_DESCRIPTION = "description";
     private static final String SERIALIZED_NAME_DISPLAY_NAME = "displayName";
 
     @JsonProperty(value = SERIALIZED_NAME_DESCRIPTION, required = true)
-    protected String description;
+    private String description;
     @JsonProperty(value = SERIALIZED_NAME_DISPLAY_NAME, required = true)
-    protected String displayName;
+    private String displayName;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
-    protected AdvancedCommerceDescriptors() {}
+    protected AdvancedCommerceDescriptors() {
+    }
 
-    protected AdvancedCommerceDescriptors(String description, String displayName) {
+    @JsonCreator
+    public AdvancedCommerceDescriptors(
+            @JsonProperty(value = SERIALIZED_NAME_DESCRIPTION, required = true) String description,
+            @JsonProperty(value = SERIALIZED_NAME_DISPLAY_NAME, required = true) String displayName
+    ) {
         this.description = HelperValidationUtils.validateDescription(description);
         this.displayName = HelperValidationUtils.validateDisplayName(displayName);
     }
@@ -37,8 +45,8 @@ public class AdvancedCommerceDescriptors {
     }
 
     /**
-     * A string you provide that describes a SKU.
-     * 
+     * A string that contains a description of the product.
+     *
      * @return description
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/description">description</a>
      **/
@@ -56,8 +64,8 @@ public class AdvancedCommerceDescriptors {
     }
 
     /**
-     * A string with a product name that you can localize and is suitable for display to customers.
-     * 
+     * A string that contains the name of the product, suitable for display to customers.
+     *
      * @return displayName
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/displayname">displayName</a>
      **/
@@ -74,6 +82,11 @@ public class AdvancedCommerceDescriptors {
         return this;
     }
 
+    /**
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -84,10 +97,16 @@ public class AdvancedCommerceDescriptors {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AdvancedCommerceDescriptors that = (AdvancedCommerceDescriptors) o;
-        return Objects.equals(description, that.description) && Objects.equals(displayName, that.displayName) && Objects.equals(unknownFields, that.unknownFields);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AdvancedCommerceDescriptors advancedCommerceDescriptors = (AdvancedCommerceDescriptors) o;
+        return Objects.equals(this.description, advancedCommerceDescriptors.description) &&
+                Objects.equals(this.displayName, advancedCommerceDescriptors.displayName) &&
+                Objects.equals(this.unknownFields, advancedCommerceDescriptors.unknownFields);
     }
 
     @Override

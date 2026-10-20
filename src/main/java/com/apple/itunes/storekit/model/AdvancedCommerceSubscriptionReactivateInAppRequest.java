@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -12,7 +13,8 @@ import java.util.Objects;
  * The request your app provides to reactivate a subscription that has automatic renewal turned off.
  *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionreactivateinapprequest">SubscriptionReactivateInAppRequest</a>
- */
+ **/
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdvancedCommerceSubscriptionReactivateInAppRequest extends AbstractAdvancedCommerceInAppRequest<AdvancedCommerceSubscriptionReactivateInAppRequest> {
     private static final String OPERATION = "REACTIVATE_SUBSCRIPTION";
     private static final String VERSION = "1";
@@ -45,14 +47,45 @@ public class AdvancedCommerceSubscriptionReactivateInAppRequest extends Abstract
         return this;
     }
 
+    /**
+     * @return operation
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionreactivateinapprequest">SubscriptionReactivateInAppRequest</a>
+     **/
+    @Override
+    public String getOperation() {
+        return super.getOperation();
+    }
+
+    /**
+     * A number that represents the version of the data structure or Advanced Commerce API.
+     *
+     * @return version
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/version">version</a>
+     **/
+    @Override
+    public String getVersion() {
+        return super.getVersion();
+    }
+
+    /**
+     * The metadata to include in server requests.
+     *
+     * @return requestInfo
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/requestinfo">RequestInfo</a>
+     **/
+    @Override
+    public AdvancedCommerceRequestInfo getRequestInfo() {
+        return super.getRequestInfo();
+    }
+
     public AdvancedCommerceSubscriptionReactivateInAppRequest items(List<AdvancedCommerceSubscriptionReactivateItem> items) {
-        this.items = items;
+        this.items = items != null ? HelperValidationUtils.validateItems(items) : null;
         return this;
     }
 
     public AdvancedCommerceSubscriptionReactivateInAppRequest addItem(AdvancedCommerceSubscriptionReactivateItem item) {
-       Objects.requireNonNull(item);
-       if (this.items == null) {
+        Objects.requireNonNull(item);
+        if (this.items == null) {
             this.items = new ArrayList<>();
         }
         this.items.add(item);
@@ -60,6 +93,8 @@ public class AdvancedCommerceSubscriptionReactivateInAppRequest extends Abstract
     }
 
     /**
+     * An item in a subscription to reactivate.
+     *
      * @return items
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionreactivateitem">SubscriptionReactivateItem</a>
      **/
@@ -68,7 +103,7 @@ public class AdvancedCommerceSubscriptionReactivateInAppRequest extends Abstract
     }
 
     public void setItems(List<AdvancedCommerceSubscriptionReactivateItem> items) {
-        this.items = items;
+        this.items = items != null ? HelperValidationUtils.validateItems(items) : null;
     }
 
     public AdvancedCommerceSubscriptionReactivateInAppRequest storefront(String storefront) {
@@ -77,6 +112,8 @@ public class AdvancedCommerceSubscriptionReactivateInAppRequest extends Abstract
     }
 
     /**
+     * A three-letter code that represents the country or region associated with the App Store storefront.
+     *
      * @return storefront
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/storefront">storefront</a>
      **/
@@ -94,6 +131,8 @@ public class AdvancedCommerceSubscriptionReactivateInAppRequest extends Abstract
     }
 
     /**
+     * A unique identifier that the App Store generates for a transaction.
+     *
      * @return transactionId
      * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/transactionid">transactionId</a>
      **/
@@ -107,11 +146,19 @@ public class AdvancedCommerceSubscriptionReactivateInAppRequest extends Abstract
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        AdvancedCommerceSubscriptionReactivateInAppRequest that = (AdvancedCommerceSubscriptionReactivateInAppRequest) o;
-        return Objects.equals(items, that.items) && Objects.equals(storefront, that.storefront) && Objects.equals(transactionId, that.transactionId);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        AdvancedCommerceSubscriptionReactivateInAppRequest advancedCommerceSubscriptionReactivateInAppRequest = (AdvancedCommerceSubscriptionReactivateInAppRequest) o;
+        return Objects.equals(this.items, advancedCommerceSubscriptionReactivateInAppRequest.items) &&
+                Objects.equals(this.storefront, advancedCommerceSubscriptionReactivateInAppRequest.storefront) &&
+                Objects.equals(this.transactionId, advancedCommerceSubscriptionReactivateInAppRequest.transactionId);
     }
 
     @Override
@@ -121,9 +168,11 @@ public class AdvancedCommerceSubscriptionReactivateInAppRequest extends Abstract
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" +
-                "items=" + items +
+        return "AdvancedCommerceSubscriptionReactivateInAppRequest{" +
+                "operation='" + getOperation() + '\'' +
+                ", version='" + getVersion() + '\'' +
                 ", requestInfo=" + getRequestInfo() +
+                ", items=" + items +
                 ", storefront='" + storefront + '\'' +
                 ", transactionId='" + transactionId + '\'' +
                 '}';

@@ -12,9 +12,8 @@ import java.util.Objects;
 
 /**
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/advancedcommercepriceincreaseinfo">advancedCommercePriceIncreaseInfo</a>
- */
+ **/
 public class AdvancedCommercePriceIncreaseInfo {
-
     private static final String SERIALIZED_NAME_DEPENDENT_SKUS = "dependentSKUs";
     private static final String SERIALIZED_NAME_PRICE = "price";
     private static final String SERIALIZED_NAME_STATUS = "status";
@@ -37,6 +36,7 @@ public class AdvancedCommercePriceIncreaseInfo {
     }
 
     public AdvancedCommercePriceIncreaseInfo addDependentSKU(String dependentSKU) {
+        Objects.requireNonNull(dependentSKU);
         if (this.dependentSKUs == null) {
             this.dependentSKUs = new ArrayList<>();
         }
@@ -83,12 +83,12 @@ public class AdvancedCommercePriceIncreaseInfo {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/advancedcommercepriceincreaseinfostatus">advancedCommercePriceIncreaseInfoStatus</a>
      **/
     public AdvancedCommercePriceIncreaseInfoStatus getStatus() {
-        return status != null ? AdvancedCommercePriceIncreaseInfoStatus.fromValue(status) : null;
+        return AdvancedCommercePriceIncreaseInfoStatus.fromValue(status);
     }
 
     /**
      * @see #getStatus()
-     */
+     **/
     public String getRawStatus() {
         return status;
     }
@@ -106,6 +106,11 @@ public class AdvancedCommercePriceIncreaseInfo {
         return this;
     }
 
+    /**
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -116,10 +121,17 @@ public class AdvancedCommercePriceIncreaseInfo {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AdvancedCommercePriceIncreaseInfo that = (AdvancedCommercePriceIncreaseInfo) o;
-        return Objects.equals(dependentSKUs, that.dependentSKUs) && Objects.equals(price, that.price) && Objects.equals(status, that.status) && Objects.equals(unknownFields, that.unknownFields);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AdvancedCommercePriceIncreaseInfo advancedCommercePriceIncreaseInfo = (AdvancedCommercePriceIncreaseInfo) o;
+        return Objects.equals(this.dependentSKUs, advancedCommercePriceIncreaseInfo.dependentSKUs) &&
+                Objects.equals(this.price, advancedCommercePriceIncreaseInfo.price) &&
+                Objects.equals(this.status, advancedCommercePriceIncreaseInfo.status) &&
+                Objects.equals(this.unknownFields, advancedCommercePriceIncreaseInfo.unknownFields);
     }
 
     @Override

@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -10,16 +11,10 @@ import java.util.Objects;
  * The request data your app provides when a customer purchases a one-time-charge product.
  *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/onetimechargecreaterequest">OneTimeChargeCreateRequest</a>
- */
+ **/
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdvancedCommerceOneTimeChargeCreateRequest extends AbstractAdvancedCommerceInAppRequest<AdvancedCommerceOneTimeChargeCreateRequest> {
-
-    /**
-     * The constant that represents the operation of this request.
-     */
     private static final String OPERATION = "CREATE_ONE_TIME_CHARGE";
-    /**
-     * The version number of the API.
-     */
     private static final String VERSION = "1";
 
     private static final String SERIALIZED_NAME_CURRENCY = "currency";
@@ -41,9 +36,9 @@ public class AdvancedCommerceOneTimeChargeCreateRequest extends AbstractAdvanced
     }
 
     public AdvancedCommerceOneTimeChargeCreateRequest(
+            AdvancedCommerceRequestInfo requestInfo,
             String currency,
             AdvancedCommerceOneTimeChargeItem item,
-            AdvancedCommerceRequestInfo requestInfo,
             String taxCode
     ) {
         super(OPERATION, VERSION, requestInfo);
@@ -55,6 +50,39 @@ public class AdvancedCommerceOneTimeChargeCreateRequest extends AbstractAdvanced
     @Override
     protected AdvancedCommerceOneTimeChargeCreateRequest self() {
         return this;
+    }
+
+    /**
+     * The constant that represents the operation of this request.
+     *
+     * @return operation
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/onetimechargecreaterequest">OneTimeChargeCreateRequest</a>
+     **/
+    @Override
+    public String getOperation() {
+        return super.getOperation();
+    }
+
+    /**
+     * The version number of the API.
+     *
+     * @return version
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/version">version</a>
+     **/
+    @Override
+    public String getVersion() {
+        return super.getVersion();
+    }
+
+    /**
+     * The metadata of the request.
+     *
+     * @return requestInfo
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/requestinfo">RequestInfo</a>
+     **/
+    @Override
+    public AdvancedCommerceRequestInfo getRequestInfo() {
+        return super.getRequestInfo();
     }
 
     public AdvancedCommerceOneTimeChargeCreateRequest currency(String currency) {
@@ -123,7 +151,7 @@ public class AdvancedCommerceOneTimeChargeCreateRequest extends AbstractAdvanced
      * The tax code for this product.
      *
      * @return taxCode
-     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/taxCode">taxCode</a>
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/taxcode">taxCode</a>
      **/
     public String getTaxCode() {
         return taxCode;
@@ -135,11 +163,20 @@ public class AdvancedCommerceOneTimeChargeCreateRequest extends AbstractAdvanced
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        AdvancedCommerceOneTimeChargeCreateRequest that = (AdvancedCommerceOneTimeChargeCreateRequest) o;
-        return Objects.equals(currency, that.currency) && Objects.equals(item, that.item) && Objects.equals(storefront, that.storefront) && Objects.equals(taxCode, that.taxCode);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        AdvancedCommerceOneTimeChargeCreateRequest advancedCommerceOneTimeChargeCreateRequest = (AdvancedCommerceOneTimeChargeCreateRequest) o;
+        return Objects.equals(this.currency, advancedCommerceOneTimeChargeCreateRequest.currency) &&
+                Objects.equals(this.item, advancedCommerceOneTimeChargeCreateRequest.item) &&
+                Objects.equals(this.storefront, advancedCommerceOneTimeChargeCreateRequest.storefront) &&
+                Objects.equals(this.taxCode, advancedCommerceOneTimeChargeCreateRequest.taxCode);
     }
 
     @Override
@@ -149,12 +186,14 @@ public class AdvancedCommerceOneTimeChargeCreateRequest extends AbstractAdvanced
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" +
-                "currency='" + currency + '\'' +
-                ", item=" + item +
+        return "AdvancedCommerceOneTimeChargeCreateRequest{" +
+                "operation='" + getOperation() + '\'' +
+                ", version='" + getVersion() + '\'' +
                 ", requestInfo=" + getRequestInfo() +
+                ", currency='" + currency + '\'' +
+                ", item=" + item +
                 ", storefront='" + storefront + '\'' +
                 ", taxCode='" + taxCode + '\'' +
-                "}";
+                '}';
     }
 }

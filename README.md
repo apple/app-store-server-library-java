@@ -1,5 +1,5 @@
 # Apple App Store Server Java Library
-The Java server library for the [App Store Server API](https://developer.apple.com/documentation/appstoreserverapi), [App Store Server Notifications](https://developer.apple.com/documentation/appstoreservernotifications), [Retention Messaging API](https://developer.apple.com/documentation/retentionmessaging), and [Advanced Commerce API](https://developer.apple.com/documentation/AdvancedCommerceAPI). Also available in [Swift](https://github.com/apple/app-store-server-library-swift), [Python](https://github.com/apple/app-store-server-library-python), and [Node.js](https://github.com/apple/app-store-server-library-node).
+The Java server library for the [App Store Server API](https://developer.apple.com/documentation/appstoreserverapi), [App Store Server Notifications](https://developer.apple.com/documentation/appstoreservernotifications), [Retention Messaging API](https://developer.apple.com/documentation/retentionmessaging), and [Advanced Commerce API](https://developer.apple.com/documentation/advancedcommerceapi). Also available in [Swift](https://github.com/apple/app-store-server-library-swift), [Python](https://github.com/apple/app-store-server-library-python), and [Node.js](https://github.com/apple/app-store-server-library-node).
 
 ## Table of Contents
 1. [Installation](#installation)
@@ -40,7 +40,7 @@ To use the App Store Server API or create promotional offer signatures, a signin
 
 ### Obtaining Apple Root Certificates
 
-Download and store the root certificates found in the Apple Root Certificates section of the [Apple PKI](https://www.apple.com/certificateauthority/) site. Provide these certificates as an array to a SignedDataVerifier to allow verifying the signed data comes from Apple.
+Download and store the root certificates found in the Apple Root Certificates section of the [Apple PKI](https://www.apple.com/certificateauthority/) site. Provide these certificates as a Set of InputStreams to a SignedDataVerifier to allow verifying the signed data comes from Apple.
 
 ## Usage
 
@@ -91,7 +91,7 @@ import java.io.InputStream;
 import java.util.Set;
 
 public class ExampleVerification {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         String bundleId = "com.example";
         Environment environment = Environment.SANDBOX;
         Set<InputStream> rootCAs = Set.of(

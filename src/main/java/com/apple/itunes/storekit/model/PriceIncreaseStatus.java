@@ -8,10 +8,16 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * The status that indicates whether an auto-renewable subscription is subject to a price increase.
  *
  * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/priceincreasestatus">priceIncreaseStatus</a>
- */
+ **/
 public enum PriceIncreaseStatus {
 
+    /**
+     * The customer hasn’t yet responded to an auto-renewable subscription price increase that requires customer consent.
+     **/
     CUSTOMER_HAS_NOT_RESPONDED(0),
+    /**
+     * The customer consented to an auto-renewable subscription price increase that requires customer consent, or the App Store has notified the customer of an auto-renewable subscription price increase that doesn’t require consent.
+     **/
     CUSTOMER_CONSENTED_OR_WAS_NOTIFIED_WITHOUT_NEEDING_CONSENT(1);
 
     private final Integer value;
@@ -39,4 +45,3 @@ public enum PriceIncreaseStatus {
         return String.valueOf(value);
     }
 }
-

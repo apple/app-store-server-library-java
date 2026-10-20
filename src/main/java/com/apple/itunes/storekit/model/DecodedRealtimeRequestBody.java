@@ -3,6 +3,7 @@
 package com.apple.itunes.storekit.model;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
@@ -13,15 +14,16 @@ import java.util.UUID;
  * The decoded request body the App Store sends to your server to request a real-time retention message.
  *
  * @see <a href="https://developer.apple.com/documentation/retentionmessaging/decodedrealtimerequestbody">DecodedRealtimeRequestBody</a>
- */
+ **/
 public class DecodedRealtimeRequestBody implements DecodedSignedData {
     private static final String SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID = "originalTransactionId";
     private static final String SERIALIZED_NAME_APP_APPLE_ID = "appAppleId";
     private static final String SERIALIZED_NAME_PRODUCT_ID = "productId";
     private static final String SERIALIZED_NAME_USER_LOCALE = "userLocale";
     private static final String SERIALIZED_NAME_REQUEST_IDENTIFIER = "requestIdentifier";
-    private static final String SERIALIZED_NAME_SIGNED_DATE = "signedDate";
     private static final String SERIALIZED_NAME_ENVIRONMENT = "environment";
+    private static final String SERIALIZED_NAME_SIGNED_DATE = "signedDate";
+
     @JsonProperty(value = SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID, required = true)
     private String originalTransactionId;
     @JsonProperty(value = SERIALIZED_NAME_APP_APPLE_ID, required = true)
@@ -32,41 +34,51 @@ public class DecodedRealtimeRequestBody implements DecodedSignedData {
     private String userLocale;
     @JsonProperty(value = SERIALIZED_NAME_REQUEST_IDENTIFIER, required = true)
     private UUID requestIdentifier;
-    @JsonProperty(value = SERIALIZED_NAME_SIGNED_DATE, required = true)
-    private Long signedDate;
     @JsonProperty(value = SERIALIZED_NAME_ENVIRONMENT, required = true)
     private String environment;
+    @JsonProperty(value = SERIALIZED_NAME_SIGNED_DATE, required = true)
+    private Long signedDate;
     @JsonAnySetter
     private Map<String, Object> unknownFields;
-
 
     protected DecodedRealtimeRequestBody() {
     }
 
-    public DecodedRealtimeRequestBody(String originalTransactionId,
-                                      Long appAppleId,
-                                      String productId,
-                                      String userLocale,
-                                      UUID requestIdentifier,
-                                      Long signedDate,
-                                      Environment environment) {
-        this(originalTransactionId, appAppleId, productId, userLocale, requestIdentifier, signedDate, Objects.requireNonNull(environment).getValue());
-    }
-
-    public DecodedRealtimeRequestBody(String originalTransactionId,
-                                      Long appAppleId,
-                                      String productId,
-                                      String userLocale,
-                                      UUID requestIdentifier,
-                                      Long signedDate,
-                                      String rawEnvironment) {
+    public DecodedRealtimeRequestBody(
+            String originalTransactionId,
+            Long appAppleId,
+            String productId,
+            String userLocale,
+            UUID requestIdentifier,
+            Environment environment,
+            Long signedDate
+    ) {
         this.originalTransactionId = Objects.requireNonNull(originalTransactionId);
         this.appAppleId = Objects.requireNonNull(appAppleId);
         this.productId = Objects.requireNonNull(productId);
         this.userLocale = Objects.requireNonNull(userLocale);
         this.requestIdentifier = Objects.requireNonNull(requestIdentifier);
+        this.environment = Objects.requireNonNull(environment).getValue();
         this.signedDate = Objects.requireNonNull(signedDate);
+    }
+
+    @JsonCreator
+    public DecodedRealtimeRequestBody(
+            @JsonProperty(value = SERIALIZED_NAME_ORIGINAL_TRANSACTION_ID, required = true) String originalTransactionId,
+            @JsonProperty(value = SERIALIZED_NAME_APP_APPLE_ID, required = true) Long appAppleId,
+            @JsonProperty(value = SERIALIZED_NAME_PRODUCT_ID, required = true) String productId,
+            @JsonProperty(value = SERIALIZED_NAME_USER_LOCALE, required = true) String userLocale,
+            @JsonProperty(value = SERIALIZED_NAME_REQUEST_IDENTIFIER, required = true) UUID requestIdentifier,
+            @JsonProperty(value = SERIALIZED_NAME_ENVIRONMENT, required = true) String rawEnvironment,
+            @JsonProperty(value = SERIALIZED_NAME_SIGNED_DATE, required = true) Long signedDate
+    ) {
+        this.originalTransactionId = Objects.requireNonNull(originalTransactionId);
+        this.appAppleId = Objects.requireNonNull(appAppleId);
+        this.productId = Objects.requireNonNull(productId);
+        this.userLocale = Objects.requireNonNull(userLocale);
+        this.requestIdentifier = Objects.requireNonNull(requestIdentifier);
         this.environment = Objects.requireNonNull(rawEnvironment);
+        this.signedDate = Objects.requireNonNull(signedDate);
     }
 
     public DecodedRealtimeRequestBody originalTransactionId(String originalTransactionId) {
@@ -164,6 +176,36 @@ public class DecodedRealtimeRequestBody implements DecodedSignedData {
         this.requestIdentifier = Objects.requireNonNull(requestIdentifier);
     }
 
+    public DecodedRealtimeRequestBody environment(Environment environment) {
+        this.environment = Objects.requireNonNull(environment).getValue();
+        return this;
+    }
+
+    /**
+     * The server environment, either sandbox or production.
+     *
+     * @return environment
+     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/environment">environment</a>
+     **/
+    public Environment getEnvironment() {
+        return Environment.fromValue(environment);
+    }
+
+    /**
+     * @see #getEnvironment()
+     **/
+    public String getRawEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(Environment environment) {
+        this.environment = Objects.requireNonNull(environment).getValue();
+    }
+
+    public void setRawEnvironment(String rawEnvironment) {
+        this.environment = Objects.requireNonNull(rawEnvironment);
+    }
+
     public DecodedRealtimeRequestBody signedDate(Long signedDate) {
         this.signedDate = Objects.requireNonNull(signedDate);
         return this;
@@ -183,46 +225,16 @@ public class DecodedRealtimeRequestBody implements DecodedSignedData {
         this.signedDate = Objects.requireNonNull(signedDate);
     }
 
-    public DecodedRealtimeRequestBody environment(Environment environment) {
-        this.environment = Objects.requireNonNull(environment).getValue();
-        return this;
-    }
-
-    /**
-     * The server environment, either sandbox or production.
-     *
-     * @return environment
-     * @see <a href="https://developer.apple.com/documentation/retentionmessaging/environment">environment</a>
-     **/
-    public Environment getEnvironment() {
-        return environment != null ? Environment.fromValue(environment) : null;
-    }
-
-    /**
-     * @see #getEnvironment()
-     */
-    public String getRawEnvironment() {
-        return environment;
-    }
-
-    public void setEnvironment(Environment environment) {
-        this.environment = Objects.requireNonNull(environment).getValue();
-    }
-
-    public void setRawEnvironment(String rawEnvironment) {
-        this.environment = Objects.requireNonNull(rawEnvironment);
-    }
-
     public DecodedRealtimeRequestBody unknownFields(Map<String, Object> unknownFields) {
         this.unknownFields = unknownFields;
         return this;
     }
 
     /**
-     Fields that are not recognized for this object
-
-     @return A map of JSON keys to objects
-     */
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -233,22 +245,26 @@ public class DecodedRealtimeRequestBody implements DecodedSignedData {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DecodedRealtimeRequestBody that = (DecodedRealtimeRequestBody) o;
-        return Objects.equals(originalTransactionId, that.originalTransactionId) &&
-                Objects.equals(appAppleId, that.appAppleId) &&
-                Objects.equals(productId, that.productId) &&
-                Objects.equals(userLocale, that.userLocale) &&
-                Objects.equals(requestIdentifier, that.requestIdentifier) &&
-                Objects.equals(signedDate, that.signedDate) &&
-                Objects.equals(environment, that.environment) &&
-                Objects.equals(unknownFields, that.unknownFields);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DecodedRealtimeRequestBody decodedRealtimeRequestBody = (DecodedRealtimeRequestBody) o;
+        return Objects.equals(this.originalTransactionId, decodedRealtimeRequestBody.originalTransactionId) &&
+                Objects.equals(this.appAppleId, decodedRealtimeRequestBody.appAppleId) &&
+                Objects.equals(this.productId, decodedRealtimeRequestBody.productId) &&
+                Objects.equals(this.userLocale, decodedRealtimeRequestBody.userLocale) &&
+                Objects.equals(this.requestIdentifier, decodedRealtimeRequestBody.requestIdentifier) &&
+                Objects.equals(this.environment, decodedRealtimeRequestBody.environment) &&
+                Objects.equals(this.signedDate, decodedRealtimeRequestBody.signedDate) &&
+                Objects.equals(this.unknownFields, decodedRealtimeRequestBody.unknownFields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(originalTransactionId, appAppleId, productId, userLocale, requestIdentifier, signedDate, environment, unknownFields);
+        return Objects.hash(originalTransactionId, appAppleId, productId, userLocale, requestIdentifier, environment, signedDate, unknownFields);
     }
 
     @Override
@@ -259,8 +275,8 @@ public class DecodedRealtimeRequestBody implements DecodedSignedData {
                 ", productId='" + productId + '\'' +
                 ", userLocale='" + userLocale + '\'' +
                 ", requestIdentifier=" + requestIdentifier +
-                ", signedDate=" + signedDate +
                 ", environment='" + environment + '\'' +
+                ", signedDate=" + signedDate +
                 ", unknownFields=" + unknownFields +
                 '}';
     }

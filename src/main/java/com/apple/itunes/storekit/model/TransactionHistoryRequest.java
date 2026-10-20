@@ -3,6 +3,7 @@
 package com.apple.itunes.storekit.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class TransactionHistoryRequest {
     private Long startDate;
@@ -11,7 +12,7 @@ public class TransactionHistoryRequest {
     private List<ProductType> productTypes;
     private Order sort;
     private List<String> subscriptionGroupIdentifiers;
-    private InAppOwnershipType inAppOwnershipType;
+    private String inAppOwnershipType;
     private Boolean revoked;
 
     /**
@@ -160,6 +161,13 @@ public class TransactionHistoryRequest {
      * @see <a href="https://developer.apple.com/documentation/appstoreserverapi/inappownershiptype">inAppOwnershipType</a>
      */
     public InAppOwnershipType getInAppOwnershipType() {
+        return InAppOwnershipType.fromValue(inAppOwnershipType);
+    }
+
+    /**
+     * @see #getInAppOwnershipType()
+     */
+    public String getRawInAppOwnershipType() {
         return inAppOwnershipType;
     }
 
@@ -167,14 +175,21 @@ public class TransactionHistoryRequest {
      * @see #getInAppOwnershipType()
      */
     public void setInAppOwnershipType(InAppOwnershipType inAppOwnershipType) {
-        this.inAppOwnershipType = inAppOwnershipType;
+        this.inAppOwnershipType = inAppOwnershipType != null ? inAppOwnershipType.getValue() : null;
+    }
+
+    /**
+     * @see #getInAppOwnershipType()
+     */
+    public void setRawInAppOwnershipType(String rawInAppOwnershipType) {
+        this.inAppOwnershipType = rawInAppOwnershipType;
     }
 
     /**
      * @see #getInAppOwnershipType()
      */
     public TransactionHistoryRequest inAppOwnershipType(InAppOwnershipType inAppOwnershipType) {
-        this.inAppOwnershipType = inAppOwnershipType;
+        this.inAppOwnershipType = inAppOwnershipType != null ? inAppOwnershipType.getValue() : null;
         return this;
     }
 
@@ -210,6 +225,30 @@ public class TransactionHistoryRequest {
     public enum Order {
         ASCENDING,
         DESCENDING
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TransactionHistoryRequest transactionHistoryRequest = (TransactionHistoryRequest) o;
+        return Objects.equals(this.startDate, transactionHistoryRequest.startDate) &&
+                Objects.equals(this.endDate, transactionHistoryRequest.endDate) &&
+                Objects.equals(this.productIds, transactionHistoryRequest.productIds) &&
+                Objects.equals(this.productTypes, transactionHistoryRequest.productTypes) &&
+                Objects.equals(this.sort, transactionHistoryRequest.sort) &&
+                Objects.equals(this.subscriptionGroupIdentifiers, transactionHistoryRequest.subscriptionGroupIdentifiers) &&
+                Objects.equals(this.inAppOwnershipType, transactionHistoryRequest.inAppOwnershipType) &&
+                Objects.equals(this.revoked, transactionHistoryRequest.revoked);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startDate, endDate, productIds, productTypes, sort, subscriptionGroupIdentifiers, inAppOwnershipType, revoked);
     }
 
     @Override

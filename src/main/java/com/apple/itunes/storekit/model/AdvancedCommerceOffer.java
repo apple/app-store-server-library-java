@@ -3,6 +3,8 @@
 package com.apple.itunes.storekit.model;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
@@ -12,9 +14,9 @@ import java.util.Objects;
  * A discount offer for an auto-renewable subscription.
  *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/offer">Offer</a>
- */
+ **/
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdvancedCommerceOffer {
-
     private static final String SERIALIZED_NAME_PERIOD = "period";
     private static final String SERIALIZED_NAME_PERIOD_COUNT = "periodCount";
     private static final String SERIALIZED_NAME_PRICE = "price";
@@ -31,21 +33,32 @@ public class AdvancedCommerceOffer {
     @JsonAnySetter
     private Map<String, Object> unknownFields;
 
-    protected AdvancedCommerceOffer() {}
-
-    public AdvancedCommerceOffer(String rawPeriod, Integer periodCount, Long price, String rawReason) {
-        this.period = Objects.requireNonNull(rawPeriod);
-        this.periodCount = HelperValidationUtils.validatePeriodCount(periodCount);
-        this.price = Objects.requireNonNull(price);
-        this.reason = Objects.requireNonNull(rawReason);
+    protected AdvancedCommerceOffer() {
     }
 
-
-    public AdvancedCommerceOffer(AdvancedCommerceOfferPeriod period, Integer periodCount, Long price, AdvancedCommerceOfferReason reason) {
+    public AdvancedCommerceOffer(
+            AdvancedCommerceOfferPeriod period,
+            Integer periodCount,
+            Long price,
+            AdvancedCommerceOfferReason reason
+    ) {
         this.period = Objects.requireNonNull(period).getValue();
         this.periodCount = HelperValidationUtils.validatePeriodCount(periodCount);
         this.price = Objects.requireNonNull(price);
         this.reason = Objects.requireNonNull(reason).getValue();
+    }
+
+    @JsonCreator
+    public AdvancedCommerceOffer(
+            @JsonProperty(value = SERIALIZED_NAME_PERIOD, required = true) String rawPeriod,
+            @JsonProperty(value = SERIALIZED_NAME_PERIOD_COUNT, required = true) Integer periodCount,
+            @JsonProperty(value = SERIALIZED_NAME_PRICE, required = true) Long price,
+            @JsonProperty(value = SERIALIZED_NAME_REASON, required = true) String rawReason
+    ) {
+        this.period = Objects.requireNonNull(rawPeriod);
+        this.periodCount = HelperValidationUtils.validatePeriodCount(periodCount);
+        this.price = Objects.requireNonNull(price);
+        this.reason = Objects.requireNonNull(rawReason);
     }
 
     public AdvancedCommerceOffer period(AdvancedCommerceOfferPeriod period) {
@@ -55,16 +68,17 @@ public class AdvancedCommerceOffer {
 
     /**
      * The period of the offer.
-     * 
+     *
      * @return period
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/offer">Offer</a>
      **/
     public AdvancedCommerceOfferPeriod getPeriod() {
         return AdvancedCommerceOfferPeriod.fromValue(period);
     }
 
-    /** 
+    /**
      * @see #getPeriod()
-     */
+     **/
     public String getRawPeriod() {
         return period;
     }
@@ -82,10 +96,11 @@ public class AdvancedCommerceOffer {
         return this;
     }
 
-    /** 
+    /**
      * The number of periods the offer is active.
-     * 
+     *
      * @return periodCount
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/offer">Offer</a>
      **/
     public Integer getPeriodCount() {
         return periodCount;
@@ -102,9 +117,9 @@ public class AdvancedCommerceOffer {
 
     /**
      * The offer price, in milliunits.
-     * 
+     *
      * @return price
-     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/price">Price</a>
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/price">price</a>
      **/
     public Long getPrice() {
         return price;
@@ -121,8 +136,9 @@ public class AdvancedCommerceOffer {
 
     /**
      * The reason for the offer.
-     * 
+     *
      * @return reason
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/offer">Offer</a>
      **/
     public AdvancedCommerceOfferReason getReason() {
         return AdvancedCommerceOfferReason.fromValue(reason);
@@ -130,7 +146,7 @@ public class AdvancedCommerceOffer {
 
     /**
      * @see #getReason()
-     */
+     **/
     public String getRawReason() {
         return reason;
     }
@@ -148,6 +164,11 @@ public class AdvancedCommerceOffer {
         return this;
     }
 
+    /**
+     * Fields that are not recognized for this object
+     *
+     * @return A map of JSON keys to objects
+     **/
     public Map<String, Object> getUnknownFields() {
         return unknownFields;
     }
@@ -158,10 +179,18 @@ public class AdvancedCommerceOffer {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AdvancedCommerceOffer that = (AdvancedCommerceOffer) o;
-        return Objects.equals(period, that.period) && Objects.equals(periodCount, that.periodCount) && Objects.equals(price, that.price) && Objects.equals(reason, that.reason) && Objects.equals(unknownFields, that.unknownFields);
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AdvancedCommerceOffer advancedCommerceOffer = (AdvancedCommerceOffer) o;
+        return Objects.equals(this.period, advancedCommerceOffer.period) &&
+                Objects.equals(this.periodCount, advancedCommerceOffer.periodCount) &&
+                Objects.equals(this.price, advancedCommerceOffer.price) &&
+                Objects.equals(this.reason, advancedCommerceOffer.reason) &&
+                Objects.equals(this.unknownFields, advancedCommerceOffer.unknownFields);
     }
 
     @Override

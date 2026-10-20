@@ -2,25 +2,38 @@
 
 package com.apple.itunes.storekit.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * A response that contains signed JWS renewal and JWS transaction information after a subscription price change request.
  *
  * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/subscriptionpricechangeresponse">SubscriptionPriceChangeResponse</a>
- */
+ **/
 public class AdvancedCommerceSubscriptionPriceChangeResponse extends AbstractAdvancedCommerceResponse {
     protected AdvancedCommerceSubscriptionPriceChangeResponse() {
         super();
     }
 
-    public AdvancedCommerceSubscriptionPriceChangeResponse(String signedRenewalInfo, String signedTransactionInfo) {
+    @JsonCreator
+    public AdvancedCommerceSubscriptionPriceChangeResponse(
+            @JsonProperty(value = "signedRenewalInfo", required = true) String signedRenewalInfo,
+            @JsonProperty(value = "signedTransactionInfo", required = true) String signedTransactionInfo
+    ) {
         super(Objects.requireNonNull(signedRenewalInfo), Objects.requireNonNull(signedTransactionInfo));
     }
 
     @Override
     protected AdvancedCommerceSubscriptionPriceChangeResponse self() {
         return this;
+    }
+
+    @Override
+    public AdvancedCommerceSubscriptionPriceChangeResponse unknownFields(Map<String, Object> unknownFields) {
+        return (AdvancedCommerceSubscriptionPriceChangeResponse) super.unknownFields(unknownFields);
     }
 
     @Override
@@ -47,11 +60,50 @@ public class AdvancedCommerceSubscriptionPriceChangeResponse extends AbstractAdv
         super.setSignedTransactionInfo(signedTransactionInfo);
     }
 
+    /**
+     * Subscription renewal information signed by the App Store, in JSON Web Signature (JWS) format.
+     *
+     * @return signedRenewalInfo
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/jwsrenewalinfo">JWSRenewalInfo</a>
+     **/
+    @Override
+    public String getSignedRenewalInfo() {
+        return super.getSignedRenewalInfo();
+    }
+
+    /**
+     * Transaction information signed by the App Store, in JWS Compact Serialization format.
+     *
+     * @return signedTransactionInfo
+     * @see <a href="https://developer.apple.com/documentation/advancedcommerceapi/jwstransaction">JWSTransaction</a>
+     **/
+    @Override
+    public String getSignedTransactionInfo() {
+        return super.getSignedTransactionInfo();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" +
-                "signedRenewalInfo='" + getSignedRenewalInfo() + 
-                ", signedTransactionInfo='" + getSignedTransactionInfo() + 
+        return "AdvancedCommerceSubscriptionPriceChangeResponse{" +
+                "signedRenewalInfo='" + getSignedRenewalInfo() + '\'' +
+                ", signedTransactionInfo='" + getSignedTransactionInfo() + '\'' +
+                ", unknownFields=" + getUnknownFields() +
                 '}';
     }
 }
