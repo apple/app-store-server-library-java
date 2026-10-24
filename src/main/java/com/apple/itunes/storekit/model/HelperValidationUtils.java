@@ -2,6 +2,7 @@
 
 package com.apple.itunes.storekit.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -87,7 +88,7 @@ public final class HelperValidationUtils {
             }
         }
 
-        return list;
+        return new ArrayList<>(list);
     }
 
     private static String validateStringWithMaxLength(String value, int maxLength, String fieldName) { 

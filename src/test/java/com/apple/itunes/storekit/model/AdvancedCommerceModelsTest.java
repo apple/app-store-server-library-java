@@ -1163,8 +1163,9 @@ public class AdvancedCommerceModelsTest {
 
     @Test
     public void testAdvancedCommerceRequestAddItemAppendsToList() {
-        AdvancedCommerceSubscriptionPriceChangeRequest priceChangeRequest = new AdvancedCommerceSubscriptionPriceChangeRequest(createRequestInfo(), new ArrayList<>(List.of(new AdvancedCommerceSubscriptionPriceChangeItem("sku", 1000L))))
+        AdvancedCommerceSubscriptionPriceChangeRequest priceChangeRequest = new AdvancedCommerceSubscriptionPriceChangeRequest(createRequestInfo(), List.of(new AdvancedCommerceSubscriptionPriceChangeItem("sku", 1000L)))
                 .addItem(new AdvancedCommerceSubscriptionPriceChangeItem("sku2", 2000L));
+
         Assertions.assertEquals(List.of(new AdvancedCommerceSubscriptionPriceChangeItem("sku", 1000L), new AdvancedCommerceSubscriptionPriceChangeItem("sku2", 2000L)), priceChangeRequest.getItems());
 
         AdvancedCommerceSubscriptionCreateRequest createRequest = new AdvancedCommerceSubscriptionCreateRequest(createRequestInfo(), "USD", new AdvancedCommerceDescriptors("description", "display name"), new ArrayList<>(List.of(new AdvancedCommerceSubscriptionCreateItem("sku", "description", "display name", 1000L))),
