@@ -62,6 +62,9 @@ public class ChainVerifier {
     }
 
     public PublicKey verifyChain(String[] certificates, boolean performRevocationChecking, Date effectiveDate) throws VerificationException {
+        if (certificates == null) {
+            throw new VerificationException(VerificationStatus.INVALID_CHAIN_LENGTH);
+        }
         if (performRevocationChecking && certificates.length > 0) {
             // If revocation checking is enabled (which also implies effectiveDate is now), check the cache
             PublicKey cachedKey = getCachedPublicKey(Arrays.asList(certificates));
@@ -77,6 +80,10 @@ public class ChainVerifier {
     }
 
     PublicKey verifyChainWithoutCaching(String[] certificates, boolean performRevocationChecking, Date effectiveDate) throws VerificationException {
+        if (certificates.length != EXPECTED_CHAIN_LENGTH) {
+            throw new VerificationException(VerificationStatus.INVALID_CHAIN_LENGTH);
+        }
+
         CertificateFactory certificateFactory;
         CertPathValidator certPathValidator;
         try {
@@ -93,10 +100,6 @@ public class ChainVerifier {
             }
         } catch (Exception e) {
             throw new VerificationException(VerificationStatus.INVALID_CERTIFICATE, e);
-        }
-
-        if (parsedCertificates.size() != EXPECTED_CHAIN_LENGTH) {
-            throw new VerificationException(VerificationStatus.INVALID_CHAIN_LENGTH);
         }
 
         try {
