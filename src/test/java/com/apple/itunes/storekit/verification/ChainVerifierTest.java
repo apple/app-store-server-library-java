@@ -230,6 +230,23 @@ public class ChainVerifierTest {
     }
 
     @Test
+    public void testOcspResponseCacheDoesNotExceedMaximumSizeWhenEntriesAreFresh() throws Exception {
+        for (int index = 0; index <= 32; index++) {
+            mockedChainVerifier.verifyChain(new String[] {
+                    LEAF_CERT_BASE64_ENCODED,
+                    INTERMEDIATE_CA_BASE64_ENCODED,
+                    ROOT_CA_BASE64_ENCODED + index
+            }, true, EFFECTIVE_DATE);
+        }
+
+        Field cacheField = ChainVerifier.class.getDeclaredField("verifiedPublicKeyCache");
+        cacheField.setAccessible(true);
+        Map<?, ?> cache = (Map<?, ?>) cacheField.get(mockedChainVerifier);
+
+        Assertions.assertEquals(32, cache.size());
+    }
+
+    @Test
     public void testOcspResponseCachingWhenEntryIsRemovedDuringLookup() throws Exception {
         String[] chain = new String[] {
                 LEAF_CERT_BASE64_ENCODED,
