@@ -3,7 +3,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 dependencies {
-    api 'com.squareup.okhttp3:okhttp:5.5.0'
+    api 'com.squareup.okhttp3:okhttp:5.5.1'
     api 'com.fasterxml.jackson.core:jackson-databind:2.22.2'
     api 'com.auth0:java-jwt:4.5.2'
     implementation 'org.bouncycastle:bcprov-jdk18on:1.85.2'
