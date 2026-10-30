@@ -130,6 +130,13 @@ public class ChainVerifierTest {
                 Assertions.assertEquals(VerificationStatus.INVALID_CHAIN_LENGTH, exception.getStatus());
             }
 
+            VerificationException nullChainException =
+                Assertions.assertThrows(
+                    VerificationException.class,
+                    () -> verifier.verifyChain(null, false, EFFECTIVE_DATE));
+
+            Assertions.assertEquals(
+                VerificationStatus.INVALID_CHAIN_LENGTH, nullChainException.getStatus());
             Mockito.verifyNoInteractions(certificateFactory);
         }
     }
