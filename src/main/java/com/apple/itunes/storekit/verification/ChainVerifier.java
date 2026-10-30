@@ -135,7 +135,8 @@ public class ChainVerifier {
         Instant now = clock.instant();
         verifiedPublicKeyCache.entrySet().removeIf(e -> e.getValue().cachedExpirationDate.isBefore(now));
 
-        while (verifiedPublicKeyCache.size() >= MAXIMUM_CACHE_SIZE) {
+        while (!verifiedPublicKeyCache.containsKey(certificateChain)
+                && verifiedPublicKeyCache.size() >= MAXIMUM_CACHE_SIZE) {
             List<String> certificateChainToEvict = verifiedPublicKeyCache.entrySet().stream()
                     .min(Comparator.comparing(e -> e.getValue().cachedExpirationDate))
                     .map(e -> e.getKey())

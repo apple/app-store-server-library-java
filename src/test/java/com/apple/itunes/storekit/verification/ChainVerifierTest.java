@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
 import java.security.cert.CertPathValidator;
@@ -18,6 +19,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -244,6 +246,38 @@ public class ChainVerifierTest {
         Map<?, ?> cache = (Map<?, ?>) cacheField.get(mockedChainVerifier);
 
         Assertions.assertEquals(32, cache.size());
+    }
+
+    @Test
+    public void testOcspResponseCacheRefreshDoesNotEvictExistingEntryAtMaximumSize() throws Exception {
+        for (int index = 0; index < 32; index++) {
+            mockedChainVerifier.verifyChain(new String[] {
+                    LEAF_CERT_BASE64_ENCODED,
+                    INTERMEDIATE_CA_BASE64_ENCODED,
+                    ROOT_CA_BASE64_ENCODED + index
+            }, true, EFFECTIVE_DATE);
+        }
+
+        List<String> refreshedChain = List.of(
+                LEAF_CERT_BASE64_ENCODED,
+                INTERMEDIATE_CA_BASE64_ENCODED,
+                ROOT_CA_BASE64_ENCODED + "0");
+        Method putVerifiedPublicKey = ChainVerifier.class.getDeclaredMethod(
+                "putVerifiedPublicKey", List.class, PublicKey.class);
+        putVerifiedPublicKey.setAccessible(true);
+        putVerifiedPublicKey.invoke(mockedChainVerifier, refreshedChain, publicKey);
+
+        Field cacheField = ChainVerifier.class.getDeclaredField("verifiedPublicKeyCache");
+        cacheField.setAccessible(true);
+        Map<?, ?> cache = (Map<?, ?>) cacheField.get(mockedChainVerifier);
+
+        Assertions.assertEquals(32, cache.size());
+        for (int index = 0; index < 32; index++) {
+            Assertions.assertTrue(cache.containsKey(List.of(
+                    LEAF_CERT_BASE64_ENCODED,
+                    INTERMEDIATE_CA_BASE64_ENCODED,
+                    ROOT_CA_BASE64_ENCODED + index)));
+        }
     }
 
     @Test
