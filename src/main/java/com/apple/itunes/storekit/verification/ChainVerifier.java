@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -130,13 +131,24 @@ public class ChainVerifier {
         return null;
     }
 
-    private void putVerifiedPublicKey(List<String> certificateChain, PublicKey publicKey) {
-        Instant cacheExpiration = clock.instant().plus(CACHE_TIME_LIMIT, ChronoUnit.MINUTES);
-        verifiedPublicKeyCache.put(certificateChain, new CachedEntry(cacheExpiration, publicKey));
-        if (verifiedPublicKeyCache.size() > MAXIMUM_CACHE_SIZE) {
-            // In the very unlikely event that the map has become too large, clear out old entries
-            verifiedPublicKeyCache.entrySet().removeIf(e -> e.getValue().cachedExpirationDate.isBefore(clock.instant()));
+    private synchronized void putVerifiedPublicKey(List<String> certificateChain, PublicKey publicKey) {
+        Instant now = clock.instant();
+        verifiedPublicKeyCache.entrySet().removeIf(e -> e.getValue().cachedExpirationDate.isBefore(now));
+
+        while (!verifiedPublicKeyCache.containsKey(certificateChain)
+                && verifiedPublicKeyCache.size() >= MAXIMUM_CACHE_SIZE) {
+            List<String> certificateChainToEvict = verifiedPublicKeyCache.entrySet().stream()
+                    .min(Comparator.comparing(e -> e.getValue().cachedExpirationDate))
+                    .map(e -> e.getKey())
+                    .orElse(null);
+            if (certificateChainToEvict == null) {
+                break;
+            }
+            verifiedPublicKeyCache.remove(certificateChainToEvict);
         }
+
+        Instant cacheExpiration = now.plus(CACHE_TIME_LIMIT, ChronoUnit.MINUTES);
+        verifiedPublicKeyCache.put(certificateChain, new CachedEntry(cacheExpiration, publicKey));
     }
 
     private static class CachedEntry {
