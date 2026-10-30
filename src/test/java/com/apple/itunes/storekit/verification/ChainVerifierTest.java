@@ -14,10 +14,13 @@ import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
 import java.security.cert.CertPathValidator;
 import java.security.cert.CertPathValidatorException;
+import java.security.cert.CertificateFactory;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -103,6 +106,39 @@ public class ChainVerifierTest {
                 ROOT_CA_BASE64_ENCODED
         }, false, EFFECTIVE_DATE));
         Assertions.assertEquals(VerificationStatus.INVALID_CHAIN_LENGTH, exception.getStatus());
+    }
+
+    @Test
+    public void testInvalidChainLengthsAreRejectedBeforeParsingCertificates() throws Exception {
+        ChainVerifier verifier = getChainVerifier(ROOT_CA_BASE64_ENCODED);
+        CertificateFactory certificateFactory = Mockito.mock(CertificateFactory.class);
+        String[] oversizedChain = new String[1_000];
+        Arrays.fill(oversizedChain, ROOT_CA_BASE64_ENCODED);
+
+        try (MockedStatic<CertificateFactory> mockedCertificateFactory = Mockito.mockStatic(CertificateFactory.class)) {
+            mockedCertificateFactory.when(() -> CertificateFactory.getInstance("X.509")).thenReturn(certificateFactory);
+
+            for (String[] invalidChain : List.<String[]>of(
+                    new String[0],
+                    new String[] {ROOT_CA_BASE64_ENCODED},
+                    new String[] {ROOT_CA_BASE64_ENCODED, ROOT_CA_BASE64_ENCODED},
+                    new String[] {ROOT_CA_BASE64_ENCODED, ROOT_CA_BASE64_ENCODED, ROOT_CA_BASE64_ENCODED, ROOT_CA_BASE64_ENCODED},
+                    oversizedChain)) {
+                VerificationException exception = Assertions.assertThrows(
+                        VerificationException.class,
+                        () -> verifier.verifyChain(invalidChain, false, EFFECTIVE_DATE));
+                Assertions.assertEquals(VerificationStatus.INVALID_CHAIN_LENGTH, exception.getStatus());
+            }
+
+            VerificationException nullChainException =
+                Assertions.assertThrows(
+                    VerificationException.class,
+                    () -> verifier.verifyChain(null, false, EFFECTIVE_DATE));
+
+            Assertions.assertEquals(
+                VerificationStatus.INVALID_CHAIN_LENGTH, nullChainException.getStatus());
+            Mockito.verifyNoInteractions(certificateFactory);
+        }
     }
 
     @Test
